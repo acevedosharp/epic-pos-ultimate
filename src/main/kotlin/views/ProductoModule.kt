@@ -1,14 +1,16 @@
 package views
 
 import controllers.ProductoController
+import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.Parent
-import javafx.scene.control.Alert
-import javafx.scene.control.ButtonType
-import javafx.scene.control.TableView
+import javafx.scene.control.*
+import javafx.scene.layout.Priority
+import javafx.scene.paint.Color
+import javafx.scene.text.TextAlignment
 import javafx.stage.Modality
 import models.Producto
 import models.ProductoModel
@@ -27,12 +29,13 @@ class ProductosView : View("Módulo de productos") {
         add(SideNavigation::class)
         borderpane {
             setPrefSize(1720.0, 1080.0)
-            paddingAll = 4
             top {
-                hbox(4, Pos.CENTER_LEFT) {
+                hbox {
+                    addClass(MainStylesheet.topBar)
                     paddingBottom = 4
                     useMaxWidth = true
                     button("Nuevo Producto") {
+                        addClass(MainStylesheet.coolBaseButton)
                         addClass(MainStylesheet.greenButton)
                         action {
                             openInternalWindow<NewProductoFormView>(closeButton = false, modal = true)
@@ -40,6 +43,7 @@ class ProductosView : View("Módulo de productos") {
                     }
                     button("Editar selección") {
                         enableWhen(existsSelection)
+                        addClass(MainStylesheet.coolBaseButton)
                         addClass(MainStylesheet.blueButton)
                         action {
                             openInternalWindow<EditProductoFormView>(closeButton = false, modal = true)
@@ -47,6 +51,7 @@ class ProductosView : View("Módulo de productos") {
                     }
                     button("Eliminar selección") {
                         enableWhen(existsSelection)
+                        addClass(MainStylesheet.coolBaseButton)
                         addClass(MainStylesheet.redButton)
                         action {
                             openInternalWindow<ConfirmDeleteDialog>(
@@ -60,18 +65,41 @@ class ProductosView : View("Módulo de productos") {
             }
 
             center {
-                table = tableview(productoController.productos) {
-                    column("Codigo", Producto::codigoProperty)
-                    column("Desc. Larga", Producto::descLargaProperty).remainingWidth()
-                    column("Desc. Corta", Producto::descCortaProperty)
-                    column("Precio Venta", Producto::precioVentaProperty)
-                    column("Existencias", Producto::existenciasProperty)
-                    bindSelected(model)
-                    selectionModel.selectedItemProperty().onChange {
-                        existsSelection.value = it != null
+                hbox {
+                    table = tableview(productoController.productos) {
+                        column("Codigo", Producto::codigoProperty)
+                        column("Desc. Larga", Producto::descLargaProperty).remainingWidth()
+                        column("Desc. Corta", Producto::descCortaProperty).pctWidth(20)
+                        column("Precio Venta", Producto::precioVentaProperty)
+                        column("Existencias", Producto::existenciasProperty)
+                        column("Ver pedidos", Producto::verPedidosButton).style {
+                            alignment = Pos.CENTER
+                            textAlignment = TextAlignment.CENTER
+                            tileAlignment = Pos.CENTER
+                        }
+
+                        smartResize()
+
+                        bindSelected(model)
+                        selectionModel.selectedItemProperty().onChange {
+                            existsSelection.value = it != null
+                        }
+
+                        style {
+
+                        }
+
+                        hgrow = Priority.ALWAYS
                     }
-                    smartResize()
+                    paddingAll = 6
+                    style {
+                        backgroundColor += Color.WHITE
+                    }
                 }
+            }
+
+            style {
+                backgroundColor += Color.WHITE
             }
         }
     }
@@ -109,9 +137,11 @@ class ProductosView : View("Módulo de productos") {
                     field("Existencias") {
                         textfield(existencias)
                     }
-                    hbox(spacing = 10, alignment = Pos.CENTER) {
+                    hbox(spacing = 80, alignment = Pos.CENTER) {
                         button("Añadir") {
+                            addClass(MainStylesheet.coolBaseButton)
                             addClass(MainStylesheet.greenButton)
+                            addClass(MainStylesheet.expandedButton)
                             action {
                                 find<ProductoController>().productos.add(
                                     Producto(
@@ -126,7 +156,9 @@ class ProductosView : View("Módulo de productos") {
                             }
                         }
                         button("Cancelar") {
+                            addClass(MainStylesheet.coolBaseButton)
                             addClass(MainStylesheet.redButton)
+                            addClass(MainStylesheet.expandedButton)
                             action { close() }
                         }
                     }
@@ -164,16 +196,20 @@ class ProductosView : View("Módulo de productos") {
                     field("Existencias") {
                         textfield(model.existencias)
                     }
-                    hbox(spacing = 10, alignment = Pos.CENTER) {
+                    hbox(spacing = 80, alignment = Pos.CENTER) {
                         button("Confirmar") {
+                            addClass(MainStylesheet.coolBaseButton)
                             addClass(MainStylesheet.greenButton)
+                            addClass(MainStylesheet.expandedButton)
                             action {
                                 model.commit()
                                 close()
                             }
                         }
                         button("Cancelar") {
+                            addClass(MainStylesheet.coolBaseButton)
                             addClass(MainStylesheet.redButton)
+                            addClass(MainStylesheet.expandedButton)
                             action {
                                 model.rollback()
                                 close()
@@ -195,11 +231,12 @@ class ProductosView : View("Módulo de productos") {
                 addClass(MainStylesheet.titleLabel)
                 addClass(MainStylesheet.redLabel)
             }
-            label("Esta acción no se puede deshacer.").style {
+            label("Esta acción no se puede deshacer. ¿Confirmar?").style {
                 padding = box(vertical = 30.px, horizontal = 5.px)
             }
-            hbox(spacing = 10, alignment = Pos.CENTER) {
+            hbox(spacing = 80, alignment = Pos.CENTER) {
                 button("Sí") {
+                    addClass(MainStylesheet.coolBaseButton)
                     addClass(MainStylesheet.greenButton)
                     addClass(MainStylesheet.expandedButton)
                     action {
@@ -208,6 +245,7 @@ class ProductosView : View("Módulo de productos") {
                     }
                 }
                 button("No") {
+                    addClass(MainStylesheet.coolBaseButton)
                     addClass(MainStylesheet.redButton)
                     addClass(MainStylesheet.expandedButton)
                     action { close() }

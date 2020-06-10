@@ -5,15 +5,16 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="Side navigation partial implementation">
+    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="Reordered Producto module look a bit and changed SideNav's appearance">
+      <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.1.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ClientApplication.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ClientApplication.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/models/Producto.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/models/Producto.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/styles/MainStylesheet.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/styles/MainStylesheet.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/views/ProductoModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/views/ProductoModule.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/views/SharedComponents.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/views/SharedComponents.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +88,7 @@
       <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin" />
     </key>
   </component>
-  <component name="RunManager" selected="Kotlin.EntryPointKt">
+  <component name="RunManager" selected="Gradle.epic_pos_ultimate [clean]">
     <configuration name="epic_pos_ultimate [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -134,8 +135,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.epic_pos_ultimate [clean]" />
         <item itemvalue="Kotlin.EntryPointKt" />
+        <item itemvalue="Gradle.epic_pos_ultimate [clean]" />
         <item itemvalue="TornadoFX.ClientApplication" />
       </list>
     </recent_temporary>
@@ -162,7 +163,9 @@
       <workItem from="1591664607942" duration="8713000" />
       <workItem from="1591691038967" duration="29178000" />
       <workItem from="1591758015173" duration="3000" />
-      <workItem from="1591782126128" duration="3443000" />
+      <workItem from="1591782126128" duration="4378000" />
+      <workItem from="1591788087834" duration="3952000" />
+      <workItem from="1591792085062" duration="3380000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit: Brand new TornadoFX app to replace the epic-point-of-sale. Implemented the Producto module.">
       <created>1591730038419</created>
@@ -178,7 +181,14 @@
       <option name="project" value="LOCAL" />
       <updated>1591757878789</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Reordered Producto module look a bit and changed SideNav's appearance">
+      <created>1591786650423</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1591786650424</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -211,7 +221,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit: Brand new TornadoFX app to replace the epic-point-of-sale. Implemented the Producto module." />
     <MESSAGE value="Side navigation partial implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Side navigation partial implementation" />
+    <MESSAGE value="Reordered Producto module look a bit and changed SideNav's appearance" />
+    <option name="LAST_COMMIT_MESSAGE" value="Reordered Producto module look a bit and changed SideNav's appearance" />
   </component>
   <component name="WindowStateProjectService">
     <state x="692" y="188" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591722396913">
@@ -238,22 +249,22 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="771" y="281" key="FileChooserDialogImpl/62.0.1858.1080@62.0.1858.1080" timestamp="1591725331800" />
-    <state width="1815" height="210" key="GridCell.Tab.0.bottom" timestamp="1591786313824">
+    <state width="1815" height="220" key="GridCell.Tab.0.bottom" timestamp="1591795472971">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1815" height="210" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1591786313824" />
-    <state width="1815" height="210" key="GridCell.Tab.0.center" timestamp="1591786313823">
+    <state width="1815" height="220" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1591795472971" />
+    <state width="1815" height="220" key="GridCell.Tab.0.center" timestamp="1591795472971">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1815" height="210" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1591786313823" />
-    <state width="1815" height="210" key="GridCell.Tab.0.left" timestamp="1591786313823">
+    <state width="1815" height="220" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1591795472971" />
+    <state width="1815" height="220" key="GridCell.Tab.0.left" timestamp="1591795472970">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1815" height="210" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1591786313823" />
-    <state width="1815" height="210" key="GridCell.Tab.0.right" timestamp="1591786313824">
+    <state width="1815" height="220" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1591795472970" />
+    <state width="1815" height="220" key="GridCell.Tab.0.right" timestamp="1591795472971">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1815" height="210" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1591786313824" />
+    <state width="1815" height="220" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1591795472971" />
     <state x="689" y="242" key="RollbackChangesDialog" timestamp="1591729922151">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
@@ -262,10 +273,10 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="743" y="93" key="SettingsEditor/62.0.1858.1080@62.0.1858.1080" timestamp="1591718587364" />
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1591757900776">
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1591786653961">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1591757900776" />
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1591786653961" />
     <state x="800" y="453" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1591729895907">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
