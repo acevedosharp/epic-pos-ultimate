@@ -6,7 +6,7 @@ import views.ProductosView
 class ClientApplication : App(ProductosView::class, MainStylesheet::class) {
     override fun start(stage: Stage) {
         super.start(stage)
-        stage.isResizable = false
+//        stage.isResizable = false
         stage.isFullScreen = true
     }
 }

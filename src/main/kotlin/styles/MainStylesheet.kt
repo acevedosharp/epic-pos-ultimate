@@ -22,8 +22,6 @@ class MainStylesheet: Stylesheet() {
         val greenLabel by cssclass()
         val blueLabel by cssclass()
         val redLabel by cssclass()
-
-        val productosIcon by cssclass()
     }
 
     init {
@@ -38,16 +36,17 @@ class MainStylesheet: Stylesheet() {
             backgroundRadius += box(0.px)
         }
         expandedButton {
-            prefWidth =200.px
+            prefWidth = 200.px
         }
         greenButton { backgroundColor += Color.DARKOLIVEGREEN }
         blueButton { backgroundColor += Color.DODGERBLUE }
         redButton { backgroundColor += Color.INDIANRED }
         navigationButton {
-            prefWidth = 250.px
+            prefWidth = 200.px
             prefHeight = 80.px
             contentDisplay = ContentDisplay.LEFT
             alignment = Pos.CENTER_LEFT
+            fontSize = 20.px
         }
         selectedButton {
             backgroundColor += c(255, 255, 255, 0.15)
@@ -66,9 +65,5 @@ class MainStylesheet: Stylesheet() {
         greenLabel { backgroundColor += Color.DARKOLIVEGREEN }
         blueLabel { backgroundColor += Color.DODGERBLUE }
         redLabel { backgroundColor += Color.INDIANRED }
-
-        productosIcon {
-
-        }
     }
 }
