@@ -24,6 +24,7 @@ class ProductosView : View("Módulo de productos") {
 
     override val root = borderpane {
         useMaxSize = true
+
         top {
             hbox(4, Pos.CENTER_LEFT) {
                 button("Nuevo Producto") {
@@ -48,6 +49,10 @@ class ProductosView : View("Módulo de productos") {
                     }
                 }
             }
+        }
+
+        left {
+            add(SideNavigation::class)
         }
 
         center {

@@ -1,5 +1,7 @@
 package styles
 
+import javafx.geometry.Pos
+import javafx.scene.control.ContentDisplay
 import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
@@ -12,11 +14,16 @@ class MainStylesheet: Stylesheet() {
         val greenButton by cssclass()
         val blueButton by cssclass()
         val redButton by cssclass()
+        val navigationButton by cssclass()
+        val selectedButton by cssclass()
+        val unselectedButton by cssclass()
 
         val titleLabel by cssclass()
         val greenLabel by cssclass()
         val blueLabel by cssclass()
         val redLabel by cssclass()
+
+        val productosIcon by cssclass()
     }
 
     init {
@@ -36,6 +43,18 @@ class MainStylesheet: Stylesheet() {
         greenButton { backgroundColor += Color.DARKOLIVEGREEN }
         blueButton { backgroundColor += Color.DODGERBLUE }
         redButton { backgroundColor += Color.INDIANRED }
+        navigationButton {
+            prefWidth = 250.px
+            prefHeight = 80.px
+            contentDisplay = ContentDisplay.LEFT
+            alignment = Pos.CENTER_LEFT
+        }
+        selectedButton {
+            backgroundColor += c(255, 255, 255, 0.15)
+        }
+        unselectedButton {
+            backgroundColor += c(255, 255, 255, 0.0)
+        }
 
         titleLabel {
             fontSize = 32.px
@@ -48,5 +67,8 @@ class MainStylesheet: Stylesheet() {
         blueLabel { backgroundColor += Color.DODGERBLUE }
         redLabel { backgroundColor += Color.INDIANRED }
 
+        productosIcon {
+
+        }
     }
 }
