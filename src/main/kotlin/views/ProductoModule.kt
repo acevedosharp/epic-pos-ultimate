@@ -5,6 +5,8 @@ import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
+import javafx.collections.FXCollections
+import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.Parent
 import javafx.scene.control.*
@@ -22,7 +24,22 @@ class ProductosView : View("Módulo de productos") {
     val productoController = find<ProductoController>()
     val model: ProductoModel by inject()
     val existsSelection = SimpleBooleanProperty(false)
+    val searchByCodigo = SimpleStringProperty()
+    val searchByDescripcion = SimpleStringProperty()
     var table: TableView<Producto> by singleAssign()
+
+    init {
+        searchByCodigo.onChange {
+            searchByDescripcion.value = ""
+            table.items = FXCollections.observableArrayList(productoController.productos.filter { it.codigo.toLowerCase().contains(searchByCodigo.value.toLowerCase()) })
+        }
+        searchByDescripcion.onChange {
+            searchByCodigo.value = ""
+            table.items = FXCollections.observableArrayList(productoController.productos.filter {
+                it.descLarga.toLowerCase().contains(searchByDescripcion.value.toLowerCase()) || it.descCorta.toLowerCase().contains(searchByDescripcion.value.toLowerCase())
+            })
+        }
+    }
 
     override val root = hbox {
         setPrefSize(1920.0, 1080.0)
@@ -61,7 +78,27 @@ class ProductosView : View("Módulo de productos") {
                             )
                         }
                     }
+                    rectangle(width = 10, height = 0)
+                    line(0, 0, 0, 35).style {
+                        stroke = c(255, 255, 255, 0.25)
+                    }
+                    rectangle(width = 10, height = 0)
+                    hbox(spacing = 10, alignment = Pos.CENTER) {
+                        vbox {
+                            label("Buscar por código").apply { addClass(MainStylesheet.searchLabel) }
+                            textfield(searchByCodigo)
+
+                            prefWidth = 250.0
+                        }
+                        vbox {
+                            label("Buscar por descripción").apply { addClass(MainStylesheet.searchLabel) }
+                            textfield(searchByDescripcion)
+
+                            prefWidth = 250.0
+                        }
+                    }
                 }
+
             }
 
             center {

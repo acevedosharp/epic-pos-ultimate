@@ -28,6 +28,7 @@ class MainStylesheet : Stylesheet() {
         val greenLabel by cssclass()
         val blueLabel by cssclass()
         val redLabel by cssclass()
+        val searchLabel by cssclass()
 
         // Containers
         val topBar by cssclass()
@@ -72,8 +73,6 @@ class MainStylesheet : Stylesheet() {
                     textFill = Color.WHITE
                 }
             }
-
-            backgroundColor += Color.CADETBLUE
         }
 
         tableCell
@@ -201,12 +200,16 @@ class MainStylesheet : Stylesheet() {
         greenLabel { backgroundColor += c("#75C759") }
         blueLabel { backgroundColor += c("#70A7C7")}
         redLabel { backgroundColor += c("#CF484A") }
+        searchLabel {
+            fontSize = 18.px
+            textFill = Color.WHITE
+        }
 
         topBar {
             backgroundColor += c("#24292e")
-            spacing = 20.px
+            spacing = 10.px
             alignment = Pos.CENTER_LEFT
-            padding = box(16.px, 16.px)
+            padding = box(16.px, 8.px)
         }
     }
 }
