@@ -14,6 +14,8 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.scene.text.TextAlignment
 import javafx.stage.Modality
+import javafx.util.StringConverter
+import javafx.util.converter.IntegerStringConverter
 import models.Producto
 import models.ProductoModel
 import styles.MainStylesheet
@@ -140,153 +142,187 @@ class ProductosView : View("Módulo de productos") {
             }
         }
     }
+}
 
-    class NewProductoFormView : Fragment() {
+// 1. These views need to be accesible from anywhere so that they can be used in other modules for convenience.
+// 2. I'm also aware of how clunky this seems, the fact that so much code is repeated. However the solution is, in this case,
+// worse than the symptom because while both forms are identical, the Spinner initialization isn't and the simpler
+// solution (this) wins for me.
+class NewProductoFormView : Fragment() {
 
-        // New Model so that it is always empty
-        val codigo = SimpleStringProperty()
-        val descLarga = SimpleStringProperty()
-        val descCorta = SimpleStringProperty()
-        val precioVenta = SimpleIntegerProperty()
-        val existencias = SimpleIntegerProperty()
+    // New Model so that it is always empty
+    private val model = ProductoModel()
 
-        override val root = vbox(spacing = 0) {
-            useMaxSize = true
-            label("Nuevo Producto") {
-                useMaxWidth = true
-                addClass(MainStylesheet.titleLabel)
-                addClass(MainStylesheet.greenLabel)
-            }
-            form {
-                fieldset {
-                    field("Código") {
-                        textfield(codigo)
+    override val root = vbox(spacing = 0) {
+        useMaxSize = true
+        label("Nuevo Producto") {
+            useMaxWidth = true
+            addClass(MainStylesheet.titleLabel)
+            addClass(MainStylesheet.greenLabel)
+        }
+        form {
+            fieldset {
+                field("Código") {
+                    textfield(model.codigo).validator {
+                        if (it.isNullOrBlank()) error("Código requerido")
+                        else if (it.length > 10) error("Máximo 10 caracteres (${it.length})")
+                        else null
                     }
-                    field("Descripción larga") {
-                        textfield(descLarga)
+                }
+                field("Descripción larga") {
+                    textfield(model.descLarga).validator {
+                        if (it.isNullOrBlank()) error("Descripción larga requerida")
+                        else if (it.length > 50) error("Máximo 50 caracteres (${it.length})")
+                        else null
                     }
-                    field("Descripción corta") {
-                        textfield(descCorta)
+                }
+                field("Descripción corta") {
+                    textfield(model.descCorta).validator {
+                        if (it.isNullOrBlank()) error("Descripción corta requerida")
+                        else if (it.length > 25) error("Máximo 25 caracteres (${it.length})")
+                        else null
                     }
-                    field("Precio de venta") {
-                        textfield(precioVenta)
-                    }
-                    field("Existencias") {
-                        textfield(existencias)
-                    }
-                    hbox(spacing = 80, alignment = Pos.CENTER) {
-                        button("Añadir") {
-                            addClass(MainStylesheet.coolBaseButton)
-                            addClass(MainStylesheet.greenButton)
-                            addClass(MainStylesheet.expandedButton)
-                            action {
+                }
+                field("Precio de venta") {
+                    model.precioVenta.value = 50
+                    spinner(property = model.precioVenta, initialValue = 50, min = 50, max = Int.MAX_VALUE, amountToStepBy = 500, editable = true)
+                }
+                field("Existencias") {
+                    model.existencias.value = 0
+                    spinner(property = model.existencias, initialValue = 0, min = 0, max = Int.MAX_VALUE, amountToStepBy = 1, editable = true)
+                }
+                hbox(spacing = 80, alignment = Pos.CENTER) {
+                    button("Añadir") {
+                        addClass(MainStylesheet.coolBaseButton)
+                        addClass(MainStylesheet.greenButton)
+                        addClass(MainStylesheet.expandedButton)
+                        action {
+                            model.commit {
                                 find<ProductoController>().productos.add(
                                     Producto(
-                                        codigo.value,
-                                        descLarga.value,
-                                        descCorta.value,
-                                        precioVenta.value.toInt(),
-                                        existencias.value.toInt()
+                                        model.codigo.value,
+                                        model.descLarga.value,
+                                        model.descCorta.value,
+                                        model.precioVenta.value.toInt(),
+                                        model.existencias.value.toInt()
                                     )
                                 )
                                 close()
                             }
-                        }
-                        button("Cancelar") {
-                            addClass(MainStylesheet.coolBaseButton)
-                            addClass(MainStylesheet.redButton)
-                            addClass(MainStylesheet.expandedButton)
-                            action { close() }
-                        }
-                    }
-                }
-            }
-        }
 
-    }
-
-    class EditProductoFormView : View() {
-        // New Model so that it is always empty
-        val model: ProductoModel by inject()
-
-        override val root = vbox(spacing = 0) {
-            useMaxSize = true
-            label("Editar Producto") {
-                useMaxWidth = true
-                addClass(MainStylesheet.titleLabel)
-                addClass(MainStylesheet.blueLabel)
-            }
-            form {
-                fieldset {
-                    field("Código") {
-                        textfield(model.codigo)
-                    }
-                    field("Descripción larga") {
-                        textfield(model.descLarga)
-                    }
-                    field("Descripción corta") {
-                        textfield(model.descCorta)
-                    }
-                    field("Precio de venta") {
-                        textfield(model.precioVenta)
-                    }
-                    field("Existencias") {
-                        textfield(model.existencias)
-                    }
-                    hbox(spacing = 80, alignment = Pos.CENTER) {
-                        button("Confirmar") {
-                            addClass(MainStylesheet.coolBaseButton)
-                            addClass(MainStylesheet.greenButton)
-                            addClass(MainStylesheet.expandedButton)
-                            action {
-                                model.commit()
-                                close()
-                            }
                         }
-                        button("Cancelar") {
-                            addClass(MainStylesheet.coolBaseButton)
-                            addClass(MainStylesheet.redButton)
-                            addClass(MainStylesheet.expandedButton)
-                            action {
-                                model.rollback()
-                                close()
-                            }
-                        }
+                    }
+                    button("Cancelar") {
+                        addClass(MainStylesheet.coolBaseButton)
+                        addClass(MainStylesheet.redButton)
+                        addClass(MainStylesheet.expandedButton)
+                        action { close() }
                     }
                 }
             }
         }
     }
 
-    class ConfirmDeleteDialog : View() {
-        val productoController: ProductoController by inject()
+}
 
-        override val root = vbox(spacing = 0) {
-            useMaxSize = true
-            label("¿Está seguro de eliminar la selección?") {
-                useMaxWidth = true
-                addClass(MainStylesheet.titleLabel)
-                addClass(MainStylesheet.redLabel)
-            }
-            label("Esta acción no se puede deshacer. ¿Confirmar?").style {
-                padding = box(vertical = 30.px, horizontal = 5.px)
-            }
-            hbox(spacing = 80, alignment = Pos.CENTER) {
-                button("Sí") {
-                    addClass(MainStylesheet.coolBaseButton)
-                    addClass(MainStylesheet.greenButton)
-                    addClass(MainStylesheet.expandedButton)
-                    action {
-                        productoController.productos.remove(params["selectedProducto"])
-                        close()
+class EditProductoFormView : View() {
+    // New Model so that it is always empty
+    val model: ProductoModel by inject()
+
+    override val root = vbox(spacing = 0) {
+        useMaxSize = true
+        label("Editar Producto") {
+            useMaxWidth = true
+            addClass(MainStylesheet.titleLabel)
+            addClass(MainStylesheet.blueLabel)
+        }
+        form {
+            fieldset {
+                field("Código") {
+                    textfield(model.codigo).validator {
+                        if (it.isNullOrBlank()) error("Código requerido")
+                        else if (it.length > 10) error("Máximo 10 caracteres (${it.length})")
+                        else null
                     }
                 }
-                button("No") {
-                    addClass(MainStylesheet.coolBaseButton)
-                    addClass(MainStylesheet.redButton)
-                    addClass(MainStylesheet.expandedButton)
-                    action { close() }
+                field("Descripción larga") {
+                    textfield(model.descLarga).validator {
+                        if (it.isNullOrBlank()) error("Descripción larga requerida")
+                        else if (it.length > 50) error("Máximo 50 caracteres (${it.length})")
+                        else null
+                    }
                 }
+                field("Descripción corta") {
+                    textfield(model.descCorta).validator {
+                        if (it.isNullOrBlank()) error("Descripción corta requerida")
+                        else if (it.length > 25) error("Máximo 25 caracteres (${it.length})")
+                        else null
+                    }
+                }
+                field("Precio de venta") {
+                    spinner(property = model.precioVenta, min = 50, max = Int.MAX_VALUE, amountToStepBy = 500, editable = true)
+                }
+                field("Existencias") {
+                    spinner(property = model.existencias, min = 0, max = Int.MAX_VALUE, amountToStepBy = 1, editable = true)
+                }
+                hbox(spacing = 80, alignment = Pos.CENTER) {
+                    button("Confirmar") {
+                        addClass(MainStylesheet.coolBaseButton)
+                        addClass(MainStylesheet.greenButton)
+                        addClass(MainStylesheet.expandedButton)
+                        action {
+                            model.commit()
+                            close()
+                        }
+                    }
+                    button("Cancelar") {
+                        addClass(MainStylesheet.coolBaseButton)
+                        addClass(MainStylesheet.redButton)
+                        addClass(MainStylesheet.expandedButton)
+                        action {
+                            model.rollback()
+                            close()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    init {
+        println(model.precioVenta.value)
+    }
+
+}
+
+class ConfirmDeleteDialog : View() {
+    val productoController: ProductoController by inject()
+
+    override val root = vbox(spacing = 0) {
+        useMaxSize = true
+        label("¿Está seguro de eliminar la selección?") {
+            useMaxWidth = true
+            addClass(MainStylesheet.titleLabel)
+            addClass(MainStylesheet.redLabel)
+        }
+        label("Esta acción no se puede deshacer. ¿Confirmar?").style {
+            padding = box(vertical = 30.px, horizontal = 5.px)
+        }
+        hbox(spacing = 80, alignment = Pos.CENTER) {
+            button("Sí") {
+                addClass(MainStylesheet.coolBaseButton)
+                addClass(MainStylesheet.greenButton)
+                addClass(MainStylesheet.expandedButton)
+                action {
+                    productoController.productos.remove(params["selectedProducto"])
+                    close()
+                }
+            }
+            button("No") {
+                addClass(MainStylesheet.coolBaseButton)
+                addClass(MainStylesheet.redButton)
+                addClass(MainStylesheet.expandedButton)
+                action { close() }
             }
         }
     }

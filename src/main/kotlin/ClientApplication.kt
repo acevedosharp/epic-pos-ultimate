@@ -1,3 +1,4 @@
+import javafx.scene.image.Image
 import javafx.stage.Stage
 import styles.MainStylesheet
 import tornadofx.*
@@ -8,5 +9,6 @@ class ClientApplication : App(ProductosView::class, MainStylesheet::class) {
         super.start(stage)
 //        stage.isResizable = false
         stage.isFullScreen = true
+        stage.icons.add(Image("images/store_logo_icon.png"))
     }
 }
