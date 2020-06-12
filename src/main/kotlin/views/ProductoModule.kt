@@ -19,13 +19,13 @@ import tornadofx.*
 
 class ProductosView : View("Módulo de productos") {
 
-    val productoController = find<ProductoController>()
-    val model: ProductoModel by inject()
-    val existsSelection = SimpleBooleanProperty(false)
-    val searchByCodigo = SimpleStringProperty()
-    val searchByDescripcion = SimpleStringProperty()
-    var table: TableView<Producto> by singleAssign()
-    val view = this
+    private val productoController = find<ProductoController>()
+    private val model: ProductoModel by inject()
+    private val existsSelection = SimpleBooleanProperty(false)
+    private val searchByCodigo = SimpleStringProperty()
+    private val searchByDescripcion = SimpleStringProperty()
+    private var table: TableView<Producto> by singleAssign()
+    private val view = this
 
     init {
         searchByCodigo.onChange {
@@ -152,23 +152,29 @@ class BaseProductoFormField(formType: FormType): Fragment() {
             fieldset {
                 field("Código") {
                     textfield(model.codigo).validator {
-                        if (it.isNullOrBlank()) error("Código requerido")
-                        else if (it.length > 10) error("Máximo 10 caracteres (${it.length})")
-                        else null
+                        when {
+                            it.isNullOrBlank() -> error("Código requerido")
+                            it.length > 10 -> error("Máximo 10 caracteres (${it.length})")
+                            else -> null
+                        }
                     }
                 }
                 field("Descripción larga") {
                     textfield(model.descLarga).validator {
-                        if (it.isNullOrBlank()) error("Descripción larga requerida")
-                        else if (it.length > 50) error("Máximo 50 caracteres (${it.length})")
-                        else null
+                        when {
+                            it.isNullOrBlank() -> error("Descripción larga requerida")
+                            it.length > 50 -> error("Máximo 50 caracteres (${it.length})")
+                            else -> null
+                        }
                     }
                 }
                 field("Descripción corta") {
                     textfield(model.descCorta).validator {
-                        if (it.isNullOrBlank()) error("Descripción corta requerida")
-                        else if (it.length > 25) error("Máximo 25 caracteres (${it.length})")
-                        else null
+                        when {
+                            it.isNullOrBlank() -> error("Descripción corta requerida")
+                            it.length > 25 -> error("Máximo 25 caracteres (${it.length})")
+                            else -> null
+                        }
                     }
                 }
                 field("Precio de venta") {
@@ -233,7 +239,7 @@ class EditProductoFormView : View() {
 }
 
 class ConfirmDeleteProductoDialog : View() {
-    val productoController: ProductoController by inject()
+    private val productoController: ProductoController by inject()
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true

@@ -1,6 +1,5 @@
 package views
 
-import controllers.ProductoController
 import controllers.ProveedorController
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
@@ -9,12 +8,9 @@ import javafx.geometry.Pos
 import javafx.scene.control.*
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
-import javafx.scene.text.TextAlignment
 import misc.FormType
 import misc.FormType.*
 import models.CurrentModule.*
-import models.Producto
-import models.ProductoModel
 import models.Proveedor
 import models.ProveedorModel
 import styles.MainStylesheet
@@ -22,12 +18,12 @@ import tornadofx.*
 
 class ProveedorView : View("Módulo de proveedores") {
 
-    val proveedorController = find<ProveedorController>()
-    val model: ProveedorModel by inject()
-    val existsSelection = SimpleBooleanProperty(false)
-    val searchByNombre = SimpleStringProperty()
-    var table: TableView<Proveedor> by singleAssign()
-    val view = this
+    private val proveedorController = find<ProveedorController>()
+    private val model: ProveedorModel by inject()
+    private val existsSelection = SimpleBooleanProperty(false)
+    private val searchByNombre = SimpleStringProperty()
+    private var table: TableView<Proveedor> by singleAssign()
+    private val view = this
 
     init {
         searchByNombre.onChange {
@@ -135,30 +131,38 @@ class BaseProveedorFormField(formType: FormType): Fragment() {
             fieldset {
                 field("Nombre") {
                     textfield(model.nombre).validator {
-                        if (it.isNullOrBlank()) error("Nombre requerido")
-                        else if (it.length > 30) error("Máximo 30 caracteres (${it.length})")
-                        else null
+                        when {
+                            it.isNullOrBlank() -> error("Nombre requerido")
+                            it.length > 30 -> error("Máximo 30 caracteres (${it.length})")
+                            else -> null
+                        }
                     }
                 }
                 field("Teléfono") {
                     textfield(model.telefono).validator {
-                        if (it.isNullOrBlank()) error("Teléfono requerido")
-                        else if (it.length > 10) error("Máximo 10 caracteres (${it.length})")
-                        else null
+                        when {
+                            it.isNullOrBlank() -> error("Teléfono requerido")
+                            it.length > 10 -> error("Máximo 10 caracteres (${it.length})")
+                            else -> null
+                        }
                     }
                 }
                 field("Dirección") {
                     textfield(model.direccion).validator {
-                        if (it.isNullOrBlank()) error("Dirección requerida")
-                        else if (it.length > 80) error("Máximo 80 caracteres (${it.length})")
-                        else null
+                        when {
+                            it.isNullOrBlank() -> error("Dirección requerida")
+                            it.length > 80 -> error("Máximo 80 caracteres (${it.length})")
+                            else -> null
+                        }
                     }
                 }
                 field("Correo") {
                     textfield(model.correo).validator {
-                        if (it.isNullOrBlank()) error("Correo requerido")
-                        else if (it.length > 25) error("Máximo 25 caracteres (${it.length})")
-                        else null
+                        when {
+                            it.isNullOrBlank() -> error("Correo requerido")
+                            it.length > 25 -> error("Máximo 25 caracteres (${it.length})")
+                            else -> null
+                        }
                     }
                 }
                 hbox(spacing = 80, alignment = Pos.CENTER) {

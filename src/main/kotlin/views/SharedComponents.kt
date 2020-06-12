@@ -1,6 +1,5 @@
 package views
 
-
 import javafx.geometry.Pos
 import models.CurrentModule
 import models.CurrentModule.*
