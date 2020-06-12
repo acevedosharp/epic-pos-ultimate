@@ -1,6 +1,7 @@
 package views
 
 import controllers.ProductoController
+import controllers.ProveedorController
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
@@ -14,35 +15,29 @@ import misc.FormType.*
 import models.CurrentModule.*
 import models.Producto
 import models.ProductoModel
+import models.Proveedor
+import models.ProveedorModel
 import styles.MainStylesheet
 import tornadofx.*
 
-class ProductosView : View("Módulo de productos") {
+class ProveedorView : View("Módulo de proveedores") {
 
-    val productoController = find<ProductoController>()
-    val model: ProductoModel by inject()
+    val proveedorController = find<ProveedorController>()
+    val model: ProveedorModel by inject()
     val existsSelection = SimpleBooleanProperty(false)
-    val searchByCodigo = SimpleStringProperty()
-    val searchByDescripcion = SimpleStringProperty()
-    var table: TableView<Producto> by singleAssign()
+    val searchByNombre = SimpleStringProperty()
+    var table: TableView<Proveedor> by singleAssign()
     val view = this
 
     init {
-        searchByCodigo.onChange {
-            searchByDescripcion.value = ""
-            table.items = FXCollections.observableArrayList(productoController.productos.filter { it.codigo.toLowerCase().contains(searchByCodigo.value.toLowerCase()) })
-        }
-        searchByDescripcion.onChange {
-            searchByCodigo.value = ""
-            table.items = FXCollections.observableArrayList(productoController.productos.filter {
-                it.descLarga.toLowerCase().contains(searchByDescripcion.value.toLowerCase()) || it.descCorta.toLowerCase().contains(searchByDescripcion.value.toLowerCase())
-            })
+        searchByNombre.onChange {
+            table.items = FXCollections.observableArrayList(proveedorController.proveedores.filter { it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase()) })
         }
     }
 
     override val root = hbox {
         setPrefSize(1920.0, 1080.0)
-        add(SideNavigation(PRODUCTOS, view))
+        add(SideNavigation(PROVEEDORES, view))
         borderpane {
             setPrefSize(1720.0, 1080.0)
             top {
@@ -50,11 +45,11 @@ class ProductosView : View("Módulo de productos") {
                     addClass(MainStylesheet.topBar)
                     paddingBottom = 4
                     useMaxWidth = true
-                    button("Nuevo Producto") {
+                    button("Nuevo Proveedor") {
                         addClass(MainStylesheet.coolBaseButton)
                         addClass(MainStylesheet.greenButton)
                         action {
-                            openInternalWindow<NewProductoFormView>(closeButton = false, modal = true)
+                            openInternalWindow<NewProveedorFormView>(closeButton = false, modal = true)
                         }
                     }
                     button("Editar selección") {
@@ -62,7 +57,7 @@ class ProductosView : View("Módulo de productos") {
                         addClass(MainStylesheet.coolBaseButton)
                         addClass(MainStylesheet.blueButton)
                         action {
-                            openInternalWindow<EditProductoFormView>(closeButton = false, modal = true)
+                            openInternalWindow<EditProveedorFormView>(closeButton = false, modal = true)
                         }
                     }
                     button("Eliminar selección") {
@@ -70,7 +65,7 @@ class ProductosView : View("Módulo de productos") {
                         addClass(MainStylesheet.coolBaseButton)
                         addClass(MainStylesheet.redButton)
                         action {
-                            openInternalWindow<ConfirmDeleteProductoDialog>(
+                            openInternalWindow<ConfirmDeleteProveedorDialog>(
                                 closeButton = false,
                                 modal = true,
                                 params = mapOf("selected" to table.selectedItem)
@@ -84,14 +79,8 @@ class ProductosView : View("Módulo de productos") {
                     rectangle(width = 10, height = 0)
                     hbox(spacing = 10, alignment = Pos.CENTER) {
                         vbox {
-                            label("Buscar por código").apply { addClass(MainStylesheet.searchLabel) }
-                            textfield(searchByCodigo)
-
-                            prefWidth = 250.0
-                        }
-                        vbox {
-                            label("Buscar por descripción").apply { addClass(MainStylesheet.searchLabel) }
-                            textfield(searchByDescripcion)
+                            label("Buscar por nombre").apply { addClass(MainStylesheet.searchLabel) }
+                            textfield(searchByNombre)
 
                             prefWidth = 250.0
                         }
@@ -102,17 +91,11 @@ class ProductosView : View("Módulo de productos") {
 
             center {
                 hbox {
-                    table = tableview(productoController.productos) {
-                        column("Código", Producto::codigoProperty)
-                        column("Desc. Larga", Producto::descLargaProperty).remainingWidth()
-                        column("Desc. Corta", Producto::descCortaProperty).pctWidth(20)
-                        column("Precio Venta", Producto::precioVentaProperty)
-                        column("Existencias", Producto::existenciasProperty)
-                        column("Ver pedidos", Producto::verPedidosButton).style {
-                            alignment = Pos.CENTER
-                            textAlignment = TextAlignment.CENTER
-                            tileAlignment = Pos.CENTER
-                        }
+                    table = tableview(proveedorController.proveedores) {
+                        column("Nombre", Proveedor::nombreProperty)
+                        column("Teléfono", Proveedor::telefonoProperty)
+                        column("Dirección", Proveedor::direccionProperty)
+                        column("Correo", Proveedor::correoProperty)
 
                         smartResize()
 
@@ -137,47 +120,46 @@ class ProductosView : View("Módulo de productos") {
     }
 }
 
-class BaseProductoFormField(formType: FormType): Fragment() {
+class BaseProveedorFormField(formType: FormType): Fragment() {
 
-    private val model = if (formType == CREATE) ProductoModel() else find(ProductoModel::class)
+    private val model = if (formType == CREATE) ProveedorModel() else find(ProveedorModel::class)
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        label(if (formType == CREATE) "Nuevo producto" else "Editar producto") {
+        label(if (formType == CREATE) "Nuevo Proveedor" else "Editar Proveedor") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
             addClass(if (formType == CREATE) MainStylesheet.greenLabel else MainStylesheet.blueLabel)
         }
         form {
             fieldset {
-                field("Código") {
-                    textfield(model.codigo).validator {
-                        if (it.isNullOrBlank()) error("Código requerido")
+                field("Nombre") {
+                    textfield(model.nombre).validator {
+                        if (it.isNullOrBlank()) error("Nombre requerido")
+                        else if (it.length > 30) error("Máximo 30 caracteres (${it.length})")
+                        else null
+                    }
+                }
+                field("Teléfono") {
+                    textfield(model.telefono).validator {
+                        if (it.isNullOrBlank()) error("Teléfono requerido")
                         else if (it.length > 10) error("Máximo 10 caracteres (${it.length})")
                         else null
                     }
                 }
-                field("Descripción larga") {
-                    textfield(model.descLarga).validator {
-                        if (it.isNullOrBlank()) error("Descripción larga requerida")
-                        else if (it.length > 50) error("Máximo 50 caracteres (${it.length})")
+                field("Dirección") {
+                    textfield(model.direccion).validator {
+                        if (it.isNullOrBlank()) error("Dirección requerida")
+                        else if (it.length > 80) error("Máximo 80 caracteres (${it.length})")
                         else null
                     }
                 }
-                field("Descripción corta") {
-                    textfield(model.descCorta).validator {
-                        if (it.isNullOrBlank()) error("Descripción corta requerida")
+                field("Correo") {
+                    textfield(model.correo).validator {
+                        if (it.isNullOrBlank()) error("Correo requerido")
                         else if (it.length > 25) error("Máximo 25 caracteres (${it.length})")
                         else null
                     }
-                }
-                field("Precio de venta") {
-                    if (formType == CREATE) model.precioVenta.value = 50
-                    spinner(property = model.precioVenta, initialValue = 50, min = 50, max = Int.MAX_VALUE, amountToStepBy = 500, editable = true)
-                }
-                field("Existencias") {
-                    if (formType == CREATE) model.existencias.value = 0
-                    spinner(property = model.existencias, initialValue = 0, min = 0, max = Int.MAX_VALUE, amountToStepBy = 1, editable = true)
                 }
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
@@ -187,13 +169,12 @@ class BaseProductoFormField(formType: FormType): Fragment() {
                         action {
                             if (formType == CREATE) {
                                 model.commit {
-                                    find<ProductoController>().productos.add(
-                                        Producto(
-                                            model.codigo.value,
-                                            model.descLarga.value,
-                                            model.descCorta.value,
-                                            model.precioVenta.value.toInt(),
-                                            model.existencias.value.toInt()
+                                    find<ProveedorController>().proveedores.add(
+                                        Proveedor(
+                                            model.nombre.value,
+                                            model.telefono.value,
+                                            model.direccion.value,
+                                            model.correo.value
                                         )
                                     )
                                     close()
@@ -224,16 +205,16 @@ class BaseProductoFormField(formType: FormType): Fragment() {
 }
 
 // 1. These views need to be accesible from anywhere so that they can be used in other modules for convenience.
-class NewProductoFormView : Fragment() {
-    override val root = BaseProductoFormField(CREATE).root
+class NewProveedorFormView : Fragment() {
+    override val root = BaseProveedorFormField(CREATE).root
 }
 
-class EditProductoFormView : View() {
-    override val root = BaseProductoFormField(EDIT).root
+class EditProveedorFormView : View() {
+    override val root = BaseProveedorFormField(EDIT).root
 }
 
-class ConfirmDeleteProductoDialog : View() {
-    val productoController: ProductoController by inject()
+class ConfirmDeleteProveedorDialog : View() {
+    val proveedorController: ProveedorController by inject()
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
@@ -251,7 +232,7 @@ class ConfirmDeleteProductoDialog : View() {
                 addClass(MainStylesheet.greenButton)
                 addClass(MainStylesheet.expandedButton)
                 action {
-                    productoController.productos.remove(params["selected"])
+                    proveedorController.proveedores.remove(params["selected"])
                     close()
                 }
             }

@@ -1,11 +1,13 @@
 package views
 
+
 import javafx.geometry.Pos
-import javafx.scene.paint.Color
+import models.CurrentModule
+import models.CurrentModule.*
 import styles.MainStylesheet
 import tornadofx.*
 
-class SideNavigation: Fragment() {
+class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
     override val root = vbox(alignment = Pos.TOP_CENTER) {
         rectangle(width = 0, height = 40)
         imageview("images/epic_logo.png") {
@@ -20,18 +22,24 @@ class SideNavigation: Fragment() {
 
         button("Productos") {
             addClass(MainStylesheet.navigationButton)
-            addClass(MainStylesheet.selectedButton)
+            addClass(if (currentModule == PRODUCTOS) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
             graphic = imageview("images/products.png") {
-                fitWidth = 60.0
-                fitHeight = 60.0
+                fitWidth = 50.0
+                fitHeight = 50.0
+            }
+            action {
+                root.replaceWith(ProductosView())
             }
         }
-        button("Pedidos") {
+        button("Proveedores") {
             addClass(MainStylesheet.navigationButton)
-            addClass(MainStylesheet.unselectedButton)
-            graphic = imageview("images/orders.png") {
-                fitWidth = 60.0
-                fitHeight = 60.0
+            addClass(if (currentModule == PROVEEDORES) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
+            graphic = imageview("images/providers.png") {
+                fitWidth = 50.0
+                fitHeight = 50.0
+            }
+            action {
+                root.replaceWith(ProveedorView())
             }
         }
 

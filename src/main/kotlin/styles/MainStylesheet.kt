@@ -178,7 +178,7 @@ class MainStylesheet : Stylesheet() {
             prefHeight = 80.px
             contentDisplay = ContentDisplay.LEFT
             alignment = Pos.CENTER_LEFT
-            fontSize = 20.px
+            fontSize = 18.px
             textFill = Color.WHITE
         }
         selectedButton {

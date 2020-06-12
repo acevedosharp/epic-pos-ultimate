@@ -1,5 +1,4 @@
 package models
-import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ReadOnlyObjectWrapper
 import tornadofx.*
 import javafx.beans.property.SimpleIntegerProperty
