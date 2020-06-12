@@ -20,6 +20,7 @@ import models.Producto
 import models.ProductoModel
 import styles.MainStylesheet
 import tornadofx.*
+import views.FormType.*
 
 class ProductosView : View("Módulo de productos") {
 
@@ -144,21 +145,16 @@ class ProductosView : View("Módulo de productos") {
     }
 }
 
-// 1. These views need to be accesible from anywhere so that they can be used in other modules for convenience.
-// 2. I'm also aware of how clunky this seems, the fact that so much code is repeated. However the solution is, in this case,
-// worse than the symptom because while both forms are identical, the Spinner initialization isn't and the simpler
-// solution (this) wins for me.
-class NewProductoFormView : Fragment() {
+class BaseProductoFormField(formType: FormType): Fragment() {
 
-    // New Model so that it is always empty
-    private val model = ProductoModel()
+    private val model = if (formType == CREATE) ProductoModel() else find(ProductoModel::class)
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        label("Nuevo Producto") {
+        label(if (formType == CREATE) "Nuevo producto" else "Editar producto") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
-            addClass(MainStylesheet.greenLabel)
+            addClass(if (formType == CREATE) MainStylesheet.greenLabel else MainStylesheet.blueLabel)
         }
         form {
             fieldset {
@@ -184,115 +180,64 @@ class NewProductoFormView : Fragment() {
                     }
                 }
                 field("Precio de venta") {
-                    model.precioVenta.value = 50
+                    if (formType == CREATE) model.precioVenta.value = 50
                     spinner(property = model.precioVenta, initialValue = 50, min = 50, max = Int.MAX_VALUE, amountToStepBy = 500, editable = true)
                 }
                 field("Existencias") {
-                    model.existencias.value = 0
+                    if (formType == CREATE) model.existencias.value = 0
                     spinner(property = model.existencias, initialValue = 0, min = 0, max = Int.MAX_VALUE, amountToStepBy = 1, editable = true)
                 }
                 hbox(spacing = 80, alignment = Pos.CENTER) {
-                    button("Añadir") {
+                    button("Aceptar") {
                         addClass(MainStylesheet.coolBaseButton)
                         addClass(MainStylesheet.greenButton)
                         addClass(MainStylesheet.expandedButton)
                         action {
-                            model.commit {
-                                find<ProductoController>().productos.add(
-                                    Producto(
-                                        model.codigo.value,
-                                        model.descLarga.value,
-                                        model.descCorta.value,
-                                        model.precioVenta.value.toInt(),
-                                        model.existencias.value.toInt()
+                            if (formType == CREATE) {
+                                model.commit {
+                                    find<ProductoController>().productos.add(
+                                        Producto(
+                                            model.codigo.value,
+                                            model.descLarga.value,
+                                            model.descCorta.value,
+                                            model.precioVenta.value.toInt(),
+                                            model.existencias.value.toInt()
+                                        )
                                     )
-                                )
+                                    close()
+                                }
+                            } else {
+                                model.commit()
                                 close()
                             }
-
                         }
                     }
                     button("Cancelar") {
                         addClass(MainStylesheet.coolBaseButton)
                         addClass(MainStylesheet.redButton)
                         addClass(MainStylesheet.expandedButton)
-                        action { close() }
+                        action {
+                            if (formType == CREATE) {
+                                close()
+                            } else {
+                                model.rollback()
+                                close()
+                            }
+                        }
                     }
                 }
             }
         }
     }
+}
 
+// 1. These views need to be accesible from anywhere so that they can be used in other modules for convenience.
+class NewProductoFormView : Fragment() {
+    override val root = BaseProductoFormField(CREATE).root
 }
 
 class EditProductoFormView : View() {
-    // New Model so that it is always empty
-    val model: ProductoModel by inject()
-
-    override val root = vbox(spacing = 0) {
-        useMaxSize = true
-        label("Editar Producto") {
-            useMaxWidth = true
-            addClass(MainStylesheet.titleLabel)
-            addClass(MainStylesheet.blueLabel)
-        }
-        form {
-            fieldset {
-                field("Código") {
-                    textfield(model.codigo).validator {
-                        if (it.isNullOrBlank()) error("Código requerido")
-                        else if (it.length > 10) error("Máximo 10 caracteres (${it.length})")
-                        else null
-                    }
-                }
-                field("Descripción larga") {
-                    textfield(model.descLarga).validator {
-                        if (it.isNullOrBlank()) error("Descripción larga requerida")
-                        else if (it.length > 50) error("Máximo 50 caracteres (${it.length})")
-                        else null
-                    }
-                }
-                field("Descripción corta") {
-                    textfield(model.descCorta).validator {
-                        if (it.isNullOrBlank()) error("Descripción corta requerida")
-                        else if (it.length > 25) error("Máximo 25 caracteres (${it.length})")
-                        else null
-                    }
-                }
-                field("Precio de venta") {
-                    spinner(property = model.precioVenta, min = 50, max = Int.MAX_VALUE, amountToStepBy = 500, editable = true)
-                }
-                field("Existencias") {
-                    spinner(property = model.existencias, min = 0, max = Int.MAX_VALUE, amountToStepBy = 1, editable = true)
-                }
-                hbox(spacing = 80, alignment = Pos.CENTER) {
-                    button("Confirmar") {
-                        addClass(MainStylesheet.coolBaseButton)
-                        addClass(MainStylesheet.greenButton)
-                        addClass(MainStylesheet.expandedButton)
-                        action {
-                            model.commit()
-                            close()
-                        }
-                    }
-                    button("Cancelar") {
-                        addClass(MainStylesheet.coolBaseButton)
-                        addClass(MainStylesheet.redButton)
-                        addClass(MainStylesheet.expandedButton)
-                        action {
-                            model.rollback()
-                            close()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    init {
-        println(model.precioVenta.value)
-    }
-
+    override val root = BaseProductoFormField(EDIT).root
 }
 
 class ConfirmDeleteDialog : View() {
@@ -327,3 +272,5 @@ class ConfirmDeleteDialog : View() {
         }
     }
 }
+
+enum class FormType {CREATE, EDIT}
