@@ -154,7 +154,7 @@ class BaseProductoFormField(formType: FormType): Fragment() {
                     textfield(model.codigo).validator {
                         when {
                             it.isNullOrBlank() -> error("Código requerido")
-                            it.length > 10 -> error("Máximo 10 caracteres (${it.length})")
+                            it.length > 10 -> error("Máximo 20 caracteres (${it.length})")
                             else -> null
                         }
                     }
