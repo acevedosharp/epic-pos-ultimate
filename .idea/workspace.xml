@@ -26,15 +26,9 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="Initialized the database with its user, schema, trigger and tables.">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
+    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="- Included JPA and MariaDB connector to build.gradle.&#10;- Updated Gradle wrapper. &#10;- added application.properties">
+      <change afterPath="$PROJECT_DIR$/src/main/java/entities/ProductoDB.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,6 +80,7 @@
         <option value="Kotlin Class" />
         <option value="Kotlin File" />
         <option value="Kotlin Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -227,7 +222,7 @@
       <workItem from="1592153433077" duration="208000" />
       <workItem from="1592248501512" duration="417000" />
       <workItem from="1592374150573" duration="1563000" />
-      <workItem from="1592399151066" duration="10978000" />
+      <workItem from="1592399151066" duration="12363000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit: Brand new TornadoFX app to replace the epic-point-of-sale. Implemented the Producto module.">
       <created>1591730038419</created>
@@ -299,7 +294,14 @@
       <option name="project" value="LOCAL" />
       <updated>1592412535891</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="- Included JPA and MariaDB connector to build.gradle.&#10;- Updated Gradle wrapper. &#10;- added application.properties">
+      <created>1592415025416</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1592415025416</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -340,7 +342,8 @@
     <MESSAGE value="Navigation now works. Implemeted ProveedorModule and its model classes; still missing a few refactors though!" />
     <MESSAGE value="Minor refactorings" />
     <MESSAGE value="Initialized the database with its user, schema, trigger and tables." />
-    <option name="LAST_COMMIT_MESSAGE" value="Initialized the database with its user, schema, trigger and tables." />
+    <MESSAGE value="- Included JPA and MariaDB connector to build.gradle.&#10;- Updated Gradle wrapper. &#10;- added application.properties" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Included JPA and MariaDB connector to build.gradle.&#10;- Updated Gradle wrapper. &#10;- added application.properties" />
   </component>
   <component name="WindowStateProjectService">
     <state x="309" y="195" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592405002361">
@@ -367,22 +370,22 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="771" y="281" key="FileChooserDialogImpl/62.0.1858.1080@62.0.1858.1080" timestamp="1592134926833" />
-    <state width="1876" height="304" key="GridCell.Tab.0.bottom" timestamp="1592414109987">
+    <state width="1876" height="304" key="GridCell.Tab.0.bottom" timestamp="1592414944603">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="304" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1592414109987" />
-    <state width="1876" height="304" key="GridCell.Tab.0.center" timestamp="1592414109987">
+    <state width="1876" height="304" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1592414944603" />
+    <state width="1876" height="304" key="GridCell.Tab.0.center" timestamp="1592414944603">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="304" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1592414109987" />
-    <state width="1876" height="304" key="GridCell.Tab.0.left" timestamp="1592414109987">
+    <state width="1876" height="304" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1592414944603" />
+    <state width="1876" height="304" key="GridCell.Tab.0.left" timestamp="1592414944603">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="304" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1592414109987" />
-    <state width="1876" height="304" key="GridCell.Tab.0.right" timestamp="1592414109987">
+    <state width="1876" height="304" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1592414944603" />
+    <state width="1876" height="304" key="GridCell.Tab.0.right" timestamp="1592414944603">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="304" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1592414109987" />
+    <state width="1876" height="304" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1592414944603" />
     <state x="689" y="242" key="RollbackChangesDialog" timestamp="1591729922151">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
@@ -395,10 +398,10 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state width="498" height="446" key="SwitcherDM/62.0.1858.1080@62.0.1858.1080" timestamp="1591843895456" />
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1592412550587">
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1592415027104">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1592412550587" />
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1592415027104" />
     <state x="890" y="412" width="202" height="280" key="com.intellij.database.actions.DdlActions$CreateObject$1" timestamp="1592403981719">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
