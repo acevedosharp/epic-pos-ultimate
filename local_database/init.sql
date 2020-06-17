@@ -1,5 +1,6 @@
 # create the database user
-create user mercamas@localhost identified by 'fADw0CHKJqpDinkW';
+create user 'mercamas'@'localhost' identified by 'fADw0CHKJqpDinkW';
+grant all privileges on app.* to 'mercamas'@'localhost';
 
 # create & use the app schema
 create schema app;
