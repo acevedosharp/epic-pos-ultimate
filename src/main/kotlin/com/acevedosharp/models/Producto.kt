@@ -1,12 +1,12 @@
-package models
+package com.acevedosharp.models
 import javafx.beans.property.ReadOnlyObjectWrapper
 import tornadofx.*
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.control.Button
-import styles.MainStylesheet
+import com.acevedosharp.styles.MainStylesheet
 
-class Producto(codigo: String, descLarga: String, descCorta: String, precioVenta: Int, existencias: Int) {
+class Producto(val id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Int, existencias: Int) {
     val codigoProperty = SimpleStringProperty(this, "codigo", codigo)
     var codigo by codigoProperty
 
@@ -34,6 +34,7 @@ class Producto(codigo: String, descLarga: String, descCorta: String, precioVenta
 }
 
 class ProductoModel: ItemViewModel<Producto>() {
+    val id = bind(Producto::id)
     val codigo = bind(Producto::codigoProperty)
     val descLarga = bind(Producto::descLargaProperty)
     val descCorta = bind(Producto::descCortaProperty)

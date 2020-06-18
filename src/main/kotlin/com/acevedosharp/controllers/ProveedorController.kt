@@ -1,7 +1,7 @@
-package controllers
+package com.acevedosharp.controllers
 
 import javafx.collections.FXCollections
-import models.Proveedor
+import com.acevedosharp.models.Proveedor
 import tornadofx.Controller
 
 class ProveedorController : Controller() {

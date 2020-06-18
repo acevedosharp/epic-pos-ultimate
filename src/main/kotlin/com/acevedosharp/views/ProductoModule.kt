@@ -1,20 +1,23 @@
-package views
+package com.acevedosharp.views
 
-import controllers.ProductoController
+import com.acevedosharp.validation_helpers.CustomUniqueValueConstraintViolationException
+import com.acevedosharp.controllers.ProductoController
+import com.acevedosharp.misc.FormType
+import com.acevedosharp.misc.FormType.CREATE
+import com.acevedosharp.misc.FormType.EDIT
+import com.acevedosharp.models.CurrentModule.PRODUCTOS
+import com.acevedosharp.models.Producto
+import com.acevedosharp.models.ProductoModel
+import com.acevedosharp.styles.MainStylesheet
+import com.acevedosharp.validation_helpers.InputNotUniqueDialog
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.geometry.Pos
-import javafx.scene.control.*
+import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.scene.text.TextAlignment
-import misc.FormType
-import misc.FormType.*
-import models.CurrentModule.*
-import models.Producto
-import models.ProductoModel
-import styles.MainStylesheet
 import tornadofx.*
 
 class ProductosView : View("Módulo de productos") {
@@ -30,12 +33,16 @@ class ProductosView : View("Módulo de productos") {
     init {
         searchByCodigo.onChange {
             searchByDescripcion.value = ""
-            table.items = FXCollections.observableArrayList(productoController.productos.filter { it.codigo.toLowerCase().contains(searchByCodigo.value.toLowerCase()) })
+            table.items = FXCollections.observableArrayList(productoController.productos.filter {
+                it.codigo.toLowerCase().contains(searchByCodigo.value.toLowerCase())
+            })
         }
         searchByDescripcion.onChange {
             searchByCodigo.value = ""
             table.items = FXCollections.observableArrayList(productoController.productos.filter {
-                it.descLarga.toLowerCase().contains(searchByDescripcion.value.toLowerCase()) || it.descCorta.toLowerCase().contains(searchByDescripcion.value.toLowerCase())
+                it.descLarga.toLowerCase()
+                    .contains(searchByDescripcion.value.toLowerCase()) || it.descCorta.toLowerCase()
+                    .contains(searchByDescripcion.value.toLowerCase())
             })
         }
     }
@@ -62,18 +69,9 @@ class ProductosView : View("Módulo de productos") {
                         addClass(MainStylesheet.coolBaseButton)
                         addClass(MainStylesheet.blueButton)
                         action {
-                            openInternalWindow<EditProductoFormView>(closeButton = false, modal = true)
-                        }
-                    }
-                    button("Eliminar selección") {
-                        enableWhen(existsSelection)
-                        addClass(MainStylesheet.coolBaseButton)
-                        addClass(MainStylesheet.redButton)
-                        action {
-                            openInternalWindow<ConfirmDeleteProductoDialog>(
+                            openInternalWindow<EditProductoFormView>(
                                 closeButton = false,
-                                modal = true,
-                                params = mapOf("selected" to table.selectedItem)
+                                modal = true
                             )
                         }
                     }
@@ -119,6 +117,7 @@ class ProductosView : View("Módulo de productos") {
                         bindSelected(model)
                         selectionModel.selectedItemProperty().onChange {
                             existsSelection.value = it != null
+                            model.id.value = it!!.id
                         }
 
                         hgrow = Priority.ALWAYS
@@ -137,12 +136,14 @@ class ProductosView : View("Módulo de productos") {
     }
 }
 
-class BaseProductoFormField(formType: FormType): Fragment() {
+class BaseProductoFormField(formType: FormType) : Fragment() {
 
+    private val productoController = find<ProductoController>()
     private val model = if (formType == CREATE) ProductoModel() else find(ProductoModel::class)
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
+        prefWidth = 800.0
         label(if (formType == CREATE) "Nuevo producto" else "Editar producto") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
@@ -154,7 +155,7 @@ class BaseProductoFormField(formType: FormType): Fragment() {
                     textfield(model.codigo).validator {
                         when {
                             it.isNullOrBlank() -> error("Código requerido")
-                            it.length > 10 -> error("Máximo 20 caracteres (${it.length})")
+                            it.length > 20 -> error("Máximo 20 caracteres (${it.length})")
                             else -> null
                         }
                     }
@@ -179,11 +180,25 @@ class BaseProductoFormField(formType: FormType): Fragment() {
                 }
                 field("Precio de venta") {
                     if (formType == CREATE) model.precioVenta.value = 50
-                    spinner(property = model.precioVenta, initialValue = 50, min = 50, max = Int.MAX_VALUE, amountToStepBy = 500, editable = true)
+                    spinner(
+                        property = model.precioVenta,
+                        initialValue = 50,
+                        min = 50,
+                        max = Int.MAX_VALUE,
+                        amountToStepBy = 500,
+                        editable = true
+                    )
                 }
                 field("Existencias") {
                     if (formType == CREATE) model.existencias.value = 0
-                    spinner(property = model.existencias, initialValue = 0, min = 0, max = Int.MAX_VALUE, amountToStepBy = 1, editable = true)
+                    spinner(
+                        property = model.existencias,
+                        initialValue = 0,
+                        min = 0,
+                        max = Int.MAX_VALUE,
+                        amountToStepBy = 1,
+                        editable = true
+                    )
                 }
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
@@ -191,23 +206,37 @@ class BaseProductoFormField(formType: FormType): Fragment() {
                         addClass(MainStylesheet.greenButton)
                         addClass(MainStylesheet.expandedButton)
                         action {
+
                             if (formType == CREATE) {
-                                model.commit {
-                                    find<ProductoController>().productos.add(
-                                        Producto(
-                                            model.codigo.value,
-                                            model.descLarga.value,
-                                            model.descCorta.value,
-                                            model.precioVenta.value.toInt(),
-                                            model.existencias.value.toInt()
+                                try {
+                                    model.commit {
+                                        productoController.add(
+                                            Producto(
+                                                null,
+                                                model.codigo.value,
+                                                model.descLarga.value,
+                                                model.descCorta.value,
+                                                model.precioVenta.value.toInt(),
+                                                model.existencias.value.toInt()
+                                            )
                                         )
-                                    )
-                                    close()
+                                        close()
+                                    }
+                                } catch (e: CustomUniqueValueConstraintViolationException) {
+                                    openInternalWindow(InputNotUniqueDialog(e.message!!))
                                 }
                             } else {
-                                model.commit()
-                                close()
+                                try {
+                                    model.commit {
+                                        productoController.edit(model.item)
+                                        close()
+                                    }
+                                } catch (e: CustomUniqueValueConstraintViolationException) {
+                                    // I update the productos here because I gave up after 2 hours. I really hate the TornadoFX models!!
+                                    openInternalWindow(InputNotUniqueDialog(e.message!!))
+                                }
                             }
+
                         }
                     }
                     button("Cancelar") {
@@ -229,44 +258,11 @@ class BaseProductoFormField(formType: FormType): Fragment() {
     }
 }
 
-// 1. These views need to be accesible from anywhere so that they can be used in other modules for convenience.
+// 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
 class NewProductoFormView : Fragment() {
     override val root = BaseProductoFormField(CREATE).root
 }
 
 class EditProductoFormView : View() {
     override val root = BaseProductoFormField(EDIT).root
-}
-
-class ConfirmDeleteProductoDialog : View() {
-    private val productoController: ProductoController by inject()
-
-    override val root = vbox(spacing = 0) {
-        useMaxSize = true
-        label("¿Está seguro de eliminar la selección?") {
-            useMaxWidth = true
-            addClass(MainStylesheet.titleLabel)
-            addClass(MainStylesheet.redLabel)
-        }
-        label("Esta acción no se puede deshacer. ¿Confirmar?").style {
-            padding = box(vertical = 30.px, horizontal = 5.px)
-        }
-        hbox(spacing = 80, alignment = Pos.CENTER) {
-            button("Sí") {
-                addClass(MainStylesheet.coolBaseButton)
-                addClass(MainStylesheet.greenButton)
-                addClass(MainStylesheet.expandedButton)
-                action {
-                    productoController.productos.remove(params["selected"])
-                    close()
-                }
-            }
-            button("No") {
-                addClass(MainStylesheet.coolBaseButton)
-                addClass(MainStylesheet.redButton)
-                addClass(MainStylesheet.expandedButton)
-                action { close() }
-            }
-        }
-    }
 }

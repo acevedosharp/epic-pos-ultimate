@@ -26,9 +26,36 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="- Included JPA and MariaDB connector to build.gradle.&#10;- Updated Gradle wrapper. &#10;- added application.properties">
-      <change afterPath="$PROJECT_DIR$/src/main/java/entities/ProductoDB.java" afterDir="false" />
+    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="- Fixed application.properties">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/acevedosharp/LocalSpringBootApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/ProveedorDB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ClientApplication.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/CustomApplicationContextWrapper.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/ProductoController.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/misc/FormType.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_access/repositories_services/BaseRepoService.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_access/repositories_services/ProductoService.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/validation_helpers/CustomUniqueValueConstraintViolationException.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/validation_helpers/InputNotUniqueDialog.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ClientApplication.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/EntryPoint.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/PixelDisplayerView.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/PixelDisplayerView.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_access/repositories/ProductoRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_access/repositories/ProductoRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/controllers/ProductoController.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/controllers/ProveedorController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/ProveedorController.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/misc/FormType.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/models/CurrentModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/models/CurrentModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/models/Producto.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/models/Producto.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/models/Proveedor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/models/Proveedor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/styles/MainStylesheet.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/styles/MainStylesheet.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/views/ProductoModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/ProductoModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/views/ProveedorModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/ProveedorModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/views/SharedComponents.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/SharedComponents.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,10 +104,11 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Kotlin Class" />
         <option value="Kotlin File" />
         <option value="Kotlin Enum" />
         <option value="Class" />
+        <option value="Kotlin Class" />
+        <option value="Kotlin Interface" />
       </list>
     </option>
   </component>
@@ -103,6 +131,10 @@
   </component>
   <component name="PropertiesComponent">
     <property name="DatabaseDriversLRU" value="mariadb" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
@@ -119,19 +151,29 @@
     <property name="project.structure.last.edited" value="Global Libraries" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\local_database" />
-      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\resources\images" />
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="com.acevedosharp.validation_helpers" />
+      <recent name="com.acevedosharp" />
+      <recent name="persistence_access" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\resources\images" />
       <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin" />
     </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.acevedosharp" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin\com\acevedosharp" />
+      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin\com\acevedosharp\views" />
+      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\local_database" />
+      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\resources\images" />
+    </key>
   </component>
-  <component name="RunManager" selected="Gradle.epic_pos_ultimate [clean]">
+  <component name="RunManager" selected="Spring Boot.LocalSpringBoot">
     <configuration name="epic_pos_ultimate [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -151,21 +193,16 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="EntryPointKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+    <configuration name="LocalSpringBoot" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="epic_pos_ultimate.main" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.acevedosharp.LocalSpringBootApplication" />
       <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="MAIN_CLASS_NAME" value="EntryPointKt" />
-      <option name="WORKING_DIRECTORY" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <configuration name="ClientApplication" type="TORNADOFX_RUNCONFIGURATION" factoryName="TornadoFX Configuration Factory" temporary="true" run-type="App" live-views="false" live-stylesheets="false" dump-stylesheets="false">
-      <option name="MAIN_CLASS_NAME" value="ClientApplication" />
+      <option name="MAIN_CLASS_NAME" value="com.acevedosharp.ClientApplication" />
       <module name="epic_pos_ultimate.main" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -173,14 +210,13 @@
     </configuration>
     <list>
       <item itemvalue="Gradle.epic_pos_ultimate [clean]" />
-      <item itemvalue="Kotlin.EntryPointKt" />
+      <item itemvalue="Spring Boot.LocalSpringBoot" />
       <item itemvalue="TornadoFX.ClientApplication" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.epic_pos_ultimate [clean]" />
-        <item itemvalue="Kotlin.EntryPointKt" />
         <item itemvalue="TornadoFX.ClientApplication" />
+        <item itemvalue="Gradle.epic_pos_ultimate [clean]" />
       </list>
     </recent_temporary>
   </component>
@@ -222,7 +258,8 @@
       <workItem from="1592153433077" duration="208000" />
       <workItem from="1592248501512" duration="417000" />
       <workItem from="1592374150573" duration="1563000" />
-      <workItem from="1592399151066" duration="12363000" />
+      <workItem from="1592399151066" duration="12912000" />
+      <workItem from="1592417406074" duration="20869000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit: Brand new TornadoFX app to replace the epic-point-of-sale. Implemented the Producto module.">
       <created>1591730038419</created>
@@ -301,7 +338,21 @@
       <option name="project" value="LOCAL" />
       <updated>1592415025416</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="- Fixed application.properties">
+      <created>1592416615823</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1592416615823</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Mapped db entities and added their repositories">
+      <created>1592427241549</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1592427241549</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -343,25 +394,59 @@
     <MESSAGE value="Minor refactorings" />
     <MESSAGE value="Initialized the database with its user, schema, trigger and tables." />
     <MESSAGE value="- Included JPA and MariaDB connector to build.gradle.&#10;- Updated Gradle wrapper. &#10;- added application.properties" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Included JPA and MariaDB connector to build.gradle.&#10;- Updated Gradle wrapper. &#10;- added application.properties" />
+    <MESSAGE value="- Fixed application.properties" />
+    <MESSAGE value="Mapped db entities and added their repositories" />
+    <option name="LAST_COMMIT_MESSAGE" value="Mapped db entities and added their repositories" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="309" y="195" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592405002361">
+    <state x="859" y="431" key="#Assign_Data_Sources" timestamp="1592422162658">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="309" y="195" key="#com.intellij.execution.impl.EditConfigurationsDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1592405002361" />
+    <state x="859" y="431" key="#Assign_Data_Sources/62.0.1858.1080@62.0.1858.1080" timestamp="1592422162658" />
+    <state x="879" y="180" key="#Plugins" timestamp="1592418266884">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state x="879" y="180" key="#Plugins/62.0.1858.1080@62.0.1858.1080" timestamp="1592418266884" />
+    <state x="491" y="246" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592427970720">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state x="491" y="246" key="#com.intellij.execution.impl.EditConfigurationsDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1592427970720" />
+    <state x="772" y="341" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1592428024080">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state x="772" y="341" key="#com.intellij.fileTypes.FileTypeChooser/62.0.1858.1080@62.0.1858.1080" timestamp="1592428024080" />
     <state x="1172" y="256" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1591611880991">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="1172" y="256" key="#com.intellij.ide.macro.MacrosDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1591611880991" />
-    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser" timestamp="1591797130909">
+    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser" timestamp="1592419830951">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser/62.0.1858.1080@62.0.1858.1080" timestamp="1591797130909" />
-    <state x="1022" y="331" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1591719250196">
+    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser/62.0.1858.1080@62.0.1858.1080" timestamp="1592419830951" />
+    <state x="1022" y="331" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1592427958299">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="1022" y="331" key="#com.intellij.ide.util.TreeClassChooserDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1591719250196" />
+    <state x="1022" y="331" key="#com.intellij.ide.util.TreeClassChooserDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1592427958299" />
+    <state x="1111" y="464" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1592422673589">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state x="1111" y="464" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1592422673589" />
+    <state x="774" y="408" width="433" height="269" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1592428033676">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state x="774" y="408" width="433" height="269" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/62.0.1858.1080@62.0.1858.1080" timestamp="1592428033676" />
+    <state x="756" y="421" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.packages" timestamp="1592422675228">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state x="756" y="421" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.packages/62.0.1858.1080@62.0.1858.1080" timestamp="1592422675228" />
+    <state x="703" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1592419672780">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state x="703" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1592419672780" />
+    <state x="739" y="318" width="454" height="444" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog" timestamp="1592430690458">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state x="739" y="318" width="454" height="444" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1592430690458" />
     <state x="552" y="124" key="CommitChangelistDialog2" timestamp="1591729954902">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
@@ -370,46 +455,66 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="771" y="281" key="FileChooserDialogImpl/62.0.1858.1080@62.0.1858.1080" timestamp="1592134926833" />
-    <state width="1876" height="304" key="GridCell.Tab.0.bottom" timestamp="1592414944603">
+    <state width="1876" height="131" key="GridCell.Tab.0.bottom" timestamp="1592438592247">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="304" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1592414944603" />
-    <state width="1876" height="304" key="GridCell.Tab.0.center" timestamp="1592414944603">
+    <state width="1876" height="131" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1592438592247" />
+    <state width="1876" height="131" key="GridCell.Tab.0.center" timestamp="1592438592247">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="304" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1592414944603" />
-    <state width="1876" height="304" key="GridCell.Tab.0.left" timestamp="1592414944603">
+    <state width="1876" height="131" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1592438592247" />
+    <state width="1876" height="131" key="GridCell.Tab.0.left" timestamp="1592438592247">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="304" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1592414944603" />
-    <state width="1876" height="304" key="GridCell.Tab.0.right" timestamp="1592414944603">
+    <state width="1876" height="131" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1592438592247" />
+    <state width="1876" height="131" key="GridCell.Tab.0.right" timestamp="1592438592247">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="304" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1592414944603" />
+    <state width="1876" height="131" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1592438592247" />
+    <state width="1876" height="131" key="GridCell.Tab.1.bottom" timestamp="1592438592247">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state width="1876" height="131" key="GridCell.Tab.1.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1592438592247" />
+    <state width="1876" height="131" key="GridCell.Tab.1.center" timestamp="1592438592247">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state width="1876" height="131" key="GridCell.Tab.1.center/62.0.1858.1080@62.0.1858.1080" timestamp="1592438592247" />
+    <state width="1876" height="131" key="GridCell.Tab.1.left" timestamp="1592438592247">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state width="1876" height="131" key="GridCell.Tab.1.left/62.0.1858.1080@62.0.1858.1080" timestamp="1592438592247" />
+    <state width="1876" height="131" key="GridCell.Tab.1.right" timestamp="1592438592247">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state width="1876" height="131" key="GridCell.Tab.1.right/62.0.1858.1080@62.0.1858.1080" timestamp="1592438592247" />
+    <state width="196" height="457" key="HiddenNamespacesPopup" timestamp="1592422844230">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state width="196" height="457" key="HiddenNamespacesPopup/62.0.1858.1080@62.0.1858.1080" timestamp="1592422844230" />
     <state x="689" y="242" key="RollbackChangesDialog" timestamp="1591729922151">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="689" y="242" key="RollbackChangesDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1591729922151" />
-    <state x="539" y="190" width="1295" height="757" key="SettingsEditor" timestamp="1592413995449">
+    <state x="539" y="190" width="1295" height="757" key="SettingsEditor" timestamp="1592431815144">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="539" y="190" width="1295" height="757" key="SettingsEditor/62.0.1858.1080@62.0.1858.1080" timestamp="1592413995449" />
+    <state x="539" y="190" width="1295" height="757" key="SettingsEditor/62.0.1858.1080@62.0.1858.1080" timestamp="1592431815144" />
     <state width="498" height="446" key="SwitcherDM" timestamp="1591843895456">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state width="498" height="446" key="SwitcherDM/62.0.1858.1080@62.0.1858.1080" timestamp="1591843895456" />
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1592415027104">
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1592427246707">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1592415027104" />
-    <state x="890" y="412" width="202" height="280" key="com.intellij.database.actions.DdlActions$CreateObject$1" timestamp="1592403981719">
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1592427246707" />
+    <state x="890" y="412" width="202" height="280" key="com.intellij.database.actions.DdlActions$CreateObject$1" timestamp="1592422172308">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="890" y="412" width="202" height="280" key="com.intellij.database.actions.DdlActions$CreateObject$1/62.0.1858.1080@62.0.1858.1080" timestamp="1592403981719" />
-    <state x="821" y="419" width="339" height="248" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1" timestamp="1592412403482">
+    <state x="890" y="412" width="202" height="280" key="com.intellij.database.actions.DdlActions$CreateObject$1/62.0.1858.1080@62.0.1858.1080" timestamp="1592422172308" />
+    <state x="821" y="419" width="339" height="248" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1" timestamp="1592422291124">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="821" y="419" width="339" height="248" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1/62.0.1858.1080@62.0.1858.1080" timestamp="1592412403482" />
+    <state x="821" y="419" width="339" height="248" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1/62.0.1858.1080@62.0.1858.1080" timestamp="1592422291124" />
     <state x="825" y="208" width="759" height="738" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog" timestamp="1592411062049">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
@@ -418,10 +523,14 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="800" y="453" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/62.0.1858.1080@62.0.1858.1080" timestamp="1591843909572" />
-    <state x="55" y="0" width="943" height="1087" key="dock-window-1" timestamp="1591983504366">
+    <state x="55" y="0" width="943" height="1087" key="dock-window-1" timestamp="1592420349264">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="55" y="0" width="943" height="1087" key="dock-window-1/62.0.1858.1080@62.0.1858.1080" timestamp="1591983504366" />
+    <state x="55" y="0" width="943" height="1087" key="dock-window-1/62.0.1858.1080@62.0.1858.1080" timestamp="1592420349264" />
+    <state x="100" y="100" width="1720" height="880" key="dock-window-2" timestamp="1592420349264">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state x="100" y="100" width="1720" height="880" key="dock-window-2/62.0.1858.1080@62.0.1858.1080" timestamp="1592420349264" />
     <state x="795" y="401" key="git4idea.rebase.GitRebaseDialog" timestamp="1591729889354">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>

@@ -1,4 +1,4 @@
-package styles
+package com.acevedosharp.styles
 
 import javafx.geometry.Pos
 import javafx.scene.control.ContentDisplay
@@ -28,6 +28,7 @@ class MainStylesheet : Stylesheet() {
         val greenLabel by cssclass()
         val blueLabel by cssclass()
         val redLabel by cssclass()
+        val yellowLabel by cssclass()
         val searchLabel by cssclass()
 
         // Containers
@@ -200,6 +201,7 @@ class MainStylesheet : Stylesheet() {
         greenLabel { backgroundColor += c("#75C759") }
         blueLabel { backgroundColor += c("#70A7C7")}
         redLabel { backgroundColor += c("#CF484A") }
+        yellowLabel { backgroundColor += c("#dec314") }
         searchLabel {
             fontSize = 18.px
             textFill = Color.WHITE

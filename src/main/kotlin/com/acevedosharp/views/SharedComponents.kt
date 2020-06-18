@@ -1,9 +1,9 @@
-package views
+package com.acevedosharp.views
 
 import javafx.geometry.Pos
-import models.CurrentModule
-import models.CurrentModule.*
-import styles.MainStylesheet
+import com.acevedosharp.models.CurrentModule
+import com.acevedosharp.models.CurrentModule.*
+import com.acevedosharp.styles.MainStylesheet
 import tornadofx.*
 
 class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {

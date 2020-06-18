@@ -1,3 +1,5 @@
+package com.acevedosharp.views
+
 import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.geometry.Pos

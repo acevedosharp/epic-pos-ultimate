@@ -1,6 +1,6 @@
-package views
+package com.acevedosharp.views
 
-import controllers.ProveedorController
+import com.acevedosharp.controllers.ProveedorController
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
@@ -8,12 +8,12 @@ import javafx.geometry.Pos
 import javafx.scene.control.*
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
-import misc.FormType
-import misc.FormType.*
-import models.CurrentModule.*
-import models.Proveedor
-import models.ProveedorModel
-import styles.MainStylesheet
+import com.acevedosharp.misc.FormType
+import com.acevedosharp.misc.FormType.*
+import com.acevedosharp.models.CurrentModule.*
+import com.acevedosharp.models.Proveedor
+import com.acevedosharp.models.ProveedorModel
+import com.acevedosharp.styles.MainStylesheet
 import tornadofx.*
 
 class ProveedorView : View("Módulo de proveedores") {
@@ -208,7 +208,7 @@ class BaseProveedorFormField(formType: FormType): Fragment() {
     }
 }
 
-// 1. These views need to be accesible from anywhere so that they can be used in other modules for convenience.
+// 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
 class NewProveedorFormView : Fragment() {
     override val root = BaseProveedorFormField(CREATE).root
 }
