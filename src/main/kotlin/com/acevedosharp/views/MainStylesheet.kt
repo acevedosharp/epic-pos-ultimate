@@ -23,6 +23,7 @@ class MainStylesheet: Stylesheet() {
         val navigationButton by cssclass()
         val selectedButton   by cssclass()
         val unselectedButton by cssclass()
+        val addButton        by cssclass()
 
         // Labels
         val titleLabel  by cssclass()
@@ -38,7 +39,7 @@ class MainStylesheet: Stylesheet() {
 
     init {
         root {
-            fontSize = 18.px
+            fontSize = 20.px
             fontFamily = "JetBrains Mono"
         }
 
@@ -189,6 +190,15 @@ class MainStylesheet: Stylesheet() {
         }
         unselectedButton {
             backgroundColor += c(255, 255, 255, 0.0)
+        }
+        addButton {
+            fontSize = 32.px
+            fontWeight = FontWeight.BOLD
+            borderRadius += box(30.px)
+            backgroundRadius += box(30.px)
+            backgroundInsets += box(0.px)
+            textFill = Color.WHITE
+            padding = box(0.px, 10.px)
         }
 
         titleLabel {

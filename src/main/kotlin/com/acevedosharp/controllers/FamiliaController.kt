@@ -5,15 +5,19 @@ import com.acevedosharp.entities.FamiliaDB
 import com.acevedosharp.persistence_layer.repository_services.FamiliaService
 import com.acevedosharp.ui_models.Familia
 import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import tornadofx.Controller
 
 class FamiliaController: Controller() {
     private val familiaService =
         find<CustomApplicationContextWrapper>().context.getBean<FamiliaService>(FamiliaService::class.java)
 
-    val familias = FXCollections.observableArrayList<Familia>(
+    val familias: ObservableList<Familia> = FXCollections.observableArrayList<Familia>(
         familiaService.all().map {
-            Familia(it.familiaId, it.nombre)
+            Familia(
+                it.familiaId,
+                it.nombre
+            )
         }
     )
 

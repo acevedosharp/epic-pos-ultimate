@@ -5,8 +5,9 @@ import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.control.Button
 import com.acevedosharp.views.MainStylesheet
+import javafx.beans.property.SimpleObjectProperty
 
-class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Int, existencias: Int) {
+class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Int, existencias: Int, familia: Familia?) {
     val codigoProperty = SimpleStringProperty(this, "codigo", codigo)
     var codigo by codigoProperty
 
@@ -21,6 +22,9 @@ class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: Strin
 
     val existenciasProperty = SimpleIntegerProperty(this, "existencias", existencias)
     var existencias by existenciasProperty
+
+    val familiaProperty = SimpleObjectProperty<Familia>(this, "familia", familia)
+    var familia by familiaProperty
 
     val verPedidosButton = ReadOnlyObjectWrapper(
         Button("+").apply {
@@ -40,4 +44,5 @@ class ProductoModel: ItemViewModel<Producto>() {
     val descCorta = bind(Producto::descCortaProperty)
     val precioVenta = bind(Producto::precioVentaProperty)
     val existencias = bind(Producto::existenciasProperty)
+    val familia = bind(Producto::familiaProperty)
 }

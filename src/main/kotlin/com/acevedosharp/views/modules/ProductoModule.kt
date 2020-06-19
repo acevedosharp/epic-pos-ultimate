@@ -1,15 +1,17 @@
 package com.acevedosharp.views.modules
 
+import com.acevedosharp.controllers.FamiliaController
 import com.acevedosharp.controllers.ProductoController
-import com.acevedosharp.views.helpers.FormType
-import com.acevedosharp.views.helpers.FormType.CREATE
-import com.acevedosharp.views.helpers.FormType.EDIT
-import com.acevedosharp.views.helpers.CurrentModule.PRODUCTOS
+import com.acevedosharp.ui_models.Familia
 import com.acevedosharp.ui_models.Producto
 import com.acevedosharp.ui_models.ProductoModel
 import com.acevedosharp.views.MainStylesheet
-import com.acevedosharp.views.UnknownErrorDialog
 import com.acevedosharp.views.SideNavigation
+import com.acevedosharp.views.UnknownErrorDialog
+import com.acevedosharp.views.helpers.CurrentModule.PRODUCTOS
+import com.acevedosharp.views.helpers.FormType
+import com.acevedosharp.views.helpers.FormType.CREATE
+import com.acevedosharp.views.helpers.FormType.EDIT
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
@@ -19,9 +21,12 @@ import javafx.scene.paint.Color
 import javafx.scene.text.TextAlignment
 import tornadofx.*
 
+
 class ProductoView : View("Módulo de productos") {
 
     private val productoController = find<ProductoController>()
+    private val familiaController = find<FamiliaController>()
+
     private val model: ProductoModel by inject()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByCodigo = SimpleStringProperty()
@@ -97,12 +102,13 @@ class ProductoView : View("Módulo de productos") {
             center {
                 hbox {
                     table = tableview(productoController.productos) {
-                        column("Código", Producto::codigoProperty)
+                        column("Código", Producto::codigoProperty).pctWidth(10)
                         column("Desc. Larga", Producto::descLargaProperty).remainingWidth()
                         column("Desc. Corta", Producto::descCortaProperty).pctWidth(20)
-                        column("Precio Venta", Producto::precioVentaProperty)
+                        column("P. Venta", Producto::precioVentaProperty)
                         column("Existencias", Producto::existenciasProperty)
-                        column("Ver pedidos", Producto::verPedidosButton).style {
+                        column("Familia", Producto::familiaProperty)
+                        column("Pedidos", Producto::verPedidosButton).style {
                             alignment = Pos.CENTER
                             textAlignment = TextAlignment.CENTER
                             tileAlignment = Pos.CENTER
@@ -135,6 +141,8 @@ class ProductoView : View("Módulo de productos") {
 class BaseProductoFormField(formType: FormType) : Fragment() {
 
     private val productoController = find<ProductoController>()
+    private val familiaController = find<FamiliaController>()
+
     private val model = if (formType == CREATE) ProductoModel() else find(ProductoModel::class)
 
     override val root = vbox(spacing = 0) {
@@ -205,11 +213,22 @@ class BaseProductoFormField(formType: FormType) : Fragment() {
                         editable = true
                     )
                 }
+                field("Familia") {
+                    hbox(10, Pos.CENTER_LEFT) {
+                        combobox<Familia>(model.familia, familiaController.familias).apply {
+                            prefWidth = 300.0
+                            makeAutocompletable(false)
+                        }
+                        button("+") {
+                            addClass(MainStylesheet.addButton, MainStylesheet.greenButton)
+                            action { openInternalWindow<NewFamiliaFormView>(closeButton = false, modal = true) }
+                        }
+                    }
+                }
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
-
                             if (formType == CREATE) {
                                 try {
                                     model.commit {
@@ -220,14 +239,15 @@ class BaseProductoFormField(formType: FormType) : Fragment() {
                                                 model.descLarga.value,
                                                 model.descCorta.value,
                                                 model.precioVenta.value.toInt(),
-                                                model.existencias.value.toInt()
+                                                model.existencias.value.toInt(),
+                                                model.familia.value
                                             )
                                         )
                                         close()
                                     }
                                 } catch (e: Exception) {
                                     openInternalWindow(UnknownErrorDialog())
-                                    println(e.message)
+                                    e.printStackTrace()
                                 }
                             } else {
                                 try {
@@ -237,10 +257,9 @@ class BaseProductoFormField(formType: FormType) : Fragment() {
                                     }
                                 } catch (e: Exception) {
                                     openInternalWindow(UnknownErrorDialog())
-                                    println(e.message)
+                                   e.printStackTrace()
                                 }
                             }
-
                         }
                     }
                     button("Cancelar") {

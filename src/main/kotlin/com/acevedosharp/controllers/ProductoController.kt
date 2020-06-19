@@ -2,9 +2,12 @@ package com.acevedosharp.controllers
 
 import com.acevedosharp.CustomApplicationContextWrapper
 import com.acevedosharp.entities.ProductoDB
+import com.acevedosharp.persistence_layer.repository_services.FamiliaService
 import javafx.collections.FXCollections
 import com.acevedosharp.ui_models.Producto
 import com.acevedosharp.persistence_layer.repository_services.ProductoService
+import javafx.collections.ObservableList
+import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
 
 class ProductoController : Controller() {
@@ -12,9 +15,22 @@ class ProductoController : Controller() {
     private val productoService =
         find<CustomApplicationContextWrapper>().context.getBean<ProductoService>(ProductoService::class.java)
 
-    val productos = FXCollections.observableArrayList<Producto>(
-        productoService.all().map {
-            Producto(it.productoId, it.codigo, it.descripcionLarga, it.descripcionCorta, it.precioVenta, it.existencias)
+    private val familiaService =
+        find<CustomApplicationContextWrapper>().context.getBean<FamiliaService>(FamiliaService::class.java)
+
+    private val familiaController = find<FamiliaController>()
+
+    val productos: ObservableList<Producto> = FXCollections.observableArrayList<Producto>(
+        productoService.all().map { dbObject: ProductoDB ->
+            Producto(
+                dbObject.productoId,
+                dbObject.codigo,
+                dbObject.descripcionLarga,
+                dbObject.descripcionCorta,
+                dbObject.precioVenta,
+                dbObject.existencias,
+                if (dbObject.familia == null) null else familiaController.familias.firstOrNull { it.id == dbObject.familia.familiaId }
+            )
         }
     )
 
@@ -27,7 +43,7 @@ class ProductoController : Controller() {
                 producto.descCorta,
                 producto.existencias,
                 producto.precioVenta,
-                null
+                if (producto.familia == null) null else familiaService.repo.findByIdOrNull(producto.familia.id)
             )
         )
         productos.add(producto.apply { id = res.productoId })
@@ -42,7 +58,7 @@ class ProductoController : Controller() {
                 producto.descCorta,
                 producto.existencias,
                 producto.precioVenta,
-                null
+                familiaService.repo.findById(producto.familia.id!!).get()
             )
         )
 

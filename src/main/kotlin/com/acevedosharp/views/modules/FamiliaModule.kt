@@ -83,7 +83,7 @@ class FamiliaView : View("Módulo de familias") {
             center {
                 hbox {
                     table = tableview(familiaController.familias) {
-                        column("Nombre", Familia::nombre)
+                        column("Nombre", Familia::nombreProperty)
 
                         smartResize()
 
@@ -109,7 +109,7 @@ class FamiliaView : View("Módulo de familias") {
     }
 }
 
-class BaseFamiliaFormField(formType: FormType) : Fragment() {
+class BaseFamiliaFormField(formType: FormType): Fragment() {
 
     private val familiaController = find<FamiliaController>()
     private val model = if (formType == CREATE) FamiliaModel() else find(FamiliaModel::class)
