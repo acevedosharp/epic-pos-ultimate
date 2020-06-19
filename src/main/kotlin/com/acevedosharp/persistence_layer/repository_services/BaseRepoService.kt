@@ -1,4 +1,4 @@
-package com.acevedosharp.persistence_access.repositories_services
+package com.acevedosharp.persistence_layer.repository_services
 
 interface BaseRepoService<T> {
     fun all(): List<T>

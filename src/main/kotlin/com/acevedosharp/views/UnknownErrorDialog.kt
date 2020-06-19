@@ -1,19 +1,19 @@
-package com.acevedosharp.validation_helpers
+package com.acevedosharp.views
 
-import com.acevedosharp.styles.MainStylesheet
+import com.acevedosharp.views.MainStylesheet
 import javafx.geometry.Pos
 import tornadofx.*
 
-class InputNotUniqueDialog(msg: String) : Fragment() {
+class UnknownErrorDialog: Fragment() {
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        label("Error guardando") {
+        label("Error inesperado") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
-            addClass(MainStylesheet.yellowLabel)
+            addClass(MainStylesheet.redLabel)
         }
-        label(msg).style {
+        label("Ha ocurrido un error inesperado. Es recomendable reiniciar el POS en este momento, pues la información que muestra puede no ser confiable.").style {
             padding = box(vertical = 30.px, horizontal = 5.px)
         }
         hbox(spacing = 80, alignment = Pos.CENTER) {

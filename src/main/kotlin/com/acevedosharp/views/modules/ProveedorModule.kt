@@ -1,4 +1,4 @@
-package com.acevedosharp.views
+package com.acevedosharp.views.modules
 
 import com.acevedosharp.controllers.ProveedorController
 import javafx.beans.property.SimpleBooleanProperty
@@ -8,12 +8,13 @@ import javafx.geometry.Pos
 import javafx.scene.control.*
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
-import com.acevedosharp.misc.FormType
-import com.acevedosharp.misc.FormType.*
-import com.acevedosharp.models.CurrentModule.*
-import com.acevedosharp.models.Proveedor
-import com.acevedosharp.models.ProveedorModel
-import com.acevedosharp.styles.MainStylesheet
+import com.acevedosharp.views.helpers.FormType
+import com.acevedosharp.views.helpers.FormType.*
+import com.acevedosharp.views.helpers.CurrentModule.*
+import com.acevedosharp.ui_models.Proveedor
+import com.acevedosharp.ui_models.ProveedorModel
+import com.acevedosharp.views.MainStylesheet
+import com.acevedosharp.views.SideNavigation
 import tornadofx.*
 
 class ProveedorView : View("Módulo de proveedores") {

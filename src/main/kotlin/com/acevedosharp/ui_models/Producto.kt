@@ -1,12 +1,12 @@
-package com.acevedosharp.models
+package com.acevedosharp.ui_models
 import javafx.beans.property.ReadOnlyObjectWrapper
 import tornadofx.*
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.control.Button
-import com.acevedosharp.styles.MainStylesheet
+import com.acevedosharp.views.MainStylesheet
 
-class Producto(val id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Int, existencias: Int) {
+class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Int, existencias: Int) {
     val codigoProperty = SimpleStringProperty(this, "codigo", codigo)
     var codigo by codigoProperty
 

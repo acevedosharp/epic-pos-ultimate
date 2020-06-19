@@ -1,4 +1,4 @@
-package com.acevedosharp.models
+package com.acevedosharp.ui_models
 
 import tornadofx.*
 import javafx.beans.property.SimpleStringProperty

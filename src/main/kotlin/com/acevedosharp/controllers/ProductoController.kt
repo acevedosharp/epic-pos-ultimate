@@ -1,11 +1,10 @@
 package com.acevedosharp.controllers
 
 import com.acevedosharp.CustomApplicationContextWrapper
-import com.acevedosharp.validation_helpers.CustomUniqueValueConstraintViolationException
 import com.acevedosharp.entities.ProductoDB
 import javafx.collections.FXCollections
-import com.acevedosharp.models.Producto
-import com.acevedosharp.persistence_access.repositories_services.ProductoService
+import com.acevedosharp.ui_models.Producto
+import com.acevedosharp.persistence_layer.repository_services.ProductoService
 import tornadofx.Controller
 
 class ProductoController : Controller() {
@@ -19,9 +18,8 @@ class ProductoController : Controller() {
         }
     )
 
-    @Throws(CustomUniqueValueConstraintViolationException::class)
     fun add(producto: Producto) {
-        productoService.add(
+        val res = productoService.add(
             ProductoDB(
                 null,
                 producto.codigo,
@@ -32,10 +30,9 @@ class ProductoController : Controller() {
                 null
             )
         )
-        productos.add(producto)
+        productos.add(producto.apply { id = res.productoId })
     }
 
-    @Throws(CustomUniqueValueConstraintViolationException::class)
     fun edit(producto: Producto) {
         val res = productoService.edit(
             ProductoDB(
@@ -56,5 +53,21 @@ class ProductoController : Controller() {
             existencias = res.existencias
             precioVenta = res.precioVenta
         }
+    }
+
+
+    fun isCodigoAvailable(codigo: String): Boolean = productoService.repo.existsByCodigo(codigo)
+    fun existsOtherWithCodigo(codigo: String, id: Int): Boolean {
+        return productoService.repo.existsByCodigo(codigo) && (productoService.repo.findByCodigo(codigo).productoId != id)
+    }
+
+    fun isDescLargaAvailable(descLarga: String): Boolean = productoService.repo.existsByDescripcionLarga(descLarga)
+    fun existsOtherWithDescLarga(descLarga: String, id: Int): Boolean {
+        return productoService.repo.existsByDescripcionLarga(descLarga) && (productoService.repo.findByDescripcionLarga(descLarga).productoId != id)
+    }
+
+    fun isDescCortaAvailable(descCorta: String): Boolean = productoService.repo.existsByDescripcionCorta(descCorta)
+    fun existsOtherWithDescCorta(descCorta: String, id: Int): Boolean {
+        return productoService.repo.existsByDescripcionCorta(descCorta) && (productoService.repo.findByDescripcionCorta(descCorta).productoId != id)
     }
 }

@@ -1,18 +1,17 @@
-package com.acevedosharp.views
+package com.acevedosharp.views.modules
 
-import com.acevedosharp.validation_helpers.CustomUniqueValueConstraintViolationException
 import com.acevedosharp.controllers.ProductoController
-import com.acevedosharp.misc.FormType
-import com.acevedosharp.misc.FormType.CREATE
-import com.acevedosharp.misc.FormType.EDIT
-import com.acevedosharp.models.CurrentModule.PRODUCTOS
-import com.acevedosharp.models.Producto
-import com.acevedosharp.models.ProductoModel
-import com.acevedosharp.styles.MainStylesheet
-import com.acevedosharp.validation_helpers.InputNotUniqueDialog
+import com.acevedosharp.views.helpers.FormType
+import com.acevedosharp.views.helpers.FormType.CREATE
+import com.acevedosharp.views.helpers.FormType.EDIT
+import com.acevedosharp.views.helpers.CurrentModule.PRODUCTOS
+import com.acevedosharp.ui_models.Producto
+import com.acevedosharp.ui_models.ProductoModel
+import com.acevedosharp.views.MainStylesheet
+import com.acevedosharp.views.UnknownErrorDialog
+import com.acevedosharp.views.SideNavigation
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
-import javafx.collections.FXCollections
 import javafx.geometry.Pos
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
@@ -20,7 +19,7 @@ import javafx.scene.paint.Color
 import javafx.scene.text.TextAlignment
 import tornadofx.*
 
-class ProductosView : View("Módulo de productos") {
+class ProductoView : View("Módulo de productos") {
 
     private val productoController = find<ProductoController>()
     private val model: ProductoModel by inject()
@@ -33,17 +32,16 @@ class ProductosView : View("Módulo de productos") {
     init {
         searchByCodigo.onChange {
             searchByDescripcion.value = ""
-            table.items = FXCollections.observableArrayList(productoController.productos.filter {
+            table.items = productoController.productos.filter {
                 it.codigo.toLowerCase().contains(searchByCodigo.value.toLowerCase())
-            })
+            }.asObservable()
         }
         searchByDescripcion.onChange {
             searchByCodigo.value = ""
-            table.items = FXCollections.observableArrayList(productoController.productos.filter {
-                it.descLarga.toLowerCase()
-                    .contains(searchByDescripcion.value.toLowerCase()) || it.descCorta.toLowerCase()
-                    .contains(searchByDescripcion.value.toLowerCase())
-            })
+            table.items = productoController.productos.filter {
+                it.descLarga.toLowerCase().contains(searchByDescripcion.value.toLowerCase()) ||
+                it.descCorta.toLowerCase().contains(searchByDescripcion.value.toLowerCase())
+            }.asObservable()
         }
     }
 
@@ -58,16 +56,14 @@ class ProductosView : View("Módulo de productos") {
                     paddingBottom = 4
                     useMaxWidth = true
                     button("Nuevo Producto") {
-                        addClass(MainStylesheet.coolBaseButton)
-                        addClass(MainStylesheet.greenButton)
+                        addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                         action {
                             openInternalWindow<NewProductoFormView>(closeButton = false, modal = true)
                         }
                     }
                     button("Editar selección") {
                         enableWhen(existsSelection)
-                        addClass(MainStylesheet.coolBaseButton)
-                        addClass(MainStylesheet.blueButton)
+                        addClass(MainStylesheet.coolBaseButton, MainStylesheet.blueButton)
                         action {
                             openInternalWindow<EditProductoFormView>(
                                 closeButton = false,
@@ -117,7 +113,7 @@ class ProductosView : View("Módulo de productos") {
                         bindSelected(model)
                         selectionModel.selectedItemProperty().onChange {
                             existsSelection.value = it != null
-                            model.id.value = it!!.id
+                            model.id.value = it?.id
                         }
 
                         hgrow = Priority.ALWAYS
@@ -144,7 +140,7 @@ class BaseProductoFormField(formType: FormType) : Fragment() {
     override val root = vbox(spacing = 0) {
         useMaxSize = true
         prefWidth = 800.0
-        label(if (formType == CREATE) "Nuevo producto" else "Editar producto") {
+        label(if (formType == CREATE) "Nuevo Producto" else "Editar Producto") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
             addClass(if (formType == CREATE) MainStylesheet.greenLabel else MainStylesheet.blueLabel)
@@ -154,6 +150,9 @@ class BaseProductoFormField(formType: FormType) : Fragment() {
                 field("Código") {
                     textfield(model.codigo).validator {
                         when {
+                            if (formType == CREATE) productoController.isCodigoAvailable(it.toString())
+                            else productoController.existsOtherWithCodigo(it.toString(), model.id.value)
+                            -> error("Código no disponible")
                             it.isNullOrBlank() -> error("Código requerido")
                             it.length > 20 -> error("Máximo 20 caracteres (${it.length})")
                             else -> null
@@ -163,6 +162,9 @@ class BaseProductoFormField(formType: FormType) : Fragment() {
                 field("Descripción larga") {
                     textfield(model.descLarga).validator {
                         when {
+                            if (formType == CREATE) productoController.isDescLargaAvailable(it.toString())
+                            else productoController.existsOtherWithDescLarga(it.toString(), model.id.value)
+                            -> error("Descripción larga no disponible")
                             it.isNullOrBlank() -> error("Descripción larga requerida")
                             it.length > 50 -> error("Máximo 50 caracteres (${it.length})")
                             else -> null
@@ -172,6 +174,9 @@ class BaseProductoFormField(formType: FormType) : Fragment() {
                 field("Descripción corta") {
                     textfield(model.descCorta).validator {
                         when {
+                            if (formType == CREATE) productoController.isDescCortaAvailable(it.toString())
+                            else productoController.existsOtherWithDescCorta(it.toString(), model.id.value)
+                            -> error("Descripción corta no disponible")
                             it.isNullOrBlank() -> error("Descripción corta requerida")
                             it.length > 25 -> error("Máximo 25 caracteres (${it.length})")
                             else -> null
@@ -202,9 +207,7 @@ class BaseProductoFormField(formType: FormType) : Fragment() {
                 }
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
-                        addClass(MainStylesheet.coolBaseButton)
-                        addClass(MainStylesheet.greenButton)
-                        addClass(MainStylesheet.expandedButton)
+                        addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
 
                             if (formType == CREATE) {
@@ -222,8 +225,9 @@ class BaseProductoFormField(formType: FormType) : Fragment() {
                                         )
                                         close()
                                     }
-                                } catch (e: CustomUniqueValueConstraintViolationException) {
-                                    openInternalWindow(InputNotUniqueDialog(e.message!!))
+                                } catch (e: Exception) {
+                                    openInternalWindow(UnknownErrorDialog())
+                                    println(e.message)
                                 }
                             } else {
                                 try {
@@ -231,18 +235,16 @@ class BaseProductoFormField(formType: FormType) : Fragment() {
                                         productoController.edit(model.item)
                                         close()
                                     }
-                                } catch (e: CustomUniqueValueConstraintViolationException) {
-                                    // I update the productos here because I gave up after 2 hours. I really hate the TornadoFX models!!
-                                    openInternalWindow(InputNotUniqueDialog(e.message!!))
+                                } catch (e: Exception) {
+                                    openInternalWindow(UnknownErrorDialog())
+                                    println(e.message)
                                 }
                             }
 
                         }
                     }
                     button("Cancelar") {
-                        addClass(MainStylesheet.coolBaseButton)
-                        addClass(MainStylesheet.redButton)
-                        addClass(MainStylesheet.expandedButton)
+                        addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
                         action {
                             if (formType == CREATE) {
                                 close()
@@ -259,10 +261,10 @@ class BaseProductoFormField(formType: FormType) : Fragment() {
 }
 
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
-class NewProductoFormView : Fragment() {
+class NewProductoFormView: Fragment() {
     override val root = BaseProductoFormField(CREATE).root
 }
 
-class EditProductoFormView : View() {
+class EditProductoFormView: Fragment() {
     override val root = BaseProductoFormField(EDIT).root
 }

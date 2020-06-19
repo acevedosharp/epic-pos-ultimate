@@ -1,6 +1,7 @@
-package com.acevedosharp.styles
+package com.acevedosharp.views
 
 import javafx.geometry.Pos
+import javafx.scene.Cursor
 import javafx.scene.control.ContentDisplay
 import javafx.scene.paint.Color
 import javafx.scene.paint.CycleMethod
@@ -10,24 +11,24 @@ import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
 import tornadofx.*
 
-class MainStylesheet : Stylesheet() {
+class MainStylesheet: Stylesheet() {
 
     companion object {
         // Buttons
-        val expandedButton by cssclass()
-        val coolBaseButton by cssclass()
-        val greenButton by cssclass()
-        val blueButton by cssclass()
-        val redButton by cssclass()
+        val expandedButton   by cssclass()
+        val coolBaseButton   by cssclass()
+        val greenButton      by cssclass()
+        val blueButton       by cssclass()
+        val redButton        by cssclass()
         val navigationButton by cssclass()
-        val selectedButton by cssclass()
+        val selectedButton   by cssclass()
         val unselectedButton by cssclass()
 
         // Labels
-        val titleLabel by cssclass()
-        val greenLabel by cssclass()
-        val blueLabel by cssclass()
-        val redLabel by cssclass()
+        val titleLabel  by cssclass()
+        val greenLabel  by cssclass()
+        val blueLabel   by cssclass()
+        val redLabel    by cssclass()
         val yellowLabel by cssclass()
         val searchLabel by cssclass()
 
@@ -183,7 +184,8 @@ class MainStylesheet : Stylesheet() {
             textFill = Color.WHITE
         }
         selectedButton {
-            backgroundColor += c(255, 255, 255, 0.15)
+            textFill = c(255, 197, 47)
+            backgroundColor += c(0, 0, 0, 0.15)
         }
         unselectedButton {
             backgroundColor += c(255, 255, 255, 0.0)

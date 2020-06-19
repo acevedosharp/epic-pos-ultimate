@@ -1,4 +1,4 @@
-package com.acevedosharp.persistence_access.repositories
+package com.acevedosharp.persistence_layer.repositories
 
 import com.acevedosharp.entities.EmpleadoDB
 import org.springframework.data.jpa.repository.JpaRepository
