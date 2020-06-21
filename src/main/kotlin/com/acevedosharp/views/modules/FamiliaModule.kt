@@ -1,22 +1,18 @@
 package com.acevedosharp.views.modules
 
 import com.acevedosharp.controllers.FamiliaController
-import com.acevedosharp.controllers.ProductoController
 import com.acevedosharp.ui_models.Familia
 import com.acevedosharp.ui_models.FamiliaModel
 import com.acevedosharp.views.helpers.FormType
-import com.acevedosharp.views.helpers.FormType.CREATE
-import com.acevedosharp.views.helpers.FormType.EDIT
-import com.acevedosharp.ui_models.Producto
-import com.acevedosharp.ui_models.ProductoModel
+import com.acevedosharp.views.helpers.FormType.*
+import com.acevedosharp.views.helpers.CurrentModule.*
 import com.acevedosharp.views.MainStylesheet
-import com.acevedosharp.views.UnknownErrorDialog
 import com.acevedosharp.views.SideNavigation
-import com.acevedosharp.views.helpers.CurrentModule.FAMILIAS
+import com.acevedosharp.views.UnknownErrorDialog
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
-import javafx.scene.control.TableView
+import javafx.scene.control.*
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*

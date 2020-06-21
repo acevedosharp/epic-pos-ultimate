@@ -9,16 +9,14 @@ public class EmpleadoDB {
     private @Id @Column(name = "empleado_id") Integer empleadoId;
     private @Column(name = "nombre") String nombre;
     private @Column(name = "telefono") String telefono;
-    private @Column(name = "activo") Boolean activo;
 
     public EmpleadoDB() {
     }
 
-    public EmpleadoDB(Integer empleadoId, String nombre, String telefono, Boolean activo) {
+    public EmpleadoDB(Integer empleadoId, String nombre, String telefono) {
         this.empleadoId = empleadoId;
         this.nombre = nombre;
         this.telefono = telefono;
-        this.activo = activo;
     }
 
     public Integer getEmpleadoId() {
@@ -39,13 +37,5 @@ public class EmpleadoDB {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
-    }
-
-    public Boolean getActivo() {
-        return activo;
-    }
-
-    public void setActivo(Boolean activo) {
-        this.activo = activo;
     }
 }

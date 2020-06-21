@@ -1,8 +1,8 @@
 package com.acevedosharp.views.modules
 
-import com.acevedosharp.controllers.ProveedorController
-import com.acevedosharp.ui_models.Proveedor
-import com.acevedosharp.ui_models.ProveedorModel
+import com.acevedosharp.controllers.ClienteController
+import com.acevedosharp.ui_models.Cliente
+import com.acevedosharp.ui_models.ClienteModel
 import com.acevedosharp.views.helpers.FormType
 import com.acevedosharp.views.helpers.FormType.*
 import com.acevedosharp.views.helpers.CurrentModule.*
@@ -17,18 +17,18 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*
 
-class ProveedorView : View("Módulo de proveedores") {
+class ClienteView : View("Módulo de clientes") {
 
-    private val proveedorController = find<ProveedorController>()
-    private val model: ProveedorModel by inject()
+    private val clienteController = find<ClienteController>()
+    private val model: ClienteModel by inject()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty()
-    private var table: TableView<Proveedor> by singleAssign()
+    private var table: TableView<Cliente> by singleAssign()
     private val view = this
 
     init {
         searchByNombre.onChange {
-            table.items = proveedorController.proveedores.filter {
+            table.items = clienteController.clientes.filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
@@ -36,7 +36,7 @@ class ProveedorView : View("Módulo de proveedores") {
 
     override val root = hbox {
         setPrefSize(1920.0, 1080.0)
-        add(SideNavigation(PROVEEDORES, view))
+        add(SideNavigation(CLIENTES, view))
         borderpane {
             setPrefSize(1720.0, 1080.0)
             top {
@@ -44,17 +44,17 @@ class ProveedorView : View("Módulo de proveedores") {
                     addClass(MainStylesheet.topBar)
                     paddingBottom = 4
                     useMaxWidth = true
-                    button("Nuevo Proveedor") {
+                    button("Nuevo Cliente") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                         action {
-                            openInternalWindow<NewProveedorFormView>(closeButton = false, modal = true)
+                            openInternalWindow<NewClienteFormView>(closeButton = false, modal = true)
                         }
                     }
                     button("Editar selección") {
                         enableWhen(existsSelection)
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.blueButton)
                         action {
-                            openInternalWindow<EditProveedorFormView>(
+                            openInternalWindow<EditClienteFormView>(
                                 closeButton = false,
                                 modal = true
                             )
@@ -78,11 +78,10 @@ class ProveedorView : View("Módulo de proveedores") {
 
             center {
                 hbox {
-                    table = tableview(proveedorController.proveedores) {
-                        column("Nombre", Proveedor::nombreProperty)
-                        column("Teléfono", Proveedor::telefonoProperty)
-                        column("Correo", Proveedor::correoProperty)
-                        column("Dirección", Proveedor::direccionProperty).remainingWidth()
+                    table = tableview(clienteController.clientes) {
+                        column("Nombre", Cliente::nombreProperty)
+                        column("Teléfono", Cliente::telefonoProperty)
+                        column("Dirección", Cliente::direccionProperty).remainingWidth()
 
                         smartResize()
 
@@ -108,15 +107,15 @@ class ProveedorView : View("Módulo de proveedores") {
     }
 }
 
-class BaseProveedorFormField(formType: FormType): Fragment() {
+class BaseClienteFormField(formType: FormType): Fragment() {
 
-    private val proveedorController = find<ProveedorController>()
-    private val model = if (formType == CREATE) ProveedorModel() else find(ProveedorModel::class)
+    private val clienteController = find<ClienteController>()
+    private val model = if (formType == CREATE) ClienteModel() else find(ClienteModel::class)
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
         prefWidth = 800.0
-        label(if (formType == CREATE) "Nuevo Proveedor" else "Editar Proveedor") {
+        label(if (formType == CREATE) "Nuevo Cliente" else "Editar Cliente") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
             addClass(if (formType == CREATE) MainStylesheet.greenLabel else MainStylesheet.blueLabel)
@@ -126,8 +125,8 @@ class BaseProveedorFormField(formType: FormType): Fragment() {
                 field("Nombre") {
                     textfield(model.nombre).validator {
                         when {
-                            if (formType == CREATE) proveedorController.isNombreAvailable(it.toString())
-                            else proveedorController.existsOtherWithNombre(it.toString(), model.id.value)
+                            if (formType == CREATE) clienteController.isNombreAvailable(it.toString())
+                            else clienteController.existsOtherWithNombre(it.toString(), model.id.value)
                             -> error("Nombre no disponible")
                             it.isNullOrBlank() -> error("Nombre requerido")
                             it.length > 50 -> error("Máximo 50 caracteres (${it.length})")
@@ -138,22 +137,11 @@ class BaseProveedorFormField(formType: FormType): Fragment() {
                 field("Teléfono") {
                     textfield(model.telefono).validator {
                         when {
-                            if (formType == CREATE) proveedorController.isTelefonoAvailable(it.toString())
-                            else proveedorController.existsOtherWithTelefono(it.toString(), model.id.value)
+                            if (formType == CREATE) clienteController.isTelefonoAvailable(it.toString())
+                            else clienteController.existsOtherWithTelefono(it.toString(), model.id.value)
                             -> error("Teléfono no disponible")
                             it.isNullOrBlank() -> error("Teléfono requerido")
                             it.length > 20 -> error("Máximo 20 caracteres (${it.length})")
-                            else -> null
-                        }
-                    }
-                }
-                field("Correo") {
-                    textfield(model.correo).validator {
-                        when {
-                            if (formType == CREATE) !it.isNullOrBlank() && proveedorController.isCorreoAvailable(it.toString())
-                            else !it.isNullOrBlank() && proveedorController.existsOtherWithCorreo(it.toString(), model.id.value)
-                            -> error("Correo no disponible")
-                            !it.isNullOrBlank() && it.length > 40 -> error("Máximo 40 caracteres (${it.length})")
                             else -> null
                         }
                     }
@@ -173,13 +161,12 @@ class BaseProveedorFormField(formType: FormType): Fragment() {
                             if (formType == CREATE) {
                                 try {
                                     model.commit {
-                                        proveedorController.add(
-                                            Proveedor(
+                                        clienteController.add(
+                                            Cliente(
                                                 null,
                                                 model.nombre.value,
                                                 model.telefono.value,
-                                                model.direccion.value,
-                                                model.correo.value
+                                                model.direccion.value
                                             )
                                         )
                                         close()
@@ -191,7 +178,7 @@ class BaseProveedorFormField(formType: FormType): Fragment() {
                             } else {
                                 try {
                                     model.commit {
-                                        proveedorController.edit(model.item)
+                                        clienteController.edit(model.item)
                                         close()
                                     }
                                 } catch (e: Exception) {
@@ -219,10 +206,10 @@ class BaseProveedorFormField(formType: FormType): Fragment() {
 }
 
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
-class NewProveedorFormView : Fragment() {
-    override val root = BaseProveedorFormField(CREATE).root
+class NewClienteFormView : Fragment() {
+    override val root = BaseClienteFormField(CREATE).root
 }
 
-class EditProveedorFormView : Fragment() {
-    override val root = BaseProveedorFormField(EDIT).root
+class EditClienteFormView : Fragment() {
+    override val root = BaseClienteFormField(EDIT).root
 }

@@ -3,9 +3,7 @@ package com.acevedosharp.views
 import javafx.geometry.Pos
 import com.acevedosharp.views.helpers.CurrentModule
 import com.acevedosharp.views.helpers.CurrentModule.*
-import com.acevedosharp.views.modules.FamiliaView
-import com.acevedosharp.views.modules.ProductoView
-import com.acevedosharp.views.modules.ProveedorView
+import com.acevedosharp.views.modules.*
 import tornadofx.*
 
 class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
@@ -22,7 +20,7 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
         button("Ventas") {
             val tag = VENTAS
             addClass(MainStylesheet.navigationButton, if (tag == currentModule) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
-            graphic = imageview("images/products.png") {
+            graphic = imageview("images/store_logo_icon.png") {
                 fitWidth = 50.0
                 fitHeight = 50.0
             }
@@ -47,7 +45,7 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
         button("Pedidos") {
             tag = PEDIDOS
             addClass(MainStylesheet.navigationButton, if (tag == currentModule) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
-            graphic = imageview("images/products.png") {
+            graphic = imageview("images/store_logo_icon.png") {
                 fitWidth = 50.0
                 fitHeight = 50.0
             }
@@ -88,7 +86,7 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
                 fitHeight = 50.0
             }
             action {
-                root.replaceWith(ProveedorView())
+                root.replaceWith(EmpleadoView())
             }
         }
         button("Clientes") {
@@ -99,7 +97,7 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
                 fitHeight = 50.0
             }
             action {
-                root.replaceWith(ProveedorView())
+                root.replaceWith(ClienteView())
             }
         }
 

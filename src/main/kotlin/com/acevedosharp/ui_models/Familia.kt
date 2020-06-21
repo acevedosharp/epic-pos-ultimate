@@ -7,12 +7,10 @@ class Familia(var id: Int?, nombre: String) {
     val nombreProperty = SimpleStringProperty(this, "nombre", nombre)
     var nombre by nombreProperty
 
-    override fun toString(): String {
-        return nombre
-    }
+    override fun toString(): String = nombre
 }
 
 class FamiliaModel: ItemViewModel<Familia>() {
-    val id = bind(Familia::id)
+    val id =     bind(Familia::id)
     val nombre = bind(Familia::nombreProperty)
 }

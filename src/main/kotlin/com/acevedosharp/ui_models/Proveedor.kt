@@ -3,7 +3,7 @@ package com.acevedosharp.ui_models
 import tornadofx.*
 import javafx.beans.property.SimpleStringProperty
 
-class Proveedor(nombre: String, telefono: String, direccion: String, correo: String) {
+class Proveedor(var id: Int?, nombre: String, telefono: String, direccion: String?, correo: String?) {
     val nombreProperty = SimpleStringProperty(this, "nombre", nombre)
     var nombre by nombreProperty
 
@@ -15,11 +15,14 @@ class Proveedor(nombre: String, telefono: String, direccion: String, correo: Str
 
     val correoProperty = SimpleStringProperty(this, "correo", correo)
     var correo by correoProperty
+
+    override fun toString(): String = nombre
 }
 
 class ProveedorModel: ItemViewModel<Proveedor>() {
-    val nombre = bind(Proveedor::nombreProperty)
-    val telefono = bind(Proveedor::telefonoProperty)
+    val id =        bind(Proveedor::id)
+    val nombre =    bind(Proveedor::nombreProperty)
+    val telefono =  bind(Proveedor::telefonoProperty)
     val direccion = bind(Proveedor::direccionProperty)
-    val correo = bind(Proveedor::correoProperty)
+    val correo =    bind(Proveedor::correoProperty)
 }

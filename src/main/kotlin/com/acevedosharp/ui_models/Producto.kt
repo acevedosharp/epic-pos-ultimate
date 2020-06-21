@@ -1,4 +1,5 @@
 package com.acevedosharp.ui_models
+
 import javafx.beans.property.ReadOnlyObjectWrapper
 import tornadofx.*
 import javafx.beans.property.SimpleIntegerProperty
@@ -38,11 +39,11 @@ class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: Strin
 }
 
 class ProductoModel: ItemViewModel<Producto>() {
-    val id = bind(Producto::id)
-    val codigo = bind(Producto::codigoProperty)
-    val descLarga = bind(Producto::descLargaProperty)
-    val descCorta = bind(Producto::descCortaProperty)
+    val id =          bind(Producto::id)
+    val codigo =      bind(Producto::codigoProperty)
+    val descLarga =   bind(Producto::descLargaProperty)
+    val descCorta =   bind(Producto::descCortaProperty)
     val precioVenta = bind(Producto::precioVentaProperty)
     val existencias = bind(Producto::existenciasProperty)
-    val familia = bind(Producto::familiaProperty)
+    val familia =     bind(Producto::familiaProperty)
 }

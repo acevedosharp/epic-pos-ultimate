@@ -1,6 +1,5 @@
 package com.acevedosharp.views
 
-import com.acevedosharp.views.MainStylesheet
 import javafx.geometry.Pos
 import tornadofx.*
 

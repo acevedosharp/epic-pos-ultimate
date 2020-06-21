@@ -66,7 +66,6 @@ create table empleado
         primary key,
     nombre      varchar(50)          not null,
     telefono    varchar(20)          not null,
-    activo      tinyint(1) default 1 not null,
     constraint empleado_nombre_uindex
         unique (nombre),
     constraint empleado_telefono_uindex

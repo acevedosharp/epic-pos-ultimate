@@ -21,7 +21,6 @@ import javafx.scene.paint.Color
 import javafx.scene.text.TextAlignment
 import tornadofx.*
 
-
 class ProductoView : View("Módulo de productos") {
 
     private val productoController = find<ProductoController>()
