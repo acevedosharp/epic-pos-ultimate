@@ -43,16 +43,16 @@ class ProveedorController: Controller() {
                 proveedor.id,
                 proveedor.nombre,
                 proveedor.telefono,
-                proveedor.direccion,
-                proveedor.correo
+                proveedor.correo,
+                proveedor.direccion
             )
         )
 
         proveedor.apply {
             nombre = res.nombre
             telefono = res.telefono
-            direccion = res.direccion
             correo = res.correo
+            direccion = res.direccion
         }
     }
 

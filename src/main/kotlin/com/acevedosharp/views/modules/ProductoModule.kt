@@ -6,7 +6,7 @@ import com.acevedosharp.ui_models.Familia
 import com.acevedosharp.ui_models.Producto
 import com.acevedosharp.ui_models.ProductoModel
 import com.acevedosharp.views.MainStylesheet
-import com.acevedosharp.views.SideNavigation
+import com.acevedosharp.views.shared_components.SideNavigation
 import com.acevedosharp.views.UnknownErrorDialog
 import com.acevedosharp.views.helpers.CurrentModule.PRODUCTOS
 import com.acevedosharp.views.helpers.FormType

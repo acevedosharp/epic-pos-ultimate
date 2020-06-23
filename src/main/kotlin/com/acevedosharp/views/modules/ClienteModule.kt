@@ -7,7 +7,7 @@ import com.acevedosharp.views.helpers.FormType
 import com.acevedosharp.views.helpers.FormType.*
 import com.acevedosharp.views.helpers.CurrentModule.*
 import com.acevedosharp.views.MainStylesheet
-import com.acevedosharp.views.SideNavigation
+import com.acevedosharp.views.shared_components.SideNavigation
 import com.acevedosharp.views.UnknownErrorDialog
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty

@@ -1,5 +1,6 @@
-package com.acevedosharp.views
+package com.acevedosharp.views.shared_components
 
+import com.acevedosharp.views.MainStylesheet
 import javafx.geometry.Pos
 import com.acevedosharp.views.helpers.CurrentModule
 import com.acevedosharp.views.helpers.CurrentModule.*
@@ -45,12 +46,12 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
         button("Pedidos") {
             tag = PEDIDOS
             addClass(MainStylesheet.navigationButton, if (tag == currentModule) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
-            graphic = imageview("images/store_logo_icon.png") {
+            graphic = imageview("images/products.png") {
                 fitWidth = 50.0
                 fitHeight = 50.0
             }
             action {
-                root.replaceWith(ProveedorView())
+                root.replaceWith(PedidoView())
             }
         }
         line(startX = 0, endX = 175).style {
