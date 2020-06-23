@@ -2,11 +2,13 @@ package com.acevedosharp.persistence_layer.repository_services
 
 import com.acevedosharp.entities.FamiliaDB
 import com.acevedosharp.persistence_layer.repositories.FamiliaRepo
+import com.acevedosharp.persistence_layer.repository_services.interfaces.BaseRepoService
 import org.springframework.stereotype.Service
 import java.lang.Exception
 
 @Service
-class FamiliaService(val repo: FamiliaRepo): BaseRepoService<FamiliaDB> {
+class FamiliaService(val repo: FamiliaRepo):
+    BaseRepoService<FamiliaDB> {
     override fun all(): List<FamiliaDB> = repo.findAll()
 
     override fun add(item: FamiliaDB): FamiliaDB {

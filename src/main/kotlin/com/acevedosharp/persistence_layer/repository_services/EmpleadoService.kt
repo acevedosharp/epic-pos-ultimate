@@ -2,11 +2,13 @@ package com.acevedosharp.persistence_layer.repository_services
 
 import com.acevedosharp.entities.EmpleadoDB
 import com.acevedosharp.persistence_layer.repositories.EmpleadoRepo
+import com.acevedosharp.persistence_layer.repository_services.interfaces.BaseRepoService
 import org.springframework.stereotype.Service
 import java.lang.Exception
 
 @Service
-class EmpleadoService(val repo: EmpleadoRepo): BaseRepoService<EmpleadoDB> {
+class EmpleadoService(val repo: EmpleadoRepo):
+    BaseRepoService<EmpleadoDB> {
     override fun all(): List<EmpleadoDB> = repo.findAll()
 
     override fun add(item: EmpleadoDB): EmpleadoDB {
