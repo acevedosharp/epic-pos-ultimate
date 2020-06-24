@@ -137,7 +137,7 @@ class ProductoView : View("Módulo de productos") {
     }
 }
 
-class BaseProductoFormField(formType: FormType) : Fragment() {
+class BaseProductoFormView(formType: FormType) : Fragment() {
 
     private val productoController = find<ProductoController>()
     private val familiaController = find<FamiliaController>()
@@ -280,9 +280,9 @@ class BaseProductoFormField(formType: FormType) : Fragment() {
 
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
 class NewProductoFormView: Fragment() {
-    override val root = BaseProductoFormField(CREATE).root
+    override val root = BaseProductoFormView(CREATE).root
 }
 
 class EditProductoFormView: Fragment() {
-    override val root = BaseProductoFormField(EDIT).root
+    override val root = BaseProductoFormView(EDIT).root
 }

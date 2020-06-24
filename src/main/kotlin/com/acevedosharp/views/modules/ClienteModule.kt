@@ -107,7 +107,7 @@ class ClienteView : View("Módulo de clientes") {
     }
 }
 
-class BaseClienteFormField(formType: FormType): Fragment() {
+class BaseClienteFormView(formType: FormType): Fragment() {
 
     private val clienteController = find<ClienteController>()
     private val model = if (formType == CREATE) ClienteModel() else find(ClienteModel::class)
@@ -207,9 +207,9 @@ class BaseClienteFormField(formType: FormType): Fragment() {
 
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
 class NewClienteFormView : Fragment() {
-    override val root = BaseClienteFormField(CREATE).root
+    override val root = BaseClienteFormView(CREATE).root
 }
 
 class EditClienteFormView : Fragment() {
-    override val root = BaseClienteFormField(EDIT).root
+    override val root = BaseClienteFormView(EDIT).root
 }

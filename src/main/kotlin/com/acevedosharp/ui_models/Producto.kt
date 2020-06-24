@@ -36,6 +36,8 @@ class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: Strin
             }
         }
     )
+
+    override fun toString(): String = descCorta
 }
 
 class ProductoModel: ItemViewModel<Producto>() {

@@ -25,23 +25,27 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="Validation:&#10;  - New logic for unique nullable columns.&#10;  - Models can now take null values like the men they are!&#10;&#10;Modules:&#10;  - Empleado module and its respective ui model, controller, repository and repository service implemented.&#10;  - Proveedor module and its respective ui model, controller, repository and repository service implemented.&#10;  &#10;Misc:&#10;  - Minor refactorings.&#10;  - Deleted unused imports.&#10;  - activo is not a column of EmpleadoDB anymore (no need). Will update erd in the following commit.">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/LoteController.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/PedidoController.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/LoteService.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/PedidoService.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/interfaces/BatchSaving.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/interfaces/NonEditableRepoService.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Lote.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Pedido.kt" afterDir="false" />
+    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="Fixed missing @Service annotation">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/CurrentUncommittedLotes.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repositories/LoteRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repositories/LoteRepo.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/BaseRepoService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/interfaces/BaseRepoService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/ClienteService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/ClienteService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/EmpleadoService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/EmpleadoService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/FamiliaService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/FamiliaService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/ProductoService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/ProductoService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/PedidoController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/PedidoController.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/ProveedorService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/ProveedorService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Lote.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Lote.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Pedido.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Pedido.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Producto.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Producto.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/MainStylesheet.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/MainStylesheet.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/ClienteModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/ClienteModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/EmpleadoModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/EmpleadoModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/FamiliaModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/FamiliaModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PedidoModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PedidoModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/ProductoModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/ProductoModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/ProveedorModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/ProveedorModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/shared_components/PedidoDisplay.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/shared_components/PedidoDisplay.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,9 +98,9 @@
         <option value="Class" />
         <option value="TornadoFX FXML View" />
         <option value="TornadoFX FXML ViewResource" />
+        <option value="Kotlin Interface" />
         <option value="Kotlin File" />
         <option value="Kotlin Class" />
-        <option value="Kotlin Interface" />
       </list>
     </option>
   </component>
@@ -142,6 +146,16 @@
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
+    <key name="CreateKotlinClassDialog.RecentsKey">
+      <recent name="com.acevedosharp.controllers" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin\com\acevedosharp\views\shared_components" />
+      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin\com\acevedosharp\views\modules" />
+      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\resources\images" />
+      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\local_database" />
+      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin\com\acevedosharp" />
+    </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
       <recent name="com.acevedosharp.persistence_layer.repository_services.interfaces" />
       <recent name="com.acevedosharp.views.helpers" />
@@ -149,23 +163,16 @@
       <recent name="com.acevedosharp.validation_helpers" />
       <recent name="com.acevedosharp" />
     </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.acevedosharp" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin\com\acevedosharp\views\modules" />
       <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\resources\images" />
       <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin" />
     </key>
-    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
-      <recent name="com.acevedosharp" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin\com\acevedosharp\views\modules" />
-      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\resources\images" />
-      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\local_database" />
-      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin\com\acevedosharp" />
-      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin\com\acevedosharp\views" />
-    </key>
   </component>
-  <component name="RunManager" selected="Gradle.epic_pos_ultimate [clean]">
+  <component name="RunManager" selected="Spring Boot.LocalSpringBoot">
     <configuration name="epic_pos_ultimate [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -260,7 +267,8 @@
       <workItem from="1592627420144" duration="604000" />
       <workItem from="1592683657499" duration="12570000" />
       <workItem from="1592935373558" duration="388000" />
-      <workItem from="1592935859054" duration="5310000" />
+      <workItem from="1592935859054" duration="14393000" />
+      <workItem from="1592971396503" duration="11973000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit: Brand new TornadoFX app to replace the epic-point-of-sale. Implemented the Producto module.">
       <created>1591730038419</created>
@@ -395,7 +403,21 @@
       <option name="project" value="LOCAL" />
       <updated>1592709791175</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Pedido and Lote controllers, repo services and new Interface declarations">
+      <created>1592941971265</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1592941971265</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Fixed missing @Service annotation">
+      <created>1592943925411</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1592943925411</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -445,7 +467,9 @@
     <MESSAGE value="New validation logic, now works! Familia module added." />
     <MESSAGE value="Streamlined relational data within the app ui models, including Familia to Productos. Will probably have to rewrite the whole controller and data accessing from the ui implementation some time soon when the inevitable happens!" />
     <MESSAGE value="Validation:&#10;  - New logic for unique nullable columns.&#10;  - Models can now take null values like the men they are!&#10;&#10;Modules:&#10;  - Empleado module and its respective ui model, controller, repository and repository service implemented.&#10;  - Proveedor module and its respective ui model, controller, repository and repository service implemented.&#10;  &#10;Misc:&#10;  - Minor refactorings.&#10;  - Deleted unused imports.&#10;  - activo is not a column of EmpleadoDB anymore (no need). Will update erd in the following commit." />
-    <option name="LAST_COMMIT_MESSAGE" value="Validation:&#10;  - New logic for unique nullable columns.&#10;  - Models can now take null values like the men they are!&#10;&#10;Modules:&#10;  - Empleado module and its respective ui model, controller, repository and repository service implemented.&#10;  - Proveedor module and its respective ui model, controller, repository and repository service implemented.&#10;  &#10;Misc:&#10;  - Minor refactorings.&#10;  - Deleted unused imports.&#10;  - activo is not a column of EmpleadoDB anymore (no need). Will update erd in the following commit." />
+    <MESSAGE value="Pedido and Lote controllers, repo services and new Interface declarations" />
+    <MESSAGE value="Fixed missing @Service annotation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed missing @Service annotation" />
   </component>
   <component name="WindowStateProjectService">
     <state x="859" y="431" key="#Assign_Data_Sources" timestamp="1592422162658">
@@ -468,10 +492,14 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="1172" y="256" key="#com.intellij.ide.macro.MacrosDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1591611880991" />
-    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser" timestamp="1592939416987">
+    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser" timestamp="1592981888159">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser/62.0.1858.1080@62.0.1858.1080" timestamp="1592939416987" />
+    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser/62.0.1858.1080@62.0.1858.1080" timestamp="1592981888159" />
+    <state x="690" y="315" key="#com.intellij.ide.util.PackageChooserDialog" timestamp="1592979958241">
+      <screen x="62" y="0" width="1858" height="1080" />
+    </state>
+    <state x="690" y="315" key="#com.intellij.ide.util.PackageChooserDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1592979958241" />
     <state x="1022" y="331" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1592427958299">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
@@ -516,38 +544,38 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="771" y="281" key="FileChooserDialogImpl/62.0.1858.1080@62.0.1858.1080" timestamp="1592583548673" />
-    <state width="1876" height="209" key="GridCell.Tab.0.bottom" timestamp="1592709810674">
+    <state width="1876" height="348" key="GridCell.Tab.0.bottom" timestamp="1592986611410">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="209" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1592709810674" />
-    <state width="1876" height="209" key="GridCell.Tab.0.center" timestamp="1592709810674">
+    <state width="1876" height="348" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1592986611410" />
+    <state width="1876" height="348" key="GridCell.Tab.0.center" timestamp="1592986611410">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="209" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1592709810674" />
-    <state width="1876" height="209" key="GridCell.Tab.0.left" timestamp="1592709810674">
+    <state width="1876" height="348" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1592986611410" />
+    <state width="1876" height="348" key="GridCell.Tab.0.left" timestamp="1592986611394">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="209" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1592709810674" />
-    <state width="1876" height="209" key="GridCell.Tab.0.right" timestamp="1592709810674">
+    <state width="1876" height="348" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1592986611394" />
+    <state width="1876" height="348" key="GridCell.Tab.0.right" timestamp="1592986611410">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="209" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1592709810674" />
-    <state width="1876" height="209" key="GridCell.Tab.1.bottom" timestamp="1592709810675">
+    <state width="1876" height="348" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1592986611410" />
+    <state width="1876" height="348" key="GridCell.Tab.1.bottom" timestamp="1592986611410">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="209" key="GridCell.Tab.1.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1592709810675" />
-    <state width="1876" height="209" key="GridCell.Tab.1.center" timestamp="1592709810675">
+    <state width="1876" height="348" key="GridCell.Tab.1.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1592986611410" />
+    <state width="1876" height="348" key="GridCell.Tab.1.center" timestamp="1592986611410">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="209" key="GridCell.Tab.1.center/62.0.1858.1080@62.0.1858.1080" timestamp="1592709810675" />
-    <state width="1876" height="209" key="GridCell.Tab.1.left" timestamp="1592709810674">
+    <state width="1876" height="348" key="GridCell.Tab.1.center/62.0.1858.1080@62.0.1858.1080" timestamp="1592986611410" />
+    <state width="1876" height="348" key="GridCell.Tab.1.left" timestamp="1592986611410">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="209" key="GridCell.Tab.1.left/62.0.1858.1080@62.0.1858.1080" timestamp="1592709810674" />
-    <state width="1876" height="209" key="GridCell.Tab.1.right" timestamp="1592709810675">
+    <state width="1876" height="348" key="GridCell.Tab.1.left/62.0.1858.1080@62.0.1858.1080" timestamp="1592986611410" />
+    <state width="1876" height="348" key="GridCell.Tab.1.right" timestamp="1592986611410">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="209" key="GridCell.Tab.1.right/62.0.1858.1080@62.0.1858.1080" timestamp="1592709810675" />
+    <state width="1876" height="348" key="GridCell.Tab.1.right/62.0.1858.1080@62.0.1858.1080" timestamp="1592986611410" />
     <state width="196" height="457" key="HiddenNamespacesPopup" timestamp="1592422844230">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
@@ -564,10 +592,10 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state width="498" height="446" key="SwitcherDM/62.0.1858.1080@62.0.1858.1080" timestamp="1591843895456" />
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1592709794065">
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1592943927117">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1592709794065" />
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1592943927117" />
     <state x="890" y="412" width="202" height="280" key="com.intellij.database.actions.DdlActions$CreateObject$1" timestamp="1592422172308">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>

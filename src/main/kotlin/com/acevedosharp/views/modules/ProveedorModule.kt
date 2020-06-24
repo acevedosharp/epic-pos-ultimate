@@ -108,7 +108,7 @@ class ProveedorView : View("Módulo de proveedores") {
     }
 }
 
-class BaseProveedorFormField(formType: FormType): Fragment() {
+class BaseProveedorFormView(formType: FormType): Fragment() {
 
     private val proveedorController = find<ProveedorController>()
     private val model = if (formType == CREATE) ProveedorModel() else find(ProveedorModel::class)
@@ -220,9 +220,9 @@ class BaseProveedorFormField(formType: FormType): Fragment() {
 
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
 class NewProveedorFormView : Fragment() {
-    override val root = BaseProveedorFormField(CREATE).root
+    override val root = BaseProveedorFormView(CREATE).root
 }
 
 class EditProveedorFormView : Fragment() {
-    override val root = BaseProveedorFormField(EDIT).root
+    override val root = BaseProveedorFormView(EDIT).root
 }

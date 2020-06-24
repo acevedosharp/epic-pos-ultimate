@@ -106,7 +106,7 @@ class EmpleadoView : View("Módulo de empleados") {
     }
 }
 
-class BaseEmpleadoFormField(formType: FormType): Fragment() {
+class BaseEmpleadoFormView(formType: FormType): Fragment() {
 
     private val empleadoController = find<EmpleadoController>()
     private val model = if (formType == CREATE) EmpleadoModel() else find(EmpleadoModel::class)
@@ -197,9 +197,9 @@ class BaseEmpleadoFormField(formType: FormType): Fragment() {
 
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
 class NewEmpleadoFormView : Fragment() {
-    override val root = BaseEmpleadoFormField(CREATE).root
+    override val root = BaseEmpleadoFormView(CREATE).root
 }
 
 class EditEmpleadoFormView : Fragment() {
-    override val root = BaseEmpleadoFormField(EDIT).root
+    override val root = BaseEmpleadoFormView(EDIT).root
 }

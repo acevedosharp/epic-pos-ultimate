@@ -15,6 +15,8 @@ class Lote(var id: Int?, cantidad: Int, precioCompra: Int, producto: Producto) {
 
     val productoProperty = SimpleObjectProperty<Producto>(this, "producto", producto)
     var producto by productoProperty
+
+    fun productoDescCorta(): String = producto.descCorta
 }
 
 class LoteModel: ItemViewModel<Lote>() {

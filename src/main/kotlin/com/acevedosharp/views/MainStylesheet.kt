@@ -20,6 +20,7 @@ class MainStylesheet: Stylesheet() {
         val greenButton      by cssclass()
         val blueButton       by cssclass()
         val redButton        by cssclass()
+        val grayButton       by cssclass()
         val navigationButton by cssclass()
         val selectedButton   by cssclass()
         val unselectedButton by cssclass()
@@ -174,6 +175,35 @@ class MainStylesheet: Stylesheet() {
             }
             and(pressed) {
                 backgroundColor += c("#9b3e3f")
+            }
+        }
+
+        grayButton {
+            borderColor += box(c("#545454"))
+            backgroundColor += LinearGradient(
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                true,
+                CycleMethod.NO_CYCLE,
+                Stop(0.0, c("#8a8a8a")),
+                Stop(1.0, c("#707070"))
+            )
+            and(hover) {
+                backgroundColor += LinearGradient(
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                    true,
+                    CycleMethod.NO_CYCLE,
+                    Stop(0.0, c("#7d7d7d")),
+                    Stop(1.0, c("#616161"))
+                )
+            }
+            and(pressed) {
+                backgroundColor += c("#575757")
             }
         }
         navigationButton {

@@ -10,6 +10,7 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
+import java.sql.Timestamp
 
 class PedidoController: Controller() {
 
@@ -35,7 +36,7 @@ class PedidoController: Controller() {
         pedidoService.all().map { dbObject: PedidoDB ->
             Pedido(
                 dbObject.pedidoId,
-                dbObject.fechaHora,
+                dbObject.fechaHora.toLocalDateTime(),
                 proveedorController.proveedores.first { it.id == dbObject.proveedor.proveedorId },
                 empleadoController.empleados.first { it.id == dbObject.empleado.empleadoId }
             )
@@ -46,7 +47,7 @@ class PedidoController: Controller() {
         val preRes = pedidoService.add(
             PedidoDB(
                 null,
-                pedido.fechaHora,
+                Timestamp.valueOf(pedido.fechaHora),
                 proveedorService.repo.findByIdOrNull(pedido.proveedor.id),
                 empleadoService.repo.findByIdOrNull(pedido.empleado.id),
                 setOf<LoteDB>()
@@ -55,7 +56,7 @@ class PedidoController: Controller() {
 
         pedidos.add(pedido.apply { id = preRes.pedidoId })
 
-        val lotesDB = loteService.addAll(lotes.map {
+        loteService.addAll(lotes.map {
             LoteDB(
                 null,
                 it.cantidad,

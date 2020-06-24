@@ -17,8 +17,8 @@ class ProveedorService(val repo: ProveedorRepo):
             repo.existsByTelefono(item.telefono)                             -> throw Exception()
             !item.correo.isNullOrBlank() && repo.existsByCorreo(item.correo) -> throw Exception()
             else -> return repo.save(item.apply {
-                if (item.correo.isEmpty()) correo = null
-                if (item.direccion.isEmpty()) direccion = null
+                if (item.correo.isNullOrBlank()) correo = null
+                if (item.direccion.isNullOrBlank()) direccion = null
             })
         }
     }
@@ -29,8 +29,8 @@ class ProveedorService(val repo: ProveedorRepo):
             (repo.existsByTelefono(item.telefono)) && (repo.findByTelefono(item.telefono).proveedorId != item.proveedorId)                                   -> throw Exception()
             !item.correo.isNullOrBlank() && ((repo.existsByCorreo(item.correo))     && (repo.findByCorreo(item.correo).proveedorId     != item.proveedorId)) -> throw Exception()
             else -> return repo.save(item.apply {
-                if (item.correo.isEmpty()) correo = null
-                if (item.direccion.isEmpty()) direccion = null
+                if (item.correo.isNullOrBlank()) correo = null
+                if (item.direccion.isNullOrBlank()) direccion = null
             })
         }
     }

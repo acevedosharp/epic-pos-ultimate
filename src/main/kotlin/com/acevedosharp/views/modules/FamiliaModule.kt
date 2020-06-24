@@ -105,7 +105,7 @@ class FamiliaView : View("Módulo de familias") {
     }
 }
 
-class BaseFamiliaFormField(formType: FormType): Fragment() {
+class BaseFamiliaFormView(formType: FormType): Fragment() {
 
     private val familiaController = find<FamiliaController>()
     private val model = if (formType == CREATE) FamiliaModel() else find(FamiliaModel::class)
@@ -183,9 +183,9 @@ class BaseFamiliaFormField(formType: FormType): Fragment() {
 
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
 class NewFamiliaFormView: Fragment() {
-    override val root = BaseFamiliaFormField(CREATE).root
+    override val root = BaseFamiliaFormView(CREATE).root
 }
 
 class EditFamiliaFormView: Fragment() {
-    override val root = BaseFamiliaFormField(EDIT).root
+    override val root = BaseFamiliaFormView(EDIT).root
 }
