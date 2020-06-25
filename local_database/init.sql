@@ -126,11 +126,13 @@ create table lote
 # ------------------------ creation of venta table ------------------------
 create table venta
 (
-    venta_id   int auto_increment
+    venta_id      int auto_increment
         primary key,
-    fecha_hora datetime not null,
-    empleado   int      not null,
-    cliente    int      not null,
+    fecha_hora   datetime not null,
+    precio_total  int      not null,
+    pago_recibido int      not null,
+    empleado      int      not null,
+    cliente       int      not null,
     constraint venta_cliente_cliente_id_fk
         foreign key (cliente) references cliente (cliente_id)
             on update cascade,
