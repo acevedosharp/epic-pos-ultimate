@@ -25,10 +25,9 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="Almost completed the ui of punto de venta!">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/CodigoNotRecognizedDialog.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="Bar code reader now works!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/UncommittedItemVenta.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/UncommittedItemVenta.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PuntoDeVentaModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PuntoDeVentaModule.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/shared_components/ItemVentaComponent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/shared_components/ItemVentaComponent.kt" afterDir="false" />
     </list>
@@ -259,7 +258,8 @@
       <workItem from="1592935373558" duration="388000" />
       <workItem from="1592935859054" duration="14393000" />
       <workItem from="1592971396503" duration="12208000" />
-      <workItem from="1593020429839" duration="26696000" />
+      <workItem from="1593020429839" duration="27019000" />
+      <workItem from="1593061037980" duration="6856000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit: Brand new TornadoFX app to replace the epic-point-of-sale. Implemented the Producto module.">
       <created>1591730038419</created>
@@ -422,7 +422,14 @@
       <option name="project" value="LOCAL" />
       <updated>1593046971788</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Bar code reader now works!">
+      <created>1593055969138</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1593055969138</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -476,7 +483,8 @@
     <MESSAGE value="Fixed missing @Service annotation" />
     <MESSAGE value="Full implementation of the Pedido module and all it takes to make it work.&#10;Fixed the Proveedor bug and small refactors" />
     <MESSAGE value="Almost completed the ui of punto de venta!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Almost completed the ui of punto de venta!" />
+    <MESSAGE value="Bar code reader now works!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bar code reader now works!" />
   </component>
   <component name="WindowStateProjectService">
     <state x="859" y="431" key="#Assign_Data_Sources" timestamp="1592422162658">
@@ -551,38 +559,38 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="771" y="281" key="FileChooserDialogImpl/62.0.1858.1080@62.0.1858.1080" timestamp="1592583548673" />
-    <state width="1876" height="474" key="GridCell.Tab.0.bottom" timestamp="1593055673935">
+    <state width="1876" height="265" key="GridCell.Tab.0.bottom" timestamp="1593070342321">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="474" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1593055673935" />
-    <state width="1876" height="474" key="GridCell.Tab.0.center" timestamp="1593055673935">
+    <state width="1876" height="265" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342321" />
+    <state width="1876" height="265" key="GridCell.Tab.0.center" timestamp="1593070342320">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="474" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1593055673935" />
-    <state width="1876" height="474" key="GridCell.Tab.0.left" timestamp="1593055673935">
+    <state width="1876" height="265" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342320" />
+    <state width="1876" height="265" key="GridCell.Tab.0.left" timestamp="1593070342320">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="474" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1593055673935" />
-    <state width="1876" height="474" key="GridCell.Tab.0.right" timestamp="1593055673935">
+    <state width="1876" height="265" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342320" />
+    <state width="1876" height="265" key="GridCell.Tab.0.right" timestamp="1593070342320">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="474" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1593055673935" />
-    <state width="1876" height="474" key="GridCell.Tab.1.bottom" timestamp="1593055673936">
+    <state width="1876" height="265" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342320" />
+    <state width="1876" height="265" key="GridCell.Tab.1.bottom" timestamp="1593070342321">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="474" key="GridCell.Tab.1.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1593055673936" />
-    <state width="1876" height="474" key="GridCell.Tab.1.center" timestamp="1593055673935">
+    <state width="1876" height="265" key="GridCell.Tab.1.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342321" />
+    <state width="1876" height="265" key="GridCell.Tab.1.center" timestamp="1593070342321">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="474" key="GridCell.Tab.1.center/62.0.1858.1080@62.0.1858.1080" timestamp="1593055673935" />
-    <state width="1876" height="474" key="GridCell.Tab.1.left" timestamp="1593055673935">
+    <state width="1876" height="265" key="GridCell.Tab.1.center/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342321" />
+    <state width="1876" height="265" key="GridCell.Tab.1.left" timestamp="1593070342321">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="474" key="GridCell.Tab.1.left/62.0.1858.1080@62.0.1858.1080" timestamp="1593055673935" />
-    <state width="1876" height="474" key="GridCell.Tab.1.right" timestamp="1593055673936">
+    <state width="1876" height="265" key="GridCell.Tab.1.left/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342321" />
+    <state width="1876" height="265" key="GridCell.Tab.1.right" timestamp="1593070342321">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="474" key="GridCell.Tab.1.right/62.0.1858.1080@62.0.1858.1080" timestamp="1593055673936" />
+    <state width="1876" height="265" key="GridCell.Tab.1.right/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342321" />
     <state width="196" height="457" key="HiddenNamespacesPopup" timestamp="1592422844230">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
@@ -599,10 +607,10 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state width="498" height="446" key="SwitcherDM/62.0.1858.1080@62.0.1858.1080" timestamp="1591843895456" />
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1593046975519">
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1593055977214">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1593046975519" />
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1593055977214" />
     <state x="890" y="412" width="202" height="280" key="com.intellij.database.actions.DdlActions$CreateObject$1" timestamp="1592422172308">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>

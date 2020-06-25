@@ -14,7 +14,7 @@ import tornadofx.*
 
 class ItemVentaComponent(uncommittedItemVenta: UncommittedItemVenta, observableList: ObservableList<ItemVentaComponent>, index: Int) : Fragment() {
     val producto = uncommittedItemVenta.producto // Not observable
-    val cantidad = uncommittedItemVenta.cantidad // Observable
+    val cantidad = uncommittedItemVenta.cantidadProperty // Observable
     val indexProperty = SimpleIntegerProperty(index)
 
     override val root = region {

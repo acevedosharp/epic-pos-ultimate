@@ -1,23 +1,24 @@
 package com.acevedosharp.views.modules
 
 import com.acevedosharp.controllers.ProductoController
-import com.acevedosharp.ui_models.UncommittedItemVenta
+import com.acevedosharp.ui_models.*
 import com.acevedosharp.views.CodigoNotRecognizedDialog
 import com.acevedosharp.views.MainStylesheet
+import com.acevedosharp.views.UnknownErrorDialog
 import com.acevedosharp.views.helpers.CurrentModule
 import com.acevedosharp.views.shared_components.ItemVentaComponent
 import com.acevedosharp.views.shared_components.SideNavigation
-import javafx.application.Platform
 import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
+import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import javafx.scene.Node
+import javafx.scene.Scene
 import javafx.scene.control.TextField
 import javafx.scene.layout.Priority
-import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.paint.LinearGradient
 import javafx.scene.paint.Stop
@@ -30,10 +31,13 @@ class PuntoDeVentaView : View("Punto de venta") {
 
     private val productoController = find<ProductoController>()
     private val view = this
+    private lateinit var scene: Scene
+    private lateinit var listener: ChangeListener<Node>
 
     private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> = FXCollections.observableArrayList()
     private val uncommittedItems: ObservableList<Node> = FXCollections.observableArrayList()
     private val dineroEntregado = SimpleIntegerProperty()
+    private val valorTotal = SimpleIntegerProperty()
     private val currentCodigo = SimpleStringProperty()
 
     private lateinit var currentCodigoTextField: TextField
@@ -51,17 +55,24 @@ class PuntoDeVentaView : View("Punto de venta") {
                 node.indexProperty.set(index)
             }
             uncommittedItems.setAll(uncommittedItemsAsViews.map { it.root })
+            recalculateTotal()
         }
         uncommittedItems.setAll(uncommittedItemsAsViews.map { it.root })
 
         // Let's hope the scene doesn't take longer than this to load
         runLater(Duration.millis(650.0)) {
             currentCodigoTextField.requestFocus()
-            this.currentStage!!.scene.focusOwnerProperty().onChange {
+            scene = this.currentStage!!.scene
+            listener = ChangeListener<Node> { _, _, _ ->
                 if (!currentCodigoTextField.isFocused)
                     currentCodigoTextField.requestFocus()
             }
+            addAlwaysFocusListener()
         }
+    }
+
+    private fun recalculateTotal() {
+        valorTotal.set(uncommittedItemsAsViews.sumBy { it.cantidad.value * it.producto.precioVenta })
     }
 
     override val root = hbox {
@@ -130,7 +141,7 @@ class PuntoDeVentaView : View("Punto de venta") {
                         }
                     }
                     rectangle(height = 0.0, width = 104.0)
-                    line(0, 0, 0, 90).style {
+                    line(0, 0, 0, 75).style {
                         stroke = c(255, 255, 255, 0.40)
                     }
                     textfield(currentCodigo) {
@@ -152,16 +163,29 @@ class PuntoDeVentaView : View("Punto de venta") {
                                     )
                                 )
                             } else {
-                                openInternalWindow<CodigoNotRecognizedDialog>()
+                                openInternalWindow<CodigoNotRecognizedDialog>(closeButton = false, modal = true)
                             }
                             currentCodigo.set("")
+                            recalculateTotal()
                         }
                     }.style {
                         fontSize = 32.px
                     }
-                    button("\uD83D\uDD0D") { addClass(MainStylesheet.greenButton) }.style {
-                        fontSize = 32.px
-                        textFill = Color.WHITE
+                    button("\uD83D\uDD0D") {
+                        addClass(MainStylesheet.greenButton)
+                        style {
+                            fontSize = 32.px
+                            textFill = Color.WHITE
+                        }
+                        action {
+                            openInternalWindow<CreateItemVentaManuallyForm>(closeButton = false, modal = true, params =
+                                mapOf(
+                                    "observableList" to uncommittedItemsAsViews,
+                                    "papi" to view
+                                )
+                            )
+                            removeAlwaysFocusListener()
+                        }
                     }
 
                 }
@@ -193,7 +217,9 @@ class PuntoDeVentaView : View("Punto de venta") {
                     paddingAll = 8.0
                     prefWidth = 474.0
                     hgrow = Priority.ALWAYS
-                    text("Total: 5600").style { fontSize = 40.px }
+                    text(Bindings.concat("Total: $", valorTotal)).style {
+                        fontSize = 40.px
+                    } // Dollar sign goes before the value?
 
                     textfield(dineroEntregado) {
                         prefWidth = 440.0; maxWidth = 440.0
@@ -214,19 +240,37 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { try { dineroEntregado.set("${dineroEntregado.value}1".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
+                        }.action {
+                            try {
+                                dineroEntregado.set("${dineroEntregado.value}1".toInt())
+                            } catch (e: NumberFormatException) {
+                                dineroEntregado.set(0)
+                            }
+                        }
                         button("2") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { try { dineroEntregado.set("${dineroEntregado.value}2".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
+                        }.action {
+                            try {
+                                dineroEntregado.set("${dineroEntregado.value}2".toInt())
+                            } catch (e: NumberFormatException) {
+                                dineroEntregado.set(0)
+                            }
+                        }
                         button("3") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { try { dineroEntregado.set("${dineroEntregado.value}3".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
+                        }.action {
+                            try {
+                                dineroEntregado.set("${dineroEntregado.value}3".toInt())
+                            } catch (e: NumberFormatException) {
+                                dineroEntregado.set(0)
+                            }
+                        }
                     }
                     hbox(alignment = Pos.TOP_CENTER) {
                         button("4") {
@@ -234,19 +278,37 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { try { dineroEntregado.set("${dineroEntregado.value}4".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
+                        }.action {
+                            try {
+                                dineroEntregado.set("${dineroEntregado.value}4".toInt())
+                            } catch (e: NumberFormatException) {
+                                dineroEntregado.set(0)
+                            }
+                        }
                         button("5") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { try { dineroEntregado.set("${dineroEntregado.value}5".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
+                        }.action {
+                            try {
+                                dineroEntregado.set("${dineroEntregado.value}5".toInt())
+                            } catch (e: NumberFormatException) {
+                                dineroEntregado.set(0)
+                            }
+                        }
                         button("6") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { try { dineroEntregado.set("${dineroEntregado.value}6".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
+                        }.action {
+                            try {
+                                dineroEntregado.set("${dineroEntregado.value}6".toInt())
+                            } catch (e: NumberFormatException) {
+                                dineroEntregado.set(0)
+                            }
+                        }
                     }
                     hbox(alignment = Pos.TOP_CENTER) {
                         button("7") {
@@ -254,19 +316,37 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { try { dineroEntregado.set("${dineroEntregado.value}7".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
+                        }.action {
+                            try {
+                                dineroEntregado.set("${dineroEntregado.value}7".toInt())
+                            } catch (e: NumberFormatException) {
+                                dineroEntregado.set(0)
+                            }
+                        }
                         button("8") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { try { dineroEntregado.set("${dineroEntregado.value}8".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
+                        }.action {
+                            try {
+                                dineroEntregado.set("${dineroEntregado.value}8".toInt())
+                            } catch (e: NumberFormatException) {
+                                dineroEntregado.set(0)
+                            }
+                        }
                         button("9") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { try { dineroEntregado.set("${dineroEntregado.value}9".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
+                        }.action {
+                            try {
+                                dineroEntregado.set("${dineroEntregado.value}9".toInt())
+                            } catch (e: NumberFormatException) {
+                                dineroEntregado.set(0)
+                            }
+                        }
                     }
                     hbox(alignment = Pos.TOP_CENTER) {
                         button("←") { addClass(MainStylesheet.redButton, MainStylesheet.keyButton) }.action {
@@ -281,13 +361,25 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { try { dineroEntregado.set("${dineroEntregado.value}0".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
+                        }.action {
+                            try {
+                                dineroEntregado.set("${dineroEntregado.value}0".toInt())
+                            } catch (e: NumberFormatException) {
+                                dineroEntregado.set(0)
+                            }
+                        }
                         button("00") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { try { dineroEntregado.set("${dineroEntregado.value}00".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
+                        }.action {
+                            try {
+                                dineroEntregado.set("${dineroEntregado.value}00".toInt())
+                            } catch (e: NumberFormatException) {
+                                dineroEntregado.set(0)
+                            }
+                        }
                     }
                     rectangle(width = 0.0, height = 10.0)
                     button("Realizar venta") {
@@ -301,6 +393,95 @@ class PuntoDeVentaView : View("Punto de venta") {
 
                         action {
 
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun addAlwaysFocusListener() {
+        currentCodigoTextField.requestFocus()
+        scene.focusOwnerProperty().addListener(listener)
+    }
+
+    private fun removeAlwaysFocusListener() {
+        scene.focusOwnerProperty().removeListener(listener)
+    }
+}
+
+class CreateItemVentaManuallyForm : Fragment() {
+
+    private val productoController = find<ProductoController>()
+    private val model = UncommittedIVModel()
+    @Suppress("UNCHECKED_CAST")
+    private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> = params["observableList"] as ObservableList<ItemVentaComponent>
+    private val papi: PuntoDeVentaView = params["papi"] as PuntoDeVentaView
+
+    override val root = vbox(spacing = 0) {
+        useMaxSize = true
+        prefWidth = 600.0
+        label("Añadir ítem de venta") {
+            useMaxWidth = true
+            addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
+        }
+        form {
+            fieldset {
+                field("Producto") {
+                    combobox<Producto>(model.producto, productoController.productos).apply {
+                        prefWidth = 400.0
+                        makeAutocompletable(false)
+                    }.validator {
+                        when (it) {
+                            null -> error("Producto requerido")
+                            else -> null
+                        }
+                    }
+
+                }
+                field("Cantidad") {
+                    model.cantidad.value = 1
+                    spinner(
+                        property = model.cantidad,
+                        initialValue = 1,
+                        min = 1,
+                        max = Int.MAX_VALUE,
+                        amountToStepBy = 1,
+                        editable = true
+                    ) {
+                        prefWidth = 400.0
+                    }
+                }
+
+                hbox(spacing = 80, alignment = Pos.CENTER) {
+                    button("Aceptar") {
+                        addClass(
+                            MainStylesheet.coolBaseButton,
+                            MainStylesheet.greenButton,
+                            MainStylesheet.expandedButton
+                        )
+                        action {
+                            try {
+                                model.commit {
+                                    uncommittedItemsAsViews.add(ItemVentaComponent(
+                                        UncommittedItemVenta(model.producto.value, model.cantidad.value.toInt()),
+                                        uncommittedItemsAsViews,
+                                        uncommittedItemsAsViews.size
+                                    ))
+                                    papi.addAlwaysFocusListener()
+                                    close()
+                                }
+                            } catch (e: Exception) {
+                                openInternalWindow(UnknownErrorDialog())
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                    button("Cancelar") {
+                        addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
+                        action {
+                            papi.addAlwaysFocusListener()
+                            close()
                         }
                     }
                 }
