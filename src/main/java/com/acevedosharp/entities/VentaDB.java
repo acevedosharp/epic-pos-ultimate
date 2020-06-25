@@ -10,6 +10,8 @@ public class VentaDB {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private @Id @Column(name = "venta_id") Integer ventaId;
     private @Column(name = "fecha_hora") Timestamp fechaHora;
+    private @Column(name = "precio_total") Integer precioTotal;
+    private @Column(name = "pago_recibido") Integer pagoRecibido;
     private @ManyToOne @JoinColumn(name = "empleado") EmpleadoDB empleado;
     private @ManyToOne @JoinColumn(name = "cliente") ClienteDB clienteDB;
     private @OneToMany(mappedBy = "venta", fetch = FetchType.LAZY, cascade = CascadeType.ALL) Set<ItemVentaDB> items;
@@ -17,9 +19,11 @@ public class VentaDB {
     public VentaDB() {
     }
 
-    public VentaDB(Integer ventaId, Timestamp fechaHora, EmpleadoDB empleado, ClienteDB clienteDB, Set<ItemVentaDB> items) {
+    public VentaDB(Integer ventaId, Timestamp fechaHora, Integer precioTotal, Integer pagoRecibido, EmpleadoDB empleado, ClienteDB clienteDB, Set<ItemVentaDB> items) {
         this.ventaId = ventaId;
         this.fechaHora = fechaHora;
+        this.precioTotal = precioTotal;
+        this.pagoRecibido = pagoRecibido;
         this.empleado = empleado;
         this.clienteDB = clienteDB;
         this.items = items;
@@ -59,5 +63,21 @@ public class VentaDB {
 
     public void setItems(Set<ItemVentaDB> items) {
         this.items = items;
+    }
+
+    public Integer getPrecioTotal() {
+        return precioTotal;
+    }
+
+    public void setPrecioTotal(Integer precioTotal) {
+        this.precioTotal = precioTotal;
+    }
+
+    public Integer getPagoRecibido() {
+        return pagoRecibido;
+    }
+
+    public void setPagoRecibido(Integer pagoRecibido) {
+        this.pagoRecibido = pagoRecibido;
     }
 }
