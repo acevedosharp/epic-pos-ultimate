@@ -2,10 +2,12 @@ package com.acevedosharp.views.modules
 
 import com.acevedosharp.controllers.ProductoController
 import com.acevedosharp.ui_models.UncommittedItemVenta
+import com.acevedosharp.views.CodigoNotRecognizedDialog
 import com.acevedosharp.views.MainStylesheet
 import com.acevedosharp.views.helpers.CurrentModule
 import com.acevedosharp.views.shared_components.ItemVentaComponent
 import com.acevedosharp.views.shared_components.SideNavigation
+import javafx.application.Platform
 import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
@@ -13,6 +15,7 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import javafx.scene.Node
+import javafx.scene.control.TextField
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
@@ -20,6 +23,7 @@ import javafx.scene.paint.LinearGradient
 import javafx.scene.paint.Stop
 import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
+import javafx.util.Duration
 import tornadofx.*
 
 class PuntoDeVentaView : View("Punto de venta") {
@@ -32,8 +36,16 @@ class PuntoDeVentaView : View("Punto de venta") {
     private val dineroEntregado = SimpleIntegerProperty()
     private val currentCodigo = SimpleStringProperty()
 
+    private lateinit var currentCodigoTextField: TextField
+
     init {
-        uncommittedItemsAsViews.setAll(productoController.productos.mapIndexed { index, producto -> ItemVentaComponent(UncommittedItemVenta(producto, 1), uncommittedItemsAsViews, index)})
+        uncommittedItemsAsViews.setAll(productoController.productos.mapIndexed { index, producto ->
+            ItemVentaComponent(
+                UncommittedItemVenta(producto, 1),
+                uncommittedItemsAsViews,
+                index
+            )
+        })
         uncommittedItemsAsViews.onChange {
             uncommittedItemsAsViews.forEachIndexed { index, node: ItemVentaComponent ->
                 node.indexProperty.set(index)
@@ -41,6 +53,15 @@ class PuntoDeVentaView : View("Punto de venta") {
             uncommittedItems.setAll(uncommittedItemsAsViews.map { it.root })
         }
         uncommittedItems.setAll(uncommittedItemsAsViews.map { it.root })
+
+        // Let's hope the scene doesn't take longer than this to load
+        runLater(Duration.millis(650.0)) {
+            currentCodigoTextField.requestFocus()
+            this.currentStage!!.scene.focusOwnerProperty().onChange {
+                if (!currentCodigoTextField.isFocused)
+                    currentCodigoTextField.requestFocus()
+            }
+        }
     }
 
     override val root = hbox {
@@ -112,7 +133,30 @@ class PuntoDeVentaView : View("Punto de venta") {
                     line(0, 0, 0, 90).style {
                         stroke = c(255, 255, 255, 0.40)
                     }
-                    textfield(currentCodigo).style {
+                    textfield(currentCodigo) {
+                        currentCodigoTextField = this
+                        prefWidth = 500.0
+                        setOnAction {
+                            if (currentCodigo.value in uncommittedItemsAsViews.map { it.producto.codigo }) {
+                                val res = uncommittedItemsAsViews.find { it.producto.codigo == currentCodigo.value }!!
+                                res.cantidad.set(res.cantidad.value + 1)
+                            } else if (currentCodigo.value in productoController.productos.map { it.codigo }) {
+                                uncommittedItemsAsViews.add(
+                                    ItemVentaComponent(
+                                        UncommittedItemVenta(
+                                            productoController.productos.firstOrNull { it.codigo == currentCodigo.value }!!,
+                                            1
+                                        ),
+                                        uncommittedItemsAsViews,
+                                        uncommittedItemsAsViews.size
+                                    )
+                                )
+                            } else {
+                                openInternalWindow<CodigoNotRecognizedDialog>()
+                            }
+                            currentCodigo.set("")
+                        }
+                    }.style {
                         fontSize = 32.px
                     }
                     button("\uD83D\uDD0D") { addClass(MainStylesheet.greenButton) }.style {
@@ -170,19 +214,19 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { dineroEntregado.set("${dineroEntregado.value}1".toInt()) }
+                        }.action { try { dineroEntregado.set("${dineroEntregado.value}1".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
                         button("2") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { dineroEntregado.set("${dineroEntregado.value}2".toInt()) }
+                        }.action { try { dineroEntregado.set("${dineroEntregado.value}2".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
                         button("3") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { dineroEntregado.set("${dineroEntregado.value}3".toInt()) }
+                        }.action { try { dineroEntregado.set("${dineroEntregado.value}3".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
                     }
                     hbox(alignment = Pos.TOP_CENTER) {
                         button("4") {
@@ -190,19 +234,19 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { dineroEntregado.set("${dineroEntregado.value}4".toInt()) }
+                        }.action { try { dineroEntregado.set("${dineroEntregado.value}4".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
                         button("5") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { dineroEntregado.set("${dineroEntregado.value}5".toInt()) }
+                        }.action { try { dineroEntregado.set("${dineroEntregado.value}5".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
                         button("6") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { dineroEntregado.set("${dineroEntregado.value}6".toInt()) }
+                        }.action { try { dineroEntregado.set("${dineroEntregado.value}6".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
                     }
                     hbox(alignment = Pos.TOP_CENTER) {
                         button("7") {
@@ -210,19 +254,19 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { dineroEntregado.set("${dineroEntregado.value}7".toInt()) }
+                        }.action { try { dineroEntregado.set("${dineroEntregado.value}7".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
                         button("8") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { dineroEntregado.set("${dineroEntregado.value}8".toInt()) }
+                        }.action { try { dineroEntregado.set("${dineroEntregado.value}8".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
                         button("9") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { dineroEntregado.set("${dineroEntregado.value}9".toInt()) }
+                        }.action { try { dineroEntregado.set("${dineroEntregado.value}9".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
                     }
                     hbox(alignment = Pos.TOP_CENTER) {
                         button("←") { addClass(MainStylesheet.redButton, MainStylesheet.keyButton) }.action {
@@ -237,13 +281,13 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { dineroEntregado.set("${dineroEntregado.value}0".toInt()) }
+                        }.action { try { dineroEntregado.set("${dineroEntregado.value}0".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
                         button("00") {
                             addClass(
                                 MainStylesheet.grayButton,
                                 MainStylesheet.keyButton
                             )
-                        }.action { dineroEntregado.set("${dineroEntregado.value}00".toInt()) }
+                        }.action { try { dineroEntregado.set("${dineroEntregado.value}00".toInt()) } catch (e: NumberFormatException) { dineroEntregado.set(0) } }
                     }
                     rectangle(width = 0.0, height = 10.0)
                     button("Realizar venta") {
