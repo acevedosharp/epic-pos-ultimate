@@ -18,7 +18,6 @@ import javafx.geometry.Pos
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
-import javafx.scene.text.TextAlignment
 import tornadofx.*
 
 class ProductoView : View("Módulo de productos") {
@@ -107,11 +106,6 @@ class ProductoView : View("Módulo de productos") {
                         column("P. Venta", Producto::precioVentaProperty)
                         column("Existencias", Producto::existenciasProperty)
                         column("Familia", Producto::familiaProperty)
-                        column("Pedidos", Producto::verPedidosButton).style {
-                            alignment = Pos.CENTER
-                            textAlignment = TextAlignment.CENTER
-                            tileAlignment = Pos.CENTER
-                        }
 
                         smartResize()
 

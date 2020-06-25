@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.control.Button
 import com.acevedosharp.views.MainStylesheet
+import com.acevedosharp.views.modules.NewProductoFormView
 import javafx.beans.property.SimpleObjectProperty
 
 class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Int, existencias: Int, familia: Familia?) {
@@ -26,16 +27,6 @@ class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: Strin
 
     val familiaProperty = SimpleObjectProperty<Familia>(this, "familia", familia)
     var familia by familiaProperty
-
-    val verPedidosButton = ReadOnlyObjectWrapper(
-        Button("+").apply {
-            addClass(MainStylesheet.coolBaseButton)
-            addClass(MainStylesheet.greenButton)
-            action {
-                println("You have pressed $descLarga")
-            }
-        }
-    )
 
     override fun toString(): String = descCorta
 }

@@ -1,7 +1,6 @@
 package com.acevedosharp.views
 
 import javafx.geometry.Pos
-import javafx.scene.Cursor
 import javafx.scene.control.ContentDisplay
 import javafx.scene.paint.Color
 import javafx.scene.paint.CycleMethod
@@ -15,6 +14,7 @@ class MainStylesheet: Stylesheet() {
 
     companion object {
         // Buttons
+        val keyButton        by cssclass()
         val expandedButton   by cssclass()
         val coolBaseButton   by cssclass()
         val greenButton      by cssclass()
@@ -81,6 +81,13 @@ class MainStylesheet: Stylesheet() {
 
         tableCell
 
+        keyButton {
+            prefHeight = 146.px
+            prefWidth = 146.px
+            fontSize = 56.px
+            textFill = Color.WHITE
+            padding = box(4.px)
+        }
         coolBaseButton {
             fontSize = 22.px
             borderRadius += box(4.px)

@@ -1,7 +1,7 @@
 package com.acevedosharp.views.helpers
 
 enum class CurrentModule {
-    VENTAS,
+    PUNTO_DE_VENTA,
     PRODUCTOS,
     PEDIDOS,
     FAMILIAS,

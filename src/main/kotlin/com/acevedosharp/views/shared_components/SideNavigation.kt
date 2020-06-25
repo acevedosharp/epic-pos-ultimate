@@ -18,15 +18,15 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
         line(startX = 0, endX = 185).style {
             stroke = c(255, 255, 255, 0.35)
         }
-        button("Ventas") {
-            val tag = VENTAS
+        button("PdV") {
+            val tag = PUNTO_DE_VENTA
             addClass(MainStylesheet.navigationButton, if (tag == currentModule) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
             graphic = imageview("images/store_logo_icon.png") {
                 fitWidth = 50.0
                 fitHeight = 50.0
             }
             action {
-                root.replaceWith(ProveedorView())
+                root.replaceWith(PuntoDeVentaView())
             }
         }
         line(startX = 0, endX = 175).style {

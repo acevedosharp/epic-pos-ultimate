@@ -56,6 +56,7 @@ class PedidoController: Controller() {
 
         pedidos.add(pedido.apply { id = preRes.pedidoId })
 
+
         loteService.addAll(lotes.map {
             LoteDB(
                 null,
@@ -67,5 +68,4 @@ class PedidoController: Controller() {
         })
     }
 
-    fun lotesFromPedido(id: Int): MutableSet<LoteDB>? = pedidoService.repo.findByIdOrNull(id)?.lotes
 }
