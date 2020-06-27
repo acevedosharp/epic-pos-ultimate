@@ -13,19 +13,19 @@ public class VentaDB {
     private @Column(name = "precio_total") Integer precioTotal;
     private @Column(name = "pago_recibido") Integer pagoRecibido;
     private @ManyToOne @JoinColumn(name = "empleado") EmpleadoDB empleado;
-    private @ManyToOne @JoinColumn(name = "cliente") ClienteDB clienteDB;
+    private @ManyToOne @JoinColumn(name = "cliente") ClienteDB cliente;
     private @OneToMany(mappedBy = "venta", fetch = FetchType.LAZY, cascade = CascadeType.ALL) Set<ItemVentaDB> items;
 
     public VentaDB() {
     }
 
-    public VentaDB(Integer ventaId, Timestamp fechaHora, Integer precioTotal, Integer pagoRecibido, EmpleadoDB empleado, ClienteDB clienteDB, Set<ItemVentaDB> items) {
+    public VentaDB(Integer ventaId, Timestamp fechaHora, Integer precioTotal, Integer pagoRecibido, EmpleadoDB empleado, ClienteDB cliente, Set<ItemVentaDB> items) {
         this.ventaId = ventaId;
         this.fechaHora = fechaHora;
         this.precioTotal = precioTotal;
         this.pagoRecibido = pagoRecibido;
         this.empleado = empleado;
-        this.clienteDB = clienteDB;
+        this.cliente = cliente;
         this.items = items;
     }
 
@@ -49,12 +49,12 @@ public class VentaDB {
         this.empleado = empleado;
     }
 
-    public ClienteDB getClienteDB() {
-        return clienteDB;
+    public ClienteDB getCliente() {
+        return cliente;
     }
 
     public void setClienteDB(ClienteDB clienteDB) {
-        this.clienteDB = clienteDB;
+        this.cliente = cliente;
     }
 
     public Set<ItemVentaDB> getItems() {

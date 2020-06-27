@@ -16,7 +16,7 @@ class ClienteService(val repo: ClienteRepo):
             repo.existsByNombre(item.nombre)     -> throw Exception()
             repo.existsByTelefono(item.telefono) -> throw Exception()
             else -> return repo.save(item.apply {
-                if (item.direccion.isEmpty()) direccion = null
+                if (item.direccion.isNullOrBlank()) direccion = null
             })
         }
     }
@@ -26,7 +26,7 @@ class ClienteService(val repo: ClienteRepo):
             (repo.existsByNombre(item.nombre)    ) && (repo.findByNombre(item.nombre).clienteId     != item.clienteId) -> throw Exception()
             (repo.existsByTelefono(item.telefono)) && (repo.findByTelefono(item.telefono).clienteId != item.clienteId) -> throw Exception()
             else -> return repo.save(item.apply {
-                if (item.direccion.isEmpty()) direccion = null
+                if (item.direccion.isNullOrBlank()) direccion = null
             })
         }
     }

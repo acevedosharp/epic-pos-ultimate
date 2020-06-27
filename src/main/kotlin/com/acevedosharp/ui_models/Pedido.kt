@@ -16,8 +16,8 @@ class Pedido(var id: Int?, fechaHora: LocalDateTime, proveedor: Proveedor, emple
 }
 
 class PedidoModel: ItemViewModel<Pedido>() {
-    val id =        bind(Pedido::id)
+    val id        = bind(Pedido::id)
     val fechaHora = bind(Pedido::fechaHoraProperty)
     val proveedor = bind(Pedido::proveedorProperty)
-    val empleado =  bind(Pedido::empleadoProperty)
+    val empleado  = bind(Pedido::empleadoProperty)
 }

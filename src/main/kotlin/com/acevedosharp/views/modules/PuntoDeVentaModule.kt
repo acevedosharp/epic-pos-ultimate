@@ -1,14 +1,22 @@
 package com.acevedosharp.views.modules
 
+import com.acevedosharp.CustomApplicationContextWrapper
+import com.acevedosharp.controllers.ClienteController
+import com.acevedosharp.controllers.EmpleadoController
 import com.acevedosharp.controllers.ProductoController
+import com.acevedosharp.controllers.VentaController
+import com.acevedosharp.persistence_layer.repository_services.PedidoService
+import com.acevedosharp.persistence_layer.repository_services.VentaService
 import com.acevedosharp.ui_models.*
 import com.acevedosharp.views.CodigoNotRecognizedDialog
 import com.acevedosharp.views.MainStylesheet
 import com.acevedosharp.views.UnknownErrorDialog
 import com.acevedosharp.views.helpers.CurrentModule
+import com.acevedosharp.views.helpers.RecipePrintingService
 import com.acevedosharp.views.shared_components.ItemVentaComponent
 import com.acevedosharp.views.shared_components.SideNavigation
 import javafx.beans.binding.Bindings
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.value.ChangeListener
@@ -25,7 +33,9 @@ import javafx.scene.paint.Stop
 import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
 import javafx.util.Duration
+import org.springframework.data.repository.findByIdOrNull
 import tornadofx.*
+import java.time.LocalDateTime
 
 class PuntoDeVentaView : View("Punto de venta") {
 
@@ -69,10 +79,6 @@ class PuntoDeVentaView : View("Punto de venta") {
             }
             addAlwaysFocusListener()
         }
-    }
-
-    private fun recalculateTotal() {
-        valorTotal.set(uncommittedItemsAsViews.sumBy { it.cantidad.value * it.producto.precioVenta })
     }
 
     override val root = hbox {
@@ -178,7 +184,8 @@ class PuntoDeVentaView : View("Punto de venta") {
                             textFill = Color.WHITE
                         }
                         action {
-                            openInternalWindow<CreateItemVentaManuallyForm>(closeButton = false, modal = true, params =
+                            openInternalWindow<CreateItemVentaManuallyForm>(
+                                closeButton = false, modal = true, params =
                                 mapOf(
                                     "observableList" to uncommittedItemsAsViews,
                                     "papi" to view
@@ -390,14 +397,26 @@ class PuntoDeVentaView : View("Punto de venta") {
                             fontWeight = FontWeight.BOLD
                             textFill = Color.WHITE
                         }
-
                         action {
-
+                            openInternalWindow<CommitVenta>(
+                                closeButton = false, modal = true, params =
+                                mapOf(
+                                    "observableList" to uncommittedItemsAsViews,
+                                    "papi" to view,
+                                    "dineroEntregado" to dineroEntregado.value,
+                                    "valorTotal" to valorTotal.value
+                                )
+                            )
+                            removeAlwaysFocusListener()
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun recalculateTotal() {
+        valorTotal.set(uncommittedItemsAsViews.sumBy { it.cantidad.value * it.producto.precioVenta })
     }
 
     fun addAlwaysFocusListener() {
@@ -414,8 +433,10 @@ class CreateItemVentaManuallyForm : Fragment() {
 
     private val productoController = find<ProductoController>()
     private val model = UncommittedIVModel()
+
     @Suppress("UNCHECKED_CAST")
-    private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> = params["observableList"] as ObservableList<ItemVentaComponent>
+    private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> =
+        params["observableList"] as ObservableList<ItemVentaComponent>
     private val papi: PuntoDeVentaView = params["papi"] as PuntoDeVentaView
 
     override val root = vbox(spacing = 0) {
@@ -463,11 +484,13 @@ class CreateItemVentaManuallyForm : Fragment() {
                         action {
                             try {
                                 model.commit {
-                                    uncommittedItemsAsViews.add(ItemVentaComponent(
-                                        UncommittedItemVenta(model.producto.value, model.cantidad.value.toInt()),
-                                        uncommittedItemsAsViews,
-                                        uncommittedItemsAsViews.size
-                                    ))
+                                    uncommittedItemsAsViews.add(
+                                        ItemVentaComponent(
+                                            UncommittedItemVenta(model.producto.value, model.cantidad.value.toInt()),
+                                            uncommittedItemsAsViews,
+                                            uncommittedItemsAsViews.size
+                                        )
+                                    )
                                     papi.addAlwaysFocusListener()
                                     close()
                                 }
@@ -482,6 +505,111 @@ class CreateItemVentaManuallyForm : Fragment() {
                         action {
                             papi.addAlwaysFocusListener()
                             close()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+class CommitVenta : Fragment() {
+
+    private val printingService =
+        find<CustomApplicationContextWrapper>().context.getBean<RecipePrintingService>(RecipePrintingService::class.java)
+
+    private val empleadoController = find<EmpleadoController>()
+    private val clienteController = find<ClienteController>()
+    private val ventaController = find<VentaController>()
+    private val model = VentaModel()
+
+    @Suppress("UNCHECKED_CAST")
+    private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> = params["observableList"] as ObservableList<ItemVentaComponent>
+    private val papi: PuntoDeVentaView = params["papi"] as PuntoDeVentaView
+    private val dineroEntregado = params["dineroEntregado"] as Int
+    private val valorTotal = params["valorTotal"] as Int
+
+    private val imprimirFactura = SimpleStringProperty("Sí")
+
+    override val root = vbox(spacing = 0) {
+        useMaxSize = true
+        prefWidth = 600.0
+        label("Checkout") {
+            useMaxWidth = true
+            addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
+        }
+        form {
+            fieldset {
+                field("Empleado") {
+                    combobox<Empleado>(model.empleado, empleadoController.empleados).apply {
+                        prefWidth = 400.0
+                        makeAutocompletable(false)
+                    }.validator {
+                        when (it) {
+                            null -> error("Empleado requerido")
+                            else -> null
+                        }
+                    }
+                }
+                field("Cliente") {
+                    combobox<Cliente>(model.cliente, clienteController.clientes).apply {
+                        prefWidth = 400.0
+                        makeAutocompletable(false)
+                    }.validator {
+                        when (it) {
+                            null -> error("Cliente requerido")
+                            else -> null
+                        }
+                    }
+                }
+                field("¿Imprimir factura?") {
+                    combobox<String>(imprimirFactura, listOf("Sí", "No")).apply {
+                        prefWidth = 400.0
+                        makeAutocompletable(false)
+                    }
+                }
+
+                hbox(spacing = 80, alignment = Pos.CENTER) {
+                    button("Aceptar") {
+                        addClass(
+                            MainStylesheet.coolBaseButton,
+                            MainStylesheet.greenButton,
+                            MainStylesheet.expandedButton
+                        )
+                        action {
+                            try {
+                                model.commit {
+                                    // Persistence logic
+                                    val res = ventaController.add(
+                                        Venta(
+                                            null,
+                                            LocalDateTime.now(),
+                                            valorTotal,
+                                            dineroEntregado,
+                                            model.empleado.value,
+                                            model.cliente.value
+                                        ),
+                                        uncommittedItemsAsViews.map {
+                                            UncommittedItemVenta(
+                                                it.producto,
+                                                it.cantidad.value
+                                            )
+                                        }
+                                    )
+
+                                    // Print recipe
+                                    printingService.printRecipe(res)
+
+                                    uncommittedItemsAsViews.clear()
+
+                                    uncommittedItemsAsViews.clear()
+                                    papi.addAlwaysFocusListener()
+                                    close()
+                                }
+                            } catch (e: Exception) {
+                                openInternalWindow(UnknownErrorDialog())
+                                e.printStackTrace()
+                            }
                         }
                     }
                 }

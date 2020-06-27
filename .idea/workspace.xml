@@ -25,11 +25,22 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="Bar code reader now works!">
+    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="Almost there!!!!! Implemented a lot of things that I don't care to write about. Sorry.">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/VentaController.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/ItemVentaService.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/VentaService.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Venta.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/helpers/RecipePrintingService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/UncommittedItemVenta.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/UncommittedItemVenta.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/ItemVentaDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/ItemVentaDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/VentaDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/VentaDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repositories/ItemVentaRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repositories/ItemVentaRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/ClienteService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/ClienteService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/LoteService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/LoteService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Pedido.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Pedido.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PuntoDeVentaModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PuntoDeVentaModule.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/shared_components/ItemVentaComponent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/shared_components/ItemVentaComponent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/shared_components/PedidoDisplay.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/shared_components/PedidoDisplay.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,9 +94,10 @@
         <option value="TornadoFX FXML View" />
         <option value="TornadoFX FXML ViewResource" />
         <option value="Kotlin Interface" />
-        <option value="Kotlin Class" />
         <option value="TornadoFX Code View" />
+        <option value="Kotlin Script" />
         <option value="Kotlin File" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -145,10 +157,10 @@
       <recent name="com.acevedosharp.views" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\local_database" />
       <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin\com\acevedosharp\views\shared_components" />
       <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin\com\acevedosharp\views\modules" />
       <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\resources\images" />
-      <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\local_database" />
       <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin\com\acevedosharp" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -259,7 +271,11 @@
       <workItem from="1592935859054" duration="14393000" />
       <workItem from="1592971396503" duration="12208000" />
       <workItem from="1593020429839" duration="27019000" />
-      <workItem from="1593061037980" duration="6856000" />
+      <workItem from="1593061037980" duration="7006000" />
+      <workItem from="1593103857837" duration="11132000" />
+      <workItem from="1593180621209" duration="1753000" />
+      <workItem from="1593273355147" duration="651000" />
+      <workItem from="1593274384299" duration="7680000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit: Brand new TornadoFX app to replace the epic-point-of-sale. Implemented the Producto module.">
       <created>1591730038419</created>
@@ -429,7 +445,28 @@
       <option name="project" value="LOCAL" />
       <updated>1593055969138</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Always focused codigo TextField, added logic for adding and removing the focus listener and minor changes">
+      <created>1593070474805</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1593070474805</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Modified venta table. Change reflected on the erd.">
+      <created>1593117393133</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1593117393133</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Missing mapping on VentaDB">
+      <created>1593117566432</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1593117566432</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -460,9 +497,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Initial commit: Brand new TornadoFX app to replace the epic-point-of-sale. Implemented the Producto module." />
-    <MESSAGE value="Side navigation partial implementation" />
-    <MESSAGE value="Reordered Producto module look a bit and changed SideNav's appearance" />
     <MESSAGE value="Nailed the styling of TableView, a few buttons and the layout." />
     <MESSAGE value="Search feature on Productos" />
     <MESSAGE value="Completed validation in Productos module." />
@@ -484,7 +518,11 @@
     <MESSAGE value="Full implementation of the Pedido module and all it takes to make it work.&#10;Fixed the Proveedor bug and small refactors" />
     <MESSAGE value="Almost completed the ui of punto de venta!" />
     <MESSAGE value="Bar code reader now works!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bar code reader now works!" />
+    <MESSAGE value="Always focused codigo TextField, added logic for adding and removing the focus listener and minor changes" />
+    <MESSAGE value="Modified venta table. Change reflected on the erd." />
+    <MESSAGE value="Missing mapping on VentaDB" />
+    <MESSAGE value="Almost there!!!!! Implemented a lot of things that I don't care to write about. Sorry." />
+    <option name="LAST_COMMIT_MESSAGE" value="Almost there!!!!! Implemented a lot of things that I don't care to write about. Sorry." />
   </component>
   <component name="WindowStateProjectService">
     <state x="859" y="431" key="#Assign_Data_Sources" timestamp="1592422162658">
@@ -495,10 +533,10 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="879" y="180" key="#Plugins/62.0.1858.1080@62.0.1858.1080" timestamp="1592418266884" />
-    <state x="491" y="246" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1593024140566">
+    <state x="491" y="246" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1593287541997">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="491" y="246" key="#com.intellij.execution.impl.EditConfigurationsDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1593024140566" />
+    <state x="491" y="246" key="#com.intellij.execution.impl.EditConfigurationsDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1593287541997" />
     <state x="772" y="341" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1592428024080">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
@@ -507,10 +545,10 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="1172" y="256" key="#com.intellij.ide.macro.MacrosDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1591611880991" />
-    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser" timestamp="1592981888159">
+    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser" timestamp="1593282477889">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser/62.0.1858.1080@62.0.1858.1080" timestamp="1592981888159" />
+    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser/62.0.1858.1080@62.0.1858.1080" timestamp="1593282477889" />
     <state x="690" y="315" key="#com.intellij.ide.util.PackageChooserDialog" timestamp="1592979958241">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
@@ -531,10 +569,10 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="756" y="421" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.packages/62.0.1858.1080@62.0.1858.1080" timestamp="1592422675228" />
-    <state x="703" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1592940066407">
+    <state x="703" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1593287070432">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="703" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1592940066407" />
+    <state x="703" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1593287070432" />
     <state x="721" y="286" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1592606234099">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
@@ -559,38 +597,38 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="771" y="281" key="FileChooserDialogImpl/62.0.1858.1080@62.0.1858.1080" timestamp="1592583548673" />
-    <state width="1876" height="265" key="GridCell.Tab.0.bottom" timestamp="1593070342321">
+    <state width="1876" height="200" key="GridCell.Tab.0.bottom" timestamp="1593287398959">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="265" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342321" />
-    <state width="1876" height="265" key="GridCell.Tab.0.center" timestamp="1593070342320">
+    <state width="1876" height="200" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1593287398959" />
+    <state width="1876" height="200" key="GridCell.Tab.0.center" timestamp="1593287398958">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="265" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342320" />
-    <state width="1876" height="265" key="GridCell.Tab.0.left" timestamp="1593070342320">
+    <state width="1876" height="200" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1593287398958" />
+    <state width="1876" height="200" key="GridCell.Tab.0.left" timestamp="1593287398958">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="265" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342320" />
-    <state width="1876" height="265" key="GridCell.Tab.0.right" timestamp="1593070342320">
+    <state width="1876" height="200" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1593287398958" />
+    <state width="1876" height="200" key="GridCell.Tab.0.right" timestamp="1593287398959">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="265" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342320" />
-    <state width="1876" height="265" key="GridCell.Tab.1.bottom" timestamp="1593070342321">
+    <state width="1876" height="200" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1593287398959" />
+    <state width="1876" height="200" key="GridCell.Tab.1.bottom" timestamp="1593287398959">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="265" key="GridCell.Tab.1.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342321" />
-    <state width="1876" height="265" key="GridCell.Tab.1.center" timestamp="1593070342321">
+    <state width="1876" height="200" key="GridCell.Tab.1.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1593287398959" />
+    <state width="1876" height="200" key="GridCell.Tab.1.center" timestamp="1593287398959">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="265" key="GridCell.Tab.1.center/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342321" />
-    <state width="1876" height="265" key="GridCell.Tab.1.left" timestamp="1593070342321">
+    <state width="1876" height="200" key="GridCell.Tab.1.center/62.0.1858.1080@62.0.1858.1080" timestamp="1593287398959" />
+    <state width="1876" height="200" key="GridCell.Tab.1.left" timestamp="1593287398959">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="265" key="GridCell.Tab.1.left/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342321" />
-    <state width="1876" height="265" key="GridCell.Tab.1.right" timestamp="1593070342321">
+    <state width="1876" height="200" key="GridCell.Tab.1.left/62.0.1858.1080@62.0.1858.1080" timestamp="1593287398959" />
+    <state width="1876" height="200" key="GridCell.Tab.1.right" timestamp="1593287398959">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state width="1876" height="265" key="GridCell.Tab.1.right/62.0.1858.1080@62.0.1858.1080" timestamp="1593070342321" />
+    <state width="1876" height="200" key="GridCell.Tab.1.right/62.0.1858.1080@62.0.1858.1080" timestamp="1593287398959" />
     <state width="196" height="457" key="HiddenNamespacesPopup" timestamp="1592422844230">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
@@ -607,18 +645,18 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state width="498" height="446" key="SwitcherDM/62.0.1858.1080@62.0.1858.1080" timestamp="1591843895456" />
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1593055977214">
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1593117576748">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1593055977214" />
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1593117576748" />
     <state x="890" y="412" width="202" height="280" key="com.intellij.database.actions.DdlActions$CreateObject$1" timestamp="1592422172308">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="890" y="412" width="202" height="280" key="com.intellij.database.actions.DdlActions$CreateObject$1/62.0.1858.1080@62.0.1858.1080" timestamp="1592422172308" />
-    <state x="821" y="419" width="339" height="248" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1" timestamp="1592707620454">
+    <state x="821" y="419" width="339" height="248" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1" timestamp="1593117311489">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="821" y="419" width="339" height="248" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1/62.0.1858.1080@62.0.1858.1080" timestamp="1592707620454" />
+    <state x="821" y="419" width="339" height="248" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1/62.0.1858.1080@62.0.1858.1080" timestamp="1593117311489" />
     <state x="825" y="208" width="759" height="738" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog" timestamp="1592581981152">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>

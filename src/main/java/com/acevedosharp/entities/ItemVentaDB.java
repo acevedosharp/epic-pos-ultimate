@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "item_venta", schema = "app")
 public class ItemVentaDB {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private @Id @Column(name = "item_venta_id") Integer loteId;
+    private @Id @Column(name = "item_venta_id") Integer itemVentaId;
     private @Column(name = "cantidad") Integer cantidad;
     private @Column(name = "precio_venta") Integer precioVenta;
     private @ManyToOne @JoinColumn(name = "producto") ProductoDB producto;
@@ -15,16 +15,16 @@ public class ItemVentaDB {
     public ItemVentaDB() {
     }
 
-    public ItemVentaDB(Integer loteId, Integer cantidad, Integer precioVenta, ProductoDB producto, VentaDB venta) {
-        this.loteId = loteId;
+    public ItemVentaDB(Integer itemVentaId, Integer cantidad, Integer precioVenta, ProductoDB producto, VentaDB venta) {
+        this.itemVentaId = itemVentaId;
         this.cantidad = cantidad;
         this.precioVenta = precioVenta;
         this.producto = producto;
         this.venta = venta;
     }
 
-    public Integer getLoteId() {
-        return loteId;
+    public Integer getItemVentaId() {
+        return itemVentaId;
     }
 
     public Integer getCantidad() {

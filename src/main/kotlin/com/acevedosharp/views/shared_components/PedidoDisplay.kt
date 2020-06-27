@@ -1,12 +1,9 @@
 package com.acevedosharp.views.shared_components
 
-import com.acevedosharp.entities.PedidoDB
 import com.acevedosharp.ui_models.Pedido
-import com.acevedosharp.views.modules.NewPedidoFormView
 import com.acevedosharp.views.modules.PedidoSummaryView
 import com.acevedosharp.views.modules.PedidoView
 import javafx.geometry.Pos
-import javafx.scene.Node
 import javafx.scene.paint.Color
 import javafx.scene.paint.LinearGradient
 import javafx.scene.paint.Stop
@@ -14,9 +11,7 @@ import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
 import org.springframework.data.repository.findByIdOrNull
 import tornadofx.*
-import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 class PedidoDisplay(val pedido: Pedido, val view: View) : Fragment() {
     override val root = vbox {

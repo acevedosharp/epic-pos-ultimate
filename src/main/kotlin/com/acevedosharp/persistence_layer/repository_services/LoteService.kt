@@ -7,8 +7,7 @@ import com.acevedosharp.persistence_layer.repository_services.interfaces.NonEdit
 import org.springframework.stereotype.Service
 
 @Service
-class LoteService(val repo: LoteRepo): NonEditableRepoService<LoteDB>,
-    BatchSaving<LoteDB> {
+class LoteService(val repo: LoteRepo): NonEditableRepoService<LoteDB>, BatchSaving<LoteDB> {
     override fun all(): List<LoteDB> = repo.findAll()
 
     override fun add(item: LoteDB): LoteDB = repo.save(item)
