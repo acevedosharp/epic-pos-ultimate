@@ -8,14 +8,14 @@ public class ItemVentaDB {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private @Id @Column(name = "item_venta_id") Integer itemVentaId;
     private @Column(name = "cantidad") Integer cantidad;
-    private @Column(name = "precio_venta") Integer precioVenta;
+    private @Column(name = "precio_venta") Double precioVenta;
     private @ManyToOne @JoinColumn(name = "producto") ProductoDB producto;
     private @ManyToOne @JoinColumn(name = "venta") VentaDB venta;
 
     public ItemVentaDB() {
     }
 
-    public ItemVentaDB(Integer itemVentaId, Integer cantidad, Integer precioVenta, ProductoDB producto, VentaDB venta) {
+    public ItemVentaDB(Integer itemVentaId, Integer cantidad, Double precioVenta, ProductoDB producto, VentaDB venta) {
         this.itemVentaId = itemVentaId;
         this.cantidad = cantidad;
         this.precioVenta = precioVenta;
@@ -35,11 +35,11 @@ public class ItemVentaDB {
         this.cantidad = cantidad;
     }
 
-    public Integer getPrecioVenta() {
+    public Double getPrecioVenta() {
         return precioVenta;
     }
 
-    public void setPrecioVenta(Integer precioVenta) {
+    public void setPrecioVenta(Double precioVenta) {
         this.precioVenta = precioVenta;
     }
 

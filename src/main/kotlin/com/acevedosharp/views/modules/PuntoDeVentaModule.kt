@@ -5,8 +5,6 @@ import com.acevedosharp.controllers.ClienteController
 import com.acevedosharp.controllers.EmpleadoController
 import com.acevedosharp.controllers.ProductoController
 import com.acevedosharp.controllers.VentaController
-import com.acevedosharp.persistence_layer.repository_services.PedidoService
-import com.acevedosharp.persistence_layer.repository_services.VentaService
 import com.acevedosharp.ui_models.*
 import com.acevedosharp.views.CodigoNotRecognizedDialog
 import com.acevedosharp.views.MainStylesheet
@@ -16,7 +14,7 @@ import com.acevedosharp.views.helpers.RecipePrintingService
 import com.acevedosharp.views.shared_components.ItemVentaComponent
 import com.acevedosharp.views.shared_components.SideNavigation
 import javafx.beans.binding.Bindings
-import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.value.ChangeListener
@@ -33,7 +31,6 @@ import javafx.scene.paint.Stop
 import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
 import javafx.util.Duration
-import org.springframework.data.repository.findByIdOrNull
 import tornadofx.*
 import java.time.LocalDateTime
 
@@ -47,19 +44,12 @@ class PuntoDeVentaView : View("Punto de venta") {
     private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> = FXCollections.observableArrayList()
     private val uncommittedItems: ObservableList<Node> = FXCollections.observableArrayList()
     private val dineroEntregado = SimpleIntegerProperty()
-    private val valorTotal = SimpleIntegerProperty()
+    private val valorTotal = SimpleDoubleProperty()
     private val currentCodigo = SimpleStringProperty()
 
     private lateinit var currentCodigoTextField: TextField
 
     init {
-        uncommittedItemsAsViews.setAll(productoController.productos.mapIndexed { index, producto ->
-            ItemVentaComponent(
-                UncommittedItemVenta(producto, 1),
-                uncommittedItemsAsViews,
-                index
-            )
-        })
         uncommittedItemsAsViews.onChange {
             uncommittedItemsAsViews.forEachIndexed { index, node: ItemVentaComponent ->
                 node.indexProperty.set(index)
@@ -398,16 +388,18 @@ class PuntoDeVentaView : View("Punto de venta") {
                             textFill = Color.WHITE
                         }
                         action {
-                            openInternalWindow<CommitVenta>(
-                                closeButton = false, modal = true, params =
-                                mapOf(
-                                    "observableList" to uncommittedItemsAsViews,
-                                    "papi" to view,
-                                    "dineroEntregado" to dineroEntregado.value,
-                                    "valorTotal" to valorTotal.value
+                            if(dineroEntregado.value >= valorTotal.value) {
+                                openInternalWindow<CommitVenta>(
+                                    closeButton = false, modal = true, params =
+                                    mapOf(
+                                        "observableList" to uncommittedItemsAsViews,
+                                        "papi" to view,
+                                        "dineroEntregado" to dineroEntregado,
+                                        "valorTotal" to valorTotal
+                                    )
                                 )
-                            )
-                            removeAlwaysFocusListener()
+                                removeAlwaysFocusListener()
+                            }
                         }
                     }
                 }
@@ -416,7 +408,7 @@ class PuntoDeVentaView : View("Punto de venta") {
     }
 
     private fun recalculateTotal() {
-        valorTotal.set(uncommittedItemsAsViews.sumBy { it.cantidad.value * it.producto.precioVenta })
+        valorTotal.set(uncommittedItemsAsViews.sumByDouble { (it.cantidad.value.toDouble() * it.producto.precioVenta) })
     }
 
     fun addAlwaysFocusListener() {
@@ -526,8 +518,8 @@ class CommitVenta : Fragment() {
     @Suppress("UNCHECKED_CAST")
     private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> = params["observableList"] as ObservableList<ItemVentaComponent>
     private val papi: PuntoDeVentaView = params["papi"] as PuntoDeVentaView
-    private val dineroEntregado = params["dineroEntregado"] as Int
-    private val valorTotal = params["valorTotal"] as Int
+    private val dineroEntregado = params["dineroEntregado"] as SimpleIntegerProperty
+    private val valorTotal = params["valorTotal"] as SimpleDoubleProperty
 
     private val imprimirFactura = SimpleStringProperty("Sí")
 
@@ -584,8 +576,8 @@ class CommitVenta : Fragment() {
                                         Venta(
                                             null,
                                             LocalDateTime.now(),
-                                            valorTotal,
-                                            dineroEntregado,
+                                            (if (valorTotal.value % 50 < 25) Math.floor(valorTotal.value / 50)*50 else Math.ceil(valorTotal.value / 50)*50).toInt(),
+                                            dineroEntregado.value,
                                             model.empleado.value,
                                             model.cliente.value
                                         ),
@@ -597,13 +589,16 @@ class CommitVenta : Fragment() {
                                         }
                                     )
 
+                                    if (imprimirFactura.value == "Sí")
                                     // Print recipe
-                                    printingService.printRecipe(res)
+                                        printingService.printRecipe(res)
 
                                     uncommittedItemsAsViews.clear()
 
                                     uncommittedItemsAsViews.clear()
                                     papi.addAlwaysFocusListener()
+                                    valorTotal.set(0.0)
+                                    dineroEntregado.set(0)
                                     close()
                                 }
                             } catch (e: Exception) {

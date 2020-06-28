@@ -8,14 +8,14 @@ public class LoteDB {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private @Id @Column(name = "lote_id") Integer loteId;
     private @Column(name = "cantidad") Integer cantidad;
-    private @Column(name = "precio_compra") Integer precioCompra;
+    private @Column(name = "precio_compra") Double precioCompra;
     private @ManyToOne @JoinColumn(name = "producto") ProductoDB producto;
     private @ManyToOne @JoinColumn(name = "pedido") PedidoDB pedido;
 
     public LoteDB() {
     }
 
-    public LoteDB(Integer loteId, Integer cantidad, Integer precioCompra, ProductoDB producto, PedidoDB pedido) {
+    public LoteDB(Integer loteId, Integer cantidad, Double precioCompra, ProductoDB producto, PedidoDB pedido) {
         this.loteId = loteId;
         this.cantidad = cantidad;
         this.precioCompra = precioCompra;
@@ -35,11 +35,11 @@ public class LoteDB {
         this.cantidad = cantidad;
     }
 
-    public Integer getPrecioCompra() {
+    public Double getPrecioCompra() {
         return precioCompra;
     }
 
-    public void setPrecioCompra(Integer precioUnitarioCompra) {
+    public void setPrecioCompra(Double precioUnitarioCompra) {
         this.precioCompra = precioUnitarioCompra;
     }
 

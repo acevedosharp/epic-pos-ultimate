@@ -11,12 +11,12 @@ public class ProductoDB {
     private @Column(name = "desc_larga") String descripcionLarga;
     private @Column(name = "desc_corta") String descripcionCorta;
     private @Column(name = "existencias") Integer existencias;
-    private @Column(name = "precio_venta") Integer precioVenta;
+    private @Column(name = "precio_venta") Double precioVenta;
     private @ManyToOne @JoinColumn(name = "familia") FamiliaDB familia;
 
     public ProductoDB() {}
 
-    public ProductoDB(Integer productoId, String codigo, String descripcionLarga, String descripcionCorta, Integer existencias, Integer precioVenta, FamiliaDB familia) {
+    public ProductoDB(Integer productoId, String codigo, String descripcionLarga, String descripcionCorta, Integer existencias, Double precioVenta, FamiliaDB familia) {
         this.productoId = productoId;
         this.codigo = codigo;
         this.descripcionLarga = descripcionLarga;
@@ -62,11 +62,11 @@ public class ProductoDB {
         this.existencias = existencias;
     }
 
-    public Integer getPrecioVenta() {
+    public Double getPrecioVenta() {
         return precioVenta;
     }
 
-    public void setPrecioVenta(Integer precioVenta) {
+    public void setPrecioVenta(Double precioVenta) {
         this.precioVenta = precioVenta;
     }
 

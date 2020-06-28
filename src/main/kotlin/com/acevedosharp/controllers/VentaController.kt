@@ -30,6 +30,7 @@ class VentaController: Controller() {
 
     private val empleadoController = find<EmpleadoController>()
     private val clienteController = find<ClienteController>()
+    private val productoController = find<ProductoController>()
 
     val ventas: ObservableList<Venta> = FXCollections.observableArrayList<Venta>(
         ventaService.all().map { dbObject: VentaDB ->
@@ -68,6 +69,10 @@ class VentaController: Controller() {
                 preRes
             )
         })
+
+        iRes.forEach { el ->
+            productoController.productos.find { it.id == el.producto.productoId }!!.apply { existencias -= el.cantidad }
+        }
 
         preRes.items = iRes.toSet()
 

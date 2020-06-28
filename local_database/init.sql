@@ -1,10 +1,10 @@
-# create & use the app schema
-create schema app;
-use app;
-
 # create the database user
 create user 'mercamas'@'localhost' identified by 'fADw0CHKJqpDinkW';
 grant all privileges on app.* to 'mercamas'@'localhost';
+
+# create & use the app schema
+create schema app;
+use app;
 
 # ------------------------ creation of familia table ------------------------
 create table familia
@@ -25,7 +25,7 @@ create table producto
     codigo       varchar(20)          not null,
     desc_larga   varchar(50)          not null,
     desc_corta   varchar(25)          not null,
-    precio_venta int                  not null,
+    precio_venta double               not null,
     existencias  int                  not null,
     activo       tinyint(1) default 1 not null,
     familia      int                  null,
@@ -64,8 +64,8 @@ create table empleado
 (
     empleado_id int auto_increment
         primary key,
-    nombre      varchar(50)          not null,
-    telefono    varchar(20)          not null,
+    nombre      varchar(50) not null,
+    telefono    varchar(20) not null,
     constraint empleado_nombre_uindex
         unique (nombre),
     constraint empleado_telefono_uindex
@@ -110,10 +110,10 @@ create table lote
 (
     lote_id       int auto_increment
         primary key,
-    cantidad      int not null,
-    precio_compra int not null,
-    producto      int not null,
-    pedido        int not null,
+    cantidad      int    not null,
+    precio_compra double not null,
+    producto      int    not null,
+    pedido        int    not null,
     constraint lote_pedido_pedido_id_fk
         foreign key (pedido) references pedido (pedido_id)
             on update cascade,
@@ -128,7 +128,7 @@ create table venta
 (
     venta_id      int auto_increment
         primary key,
-    fecha_hora   datetime not null,
+    fecha_hora    datetime not null,
     precio_total  int      not null,
     pago_recibido int      not null,
     empleado      int      not null,
@@ -147,10 +147,10 @@ create table item_venta
 (
     item_venta_id int auto_increment
         primary key,
-    cantidad      int not null,
-    precio_venta  int not null,
-    producto      int not null,
-    venta         int not null,
+    cantidad      int    not null,
+    precio_venta  double not null,
+    producto      int    not null,
+    venta         int    not null,
     constraint item_venta_producto_producto_id_fk
         foreign key (producto) references producto (producto_id)
             on update cascade,
@@ -168,5 +168,16 @@ create trigger lote_existencias_producto_trg
 begin
     update producto
     set existencias = existencias + new.cantidad
+    where producto_id = new.producto;
+end;
+
+# ======================== parse item_venta and subtract existencias to producto ========================
+create trigger item_venta_existencias_producto_trg
+    after insert
+    on app.item_venta
+    for each row
+begin
+    update producto
+    set existencias = existencias - new.cantidad
     where producto_id = new.producto;
 end;

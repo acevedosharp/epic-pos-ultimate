@@ -2,7 +2,6 @@ package com.acevedosharp.views.modules
 
 import com.acevedosharp.CustomApplicationContextWrapper
 import com.acevedosharp.controllers.*
-import com.acevedosharp.entities.LoteDB
 import com.acevedosharp.entities.PedidoDB
 import com.acevedosharp.persistence_layer.repository_services.PedidoService
 import com.acevedosharp.ui_models.*
@@ -10,22 +9,20 @@ import com.acevedosharp.views.MainStylesheet
 import com.acevedosharp.views.UnknownErrorDialog
 import com.acevedosharp.views.shared_components.SideNavigation
 import com.acevedosharp.views.helpers.CurrentModule.PEDIDOS
-import com.acevedosharp.views.helpers.FormType
 import com.acevedosharp.views.shared_components.PedidoDisplay
 import javafx.beans.binding.Bindings
+import javafx.beans.property.Property
 import javafx.beans.property.SimpleObjectProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.control.ComboBox
-import javafx.scene.layout.FlowPane
 import javafx.scene.layout.Priority
 import tornadofx.*
 import tornadofx.control.DateTimePicker
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-
 
 class PedidoView : View("Módulo de pedidos") {
 
@@ -318,13 +315,13 @@ class AddLoteView : Fragment() {
                     )
                 }
                 field("Precio de compra") {
-                    model.precioCompra.value = 50
-                    spinner(
-                        property = model.precioCompra,
-                        initialValue = 0,
-                        min = 0,
-                        max = Int.MAX_VALUE,
-                        amountToStepBy = 50,
+                    model.precioCompra.value = 50.0
+                    spinner<Double>(
+                        property = model.precioCompra as Property<Double>,
+                        initialValue = 0.0,
+                        min = 0.0,
+                        max = Double.MAX_VALUE,
+                        amountToStepBy = 500.0,
                         editable = true
                     )
                 }
@@ -363,7 +360,7 @@ class AddLoteView : Fragment() {
                                     Lote(
                                         null,
                                         model.cantidad.value.toInt(),
-                                        model.precioCompra.value.toInt(),
+                                        model.precioCompra.value.toDouble(),
                                         model.producto.value
                                     )
                                 )

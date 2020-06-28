@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat
 import javax.print.*
 import javax.print.attribute.HashPrintRequestAttributeSet
 import javax.print.attribute.PrintRequestAttributeSet
+import kotlin.math.max
 
 @Service
 class RecipePrintingService {
@@ -16,10 +17,13 @@ class RecipePrintingService {
             val res = StringBuilder()
 
             res.append(item.producto.descripcionCorta)
-            res.append(" ".repeat(26 - item.producto.descripcionCorta.length))
-            val s = "x${item.cantidad}"
-            res.append(s)
-            res.append(" ".repeat(5 - s.length))
+            res.append(" ".repeat(max(26 - item.producto.descripcionCorta.length, 0)))
+            val s1 = "$${item.producto.precioVenta}"
+            res.append(s1)
+            res.append(" ".repeat(max(7 - s1.length, 0)))
+            val s2 = "x${item.cantidad}"
+            res.append(s2)
+            res.append(" ".repeat(max(6 - s2.length, 0)))
             res.append("= $${item.producto.precioVenta * item.cantidad}")
 
             return res.toString()
@@ -29,9 +33,10 @@ class RecipePrintingService {
 
         val sb = StringBuilder()
 
-        sb.append("================================================\n")
-        sb.append("=           Autoservicio Mercamás              =\n")
-        sb.append("================================================\n")
+        sb.append("*==============================================*\n")
+        sb.append("||          Autoservicio Mercamás             ||\n")
+        sb.append("||      Tel: 6000607 - Dir: Cra36 #34-57      ||\n")
+        sb.append("*==============================================*\n")
         sb.append("Atendido por: ${venta.empleado.nombre}\n"          )
         sb.append("Cliente: ${venta.cliente.nombre} \n"               )
         sb.append("------------------------------------------------\n")
@@ -40,8 +45,12 @@ class RecipePrintingService {
             sb.append("\n")
         }
         sb.append("------------------------------------------------\n")
-        sb.append("Total: $${venta.precioTotal} || Pago: $${venta.pagoRecibido}\n")
-        sb.append("Gracias por su compra en ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
+        val pago = "Pago: \$${venta.pagoRecibido}"
+        sb.append(pago)
+        sb.append(" ".repeat(max(34 - pago.length, 0)))
+        sb.append("Total: \$${venta.precioTotal}\n")
+        sb.append("Cambio: $${venta.pagoRecibido - venta.precioTotal}\n")
+        sb.append("Gracias por su compra el ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
         sb.append(lowerPadding)
 
         printString("SAT 22TUS", sb.toString())

@@ -1,15 +1,12 @@
 package com.acevedosharp.ui_models
 
-import javafx.beans.property.ReadOnlyObjectWrapper
 import tornadofx.*
-import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleStringProperty
 import javafx.scene.control.Button
 import com.acevedosharp.views.MainStylesheet
 import com.acevedosharp.views.modules.NewProductoFormView
-import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.property.*
 
-class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Int, existencias: Int, familia: Familia?) {
+class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Double, existencias: Int, familia: Familia?) {
     val codigoProperty = SimpleStringProperty(this, "codigo", codigo)
     var codigo by codigoProperty
 
@@ -19,7 +16,7 @@ class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: Strin
     val descCortaProperty = SimpleStringProperty(this, "descCorta", descCorta)
     var descCorta by descCortaProperty
 
-    val precioVentaProperty = SimpleIntegerProperty(this, "precioVenta", precioVenta)
+    val precioVentaProperty = SimpleDoubleProperty(this, "precioVenta", precioVenta)
     var precioVenta by precioVentaProperty
 
     val existenciasProperty = SimpleIntegerProperty(this, "existencias", existencias)

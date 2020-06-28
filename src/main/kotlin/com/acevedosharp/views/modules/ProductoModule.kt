@@ -12,6 +12,7 @@ import com.acevedosharp.views.helpers.CurrentModule.PRODUCTOS
 import com.acevedosharp.views.helpers.FormType
 import com.acevedosharp.views.helpers.FormType.CREATE
 import com.acevedosharp.views.helpers.FormType.EDIT
+import javafx.beans.property.Property
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
@@ -185,13 +186,13 @@ class BaseProductoFormView(formType: FormType) : Fragment() {
                     }
                 }
                 field("Precio de venta") {
-                    if (formType == CREATE) model.precioVenta.value = 50
-                    spinner(
-                        property = model.precioVenta,
-                        initialValue = 50,
-                        min = 50,
-                        max = Int.MAX_VALUE,
-                        amountToStepBy = 500,
+                    if (formType == CREATE) model.precioVenta.value = 50.0
+                    spinner<Double>(
+                        property = model.precioVenta as Property<Double>,
+                        initialValue = 0.0,
+                        min = 0.0,
+                        max = Double.MAX_VALUE,
+                        amountToStepBy = 500.0,
                         editable = true
                     )
                 }
@@ -231,7 +232,7 @@ class BaseProductoFormView(formType: FormType) : Fragment() {
                                                 model.codigo.value,
                                                 model.descLarga.value,
                                                 model.descCorta.value,
-                                                model.precioVenta.value.toInt(),
+                                                model.precioVenta.value.toDouble(),
                                                 model.existencias.value.toInt(),
                                                 model.familia.value
                                             )

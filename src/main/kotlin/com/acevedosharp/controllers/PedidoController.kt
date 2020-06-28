@@ -31,6 +31,7 @@ class PedidoController: Controller() {
 
     private val proveedorController = find<ProveedorController>()
     private val empleadoController = find<EmpleadoController>()
+    private val productoController = find<ProductoController>()
 
     val pedidos: ObservableList<Pedido> = FXCollections.observableArrayList<Pedido>(
         pedidoService.all().map { dbObject: PedidoDB ->
@@ -57,7 +58,7 @@ class PedidoController: Controller() {
         pedidos.add(pedido.apply { id = preRes.pedidoId })
 
 
-        loteService.addAll(lotes.map {
+        val iRes = loteService.addAll(lotes.map {
             LoteDB(
                 null,
                 it.cantidad,
@@ -66,6 +67,10 @@ class PedidoController: Controller() {
                 preRes
             )
         })
+
+        iRes.forEach { el ->
+            productoController.productos.find { it.id == el.producto.productoId }!!.apply { existencias += el.cantidad }
+        }
     }
 
 }
