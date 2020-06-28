@@ -1,6 +1,6 @@
 # epic_pos_ultimate
 
-If you want to use this software you keep in mind the following:
+If you want to use this software, keep in mind the following:
 
 1. Install MariaDB on your machine and make sure to have it on automatic start-up.
 2. In resources/application.properties is where you can configure you database url, user and time zone.
