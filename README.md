@@ -1,4 +1,4 @@
-# epic_pos_ultimate
+# epic-pos-basic-desktop
 
 If you want to use this software, keep in mind the following:
 
