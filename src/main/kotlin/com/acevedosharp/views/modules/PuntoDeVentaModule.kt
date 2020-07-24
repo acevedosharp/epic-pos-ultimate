@@ -34,6 +34,7 @@ import javafx.util.Duration
 import tornadofx.*
 import java.text.NumberFormat
 import java.time.LocalDateTime
+import kotlin.math.roundToInt
 
 class PuntoDeVentaView : View("Punto de venta") {
 
@@ -46,11 +47,13 @@ class PuntoDeVentaView : View("Punto de venta") {
     private val uncommittedItems: ObservableList<Node> = FXCollections.observableArrayList()
     private val dineroEntregado = SimpleIntegerProperty()
     private val valorTotal = SimpleDoubleProperty()
+    private val valorTotalRoundedAndFormatted = SimpleStringProperty()
     private val currentCodigo = SimpleStringProperty()
 
     private lateinit var currentCodigoTextField: TextField
 
     init {
+        valorTotal.onChange { valorTotalRoundedAndFormatted.setValue("${NumberFormat.getIntegerInstance().format(it.roundToInt())}") }
         uncommittedItemsAsViews.onChange {
             uncommittedItemsAsViews.forEachIndexed { index, node: ItemVentaComponent ->
                 node.indexProperty.set(index)
@@ -215,8 +218,8 @@ class PuntoDeVentaView : View("Punto de venta") {
                     paddingAll = 8.0
                     prefWidth = 474.0
                     hgrow = Priority.ALWAYS
-                    text(Bindings.concat("Total: $", valorTotal)).style {
-                        fontSize = 40.px
+                    text(Bindings.concat("Total: $", valorTotalRoundedAndFormatted)).style {
+                        fontSize = 54.px
                     } // Dollar sign goes before the value?
 
                     textfield(dineroEntregado) {
@@ -521,6 +524,7 @@ class CommitVenta : Fragment() {
     private val papi: PuntoDeVentaView = params["papi"] as PuntoDeVentaView
     private val dineroEntregado = params["dineroEntregado"] as SimpleIntegerProperty
     private val valorTotal = params["valorTotal"] as SimpleDoubleProperty
+    private val impresora = SimpleStringProperty(printingService.getPrinters()[0])
 
     private val imprimirFactura = SimpleStringProperty("Sí")
 
@@ -564,6 +568,12 @@ class CommitVenta : Fragment() {
                         makeAutocompletable(false)
                     }
                 }
+                field("Impresora seleccionada") {
+                    combobox<String>(impresora, printingService.getPrinters()).apply {
+                        prefWidth = 400.0
+                        makeAutocompletable(false)
+                    }
+                }
 
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
@@ -595,7 +605,7 @@ class CommitVenta : Fragment() {
 
                                     if (imprimirFactura.value == "Sí")
                                     // Print recipe
-                                        printingService.printRecipe(res)
+                                        printingService.printRecipe(res, impresora.value)
 
                                     uncommittedItemsAsViews.clear()
 

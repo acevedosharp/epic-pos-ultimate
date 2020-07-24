@@ -8,23 +8,24 @@ import javax.print.*
 import javax.print.attribute.HashPrintRequestAttributeSet
 import javax.print.attribute.PrintRequestAttributeSet
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 @Service
 class RecipePrintingService {
 
-    fun printRecipe(venta: VentaDB) {
+    fun printRecipe(venta: VentaDB, impName: String) {
         fun formatItem(item: ItemVentaDB): String {
             val res = StringBuilder()
 
             res.append(item.producto.descripcionCorta)
             res.append(" ".repeat(max(26 - item.producto.descripcionCorta.length, 0)))
-            val s1 = "$${item.producto.precioVenta}"
+            val s1 = "$${item.producto.precioVenta.roundToInt()}"
             res.append(s1)
             res.append(" ".repeat(max(7 - s1.length, 0)))
             val s2 = "x${item.cantidad}"
             res.append(s2)
             res.append(" ".repeat(max(6 - s2.length, 0)))
-            res.append("= $${item.producto.precioVenta * item.cantidad}")
+            res.append("= $${(item.producto.precioVenta * item.cantidad).roundToInt()}")
 
             return res.toString()
         }
@@ -53,17 +54,17 @@ class RecipePrintingService {
         sb.append("Gracias por su compra el ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
         sb.append(lowerPadding)
 
-        printString("SAT 22TUS", sb.toString())
-        printBytes("SAT 22TUS", byteArrayOf(0x1d, 'V'.toByte(), 1))
+        printString(impName, sb.toString())
+        printBytes(impName, byteArrayOf(0x1d, 'V'.toByte(), 1))
     }
 
-    private fun getPrinters(): List<String> {
+    fun getPrinters(): List<String> {
         val flavor: DocFlavor = DocFlavor.BYTE_ARRAY.AUTOSENSE
         val printRequestAttributes: PrintRequestAttributeSet = HashPrintRequestAttributeSet()
 
         val printServices: Array<PrintService> = PrintServiceLookup.lookupPrintServices(flavor, printRequestAttributes)
 
-        return printServices.map { it.name }
+        return printServices.map { it.name }.filter { it !in listOf("Microsoft XPS Document Writer", "Microsoft Print to PDF", "Fax") }
     }
 
     private fun printString(printerName: String, text: String) {

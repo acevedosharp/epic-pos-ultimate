@@ -25,21 +25,11 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="Almost there!!!!! Implemented a lot of things that I don't care to write about. Sorry.">
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="Bugfixing and small improvements">
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/LoteDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/LoteDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/PedidoController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/PedidoController.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PedidoModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PedidoModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/helpers/RecipePrintingService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/helpers/RecipePrintingService.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PuntoDeVentaModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PuntoDeVentaModule.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,7 +161,70 @@
       <recent name="C:\Users\lyonix\IdeaProjects\epic_pos_ultimate\src\main\kotlin" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.LocalSpringBoot">
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="gradle clean build" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Gradle.epic-pos-basic-desktop [clean build]">
+    <configuration name="epic-pos-basic-desktop [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="epic-pos-basic-desktop [clean build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" value="" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="epic-pos-basic-desktop [jar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="jar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="epic_pos_ultimate [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -215,9 +268,15 @@
       <item itemvalue="Docker.general-purpose-dev-db" />
       <item itemvalue="Gradle.epic_pos_ultimate [clean]" />
       <item itemvalue="Spring Boot.LocalSpringBoot" />
+      <item itemvalue="Gradle.epic-pos-basic-desktop [build]" />
+      <item itemvalue="Gradle.epic-pos-basic-desktop [jar]" />
+      <item itemvalue="Gradle.epic-pos-basic-desktop [clean build]" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.epic-pos-basic-desktop [clean build]" />
+        <item itemvalue="Gradle.epic-pos-basic-desktop [build]" />
+        <item itemvalue="Gradle.epic-pos-basic-desktop [jar]" />
         <item itemvalue="Docker.general-purpose-dev-db" />
         <item itemvalue="Gradle.epic_pos_ultimate [clean]" />
       </list>
@@ -281,7 +340,7 @@
       <workItem from="1593274384299" duration="18689000" />
       <workItem from="1595485634614" duration="196000" />
       <workItem from="1595485931526" duration="779000" />
-      <workItem from="1595533528779" duration="4052000" />
+      <workItem from="1595533528779" duration="8695000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit: Brand new TornadoFX app to replace the epic-point-of-sale. Implemented the Producto module.">
       <created>1591730038419</created>
@@ -479,7 +538,14 @@
       <option name="project" value="LOCAL" />
       <updated>1593287582546</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Bugfixing and small improvements">
+      <created>1595550766731</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1595550766731</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -510,7 +576,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Nailed the styling of TableView, a few buttons and the layout." />
     <MESSAGE value="Search feature on Productos" />
     <MESSAGE value="Completed validation in Productos module." />
     <MESSAGE value="Refactored Forms in the ProductoModule.kt, minor fixes and organization improvement." />
@@ -535,7 +600,8 @@
     <MESSAGE value="Modified venta table. Change reflected on the erd." />
     <MESSAGE value="Missing mapping on VentaDB" />
     <MESSAGE value="Almost there!!!!! Implemented a lot of things that I don't care to write about. Sorry." />
-    <option name="LAST_COMMIT_MESSAGE" value="Almost there!!!!! Implemented a lot of things that I don't care to write about. Sorry." />
+    <MESSAGE value="Bugfixing and small improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bugfixing and small improvements" />
   </component>
   <component name="WindowStateProjectService">
     <state x="859" y="431" key="#Assign_Data_Sources" timestamp="1592422162658">
@@ -622,54 +688,54 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="771" y="281" key="FileChooserDialogImpl/62.0.1858.1080@62.0.1858.1080" timestamp="1592583548673" />
-    <state width="1812" height="149" key="GridCell.Tab.0.bottom" timestamp="1595549239821">
+    <state width="1812" height="149" key="GridCell.Tab.0.bottom" timestamp="1595557120990">
       <screen x="66" y="23" width="1854" height="1057" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.0.bottom/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789206" />
     <state width="1876" height="334" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817942" />
-    <state width="1812" height="149" key="GridCell.Tab.0.bottom/66.23.1854.1057@66.23.1854.1057" timestamp="1595549239821" />
-    <state width="1812" height="149" key="GridCell.Tab.0.center" timestamp="1595549239820">
+    <state width="1812" height="149" key="GridCell.Tab.0.bottom/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120990" />
+    <state width="1812" height="149" key="GridCell.Tab.0.center" timestamp="1595557120989">
       <screen x="66" y="23" width="1854" height="1057" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.0.center/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789205" />
     <state width="1876" height="334" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817937" />
-    <state width="1812" height="149" key="GridCell.Tab.0.center/66.23.1854.1057@66.23.1854.1057" timestamp="1595549239820" />
-    <state width="1812" height="149" key="GridCell.Tab.0.left" timestamp="1595549239820">
+    <state width="1812" height="149" key="GridCell.Tab.0.center/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120989" />
+    <state width="1812" height="149" key="GridCell.Tab.0.left" timestamp="1595557120988">
       <screen x="66" y="23" width="1854" height="1057" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.0.left/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789205" />
     <state width="1876" height="334" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817937" />
-    <state width="1812" height="149" key="GridCell.Tab.0.left/66.23.1854.1057@66.23.1854.1057" timestamp="1595549239820" />
-    <state width="1812" height="149" key="GridCell.Tab.0.right" timestamp="1595549239821">
+    <state width="1812" height="149" key="GridCell.Tab.0.left/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120988" />
+    <state width="1812" height="149" key="GridCell.Tab.0.right" timestamp="1595557120989">
       <screen x="66" y="23" width="1854" height="1057" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.0.right/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789205" />
     <state width="1876" height="334" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817942" />
-    <state width="1812" height="149" key="GridCell.Tab.0.right/66.23.1854.1057@66.23.1854.1057" timestamp="1595549239821" />
-    <state width="1812" height="149" key="GridCell.Tab.1.bottom" timestamp="1595549239822">
+    <state width="1812" height="149" key="GridCell.Tab.0.right/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120989" />
+    <state width="1812" height="149" key="GridCell.Tab.1.bottom" timestamp="1595557120991">
       <screen x="66" y="23" width="1854" height="1057" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.1.bottom/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789207" />
     <state width="1876" height="334" key="GridCell.Tab.1.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817942" />
-    <state width="1812" height="149" key="GridCell.Tab.1.bottom/66.23.1854.1057@66.23.1854.1057" timestamp="1595549239822" />
-    <state width="1812" height="149" key="GridCell.Tab.1.center" timestamp="1595549239822">
+    <state width="1812" height="149" key="GridCell.Tab.1.bottom/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120991" />
+    <state width="1812" height="149" key="GridCell.Tab.1.center" timestamp="1595557120990">
       <screen x="66" y="23" width="1854" height="1057" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.1.center/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789206" />
     <state width="1876" height="334" key="GridCell.Tab.1.center/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817942" />
-    <state width="1812" height="149" key="GridCell.Tab.1.center/66.23.1854.1057@66.23.1854.1057" timestamp="1595549239822" />
-    <state width="1812" height="149" key="GridCell.Tab.1.left" timestamp="1595549239821">
+    <state width="1812" height="149" key="GridCell.Tab.1.center/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120990" />
+    <state width="1812" height="149" key="GridCell.Tab.1.left" timestamp="1595557120990">
       <screen x="66" y="23" width="1854" height="1057" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.1.left/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789206" />
     <state width="1876" height="334" key="GridCell.Tab.1.left/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817942" />
-    <state width="1812" height="149" key="GridCell.Tab.1.left/66.23.1854.1057@66.23.1854.1057" timestamp="1595549239821" />
-    <state width="1812" height="149" key="GridCell.Tab.1.right" timestamp="1595549239822">
+    <state width="1812" height="149" key="GridCell.Tab.1.left/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120990" />
+    <state width="1812" height="149" key="GridCell.Tab.1.right" timestamp="1595557120990">
       <screen x="66" y="23" width="1854" height="1057" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.1.right/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789207" />
     <state width="1876" height="334" key="GridCell.Tab.1.right/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817942" />
-    <state width="1812" height="149" key="GridCell.Tab.1.right/66.23.1854.1057@66.23.1854.1057" timestamp="1595549239822" />
+    <state width="1812" height="149" key="GridCell.Tab.1.right/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120990" />
     <state width="221" height="448" key="HiddenNamespacesPopup" timestamp="1595486399145">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
@@ -687,10 +753,11 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state width="498" height="446" key="SwitcherDM/62.0.1858.1080@62.0.1858.1080" timestamp="1591843895456" />
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1593287933296">
-      <screen x="62" y="0" width="1858" height="1080" />
+    <state x="586" y="289" key="Vcs.Push.Dialog.v2" timestamp="1595550772618">
+      <screen x="66" y="23" width="1854" height="1057" />
     </state>
     <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1593287933296" />
+    <state x="586" y="289" key="Vcs.Push.Dialog.v2/66.23.1854.1057@66.23.1854.1057" timestamp="1595550772618" />
     <state x="890" y="412" width="202" height="280" key="com.intellij.database.actions.DdlActions$CreateObject$1" timestamp="1592422172308">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
@@ -736,10 +803,11 @@
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="857" y="406" width="250" height="278" key="jetbrains.javascript.buildTools.run-task-popup/62.0.1858.1080@62.0.1858.1080" timestamp="1592401437907" />
-    <state x="1111" y="254" key="run.anything.popup" timestamp="1593300744617">
-      <screen x="62" y="0" width="1858" height="1080" />
+    <state x="1113" y="272" width="670" height="675" key="run.anything.popup" timestamp="1595557120908">
+      <screen x="66" y="23" width="1854" height="1057" />
     </state>
     <state x="1111" y="254" key="run.anything.popup/62.0.1858.1080@62.0.1858.1080" timestamp="1593300744617" />
+    <state x="1113" y="272" width="670" height="675" key="run.anything.popup/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120908" />
     <state x="1111" y="200" width="672" height="676" key="search.everywhere.popup" timestamp="1591721136149">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
