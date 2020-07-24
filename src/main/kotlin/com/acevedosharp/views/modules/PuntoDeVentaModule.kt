@@ -32,6 +32,7 @@ import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
 import javafx.util.Duration
 import tornadofx.*
+import java.text.NumberFormat
 import java.time.LocalDateTime
 
 class PuntoDeVentaView : View("Punto de venta") {
@@ -523,12 +524,15 @@ class CommitVenta : Fragment() {
 
     private val imprimirFactura = SimpleStringProperty("Sí")
 
-    override val root = vbox(spacing = 0) {
+    override val root = vbox(spacing = 0, alignment = Pos.CENTER) {
         useMaxSize = true
         prefWidth = 600.0
         label("Checkout") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
+        }
+        label("Cambio: $${NumberFormat.getIntegerInstance().format(dineroEntregado.value - valorTotal.value)}").style {
+            fontSize = 64.px
         }
         form {
             fieldset {

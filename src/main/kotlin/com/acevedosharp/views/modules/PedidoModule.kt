@@ -205,6 +205,7 @@ class NewPedidoFormView : Fragment() {
                             MainStylesheet.expandedButton
                         )
                         action {
+                            println("Size of lotes: " + currentUncommittedLotes.lotes.size)
                             try {
                                 model.commit {
                                     pedidoController.add(
@@ -261,7 +262,9 @@ class PedidoSummaryView : Fragment() {
                     textfield(pedido.empleado.nombre).apply { isEditable = false }
                 }
                 field("Lotes") {
-                    tableview(pedido.lotes.map { Lote(it.loteId, it.cantidad, it.precioCompra, productoController.productos.first { uiP -> it.loteId == uiP.id }) }.asObservable()) {
+                    val arr = pedido.lotes
+                    arr.forEach { println("${it.producto.descripcionCorta}: ${it.cantidad}") }
+                    tableview(pedido.lotes.map { Lote(it.loteId, it.cantidad, it.precioCompra, productoController.productos.first { prod -> it.producto.productoId == prod.id }) }.asObservable()) {
                         column("Producto", Lote::productoProperty).remainingWidth()
                         column("Cantidad", Lote::cantidadProperty)
                         column("P. Compra", Lote::precioCompraProperty)

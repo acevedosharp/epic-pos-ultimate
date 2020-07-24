@@ -3,7 +3,7 @@ package com.acevedosharp.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Lote", schema = "app")
+@Table(name = "lote", schema = "app")
 public class LoteDB {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private @Id @Column(name = "lote_id") Integer loteId;

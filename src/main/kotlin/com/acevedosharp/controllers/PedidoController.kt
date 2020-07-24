@@ -45,6 +45,7 @@ class PedidoController: Controller() {
     )
 
     fun add(pedido: Pedido, lotes: List<Lote>) {
+        println("Now saving Pedido...")
         val preRes = pedidoService.add(
             PedidoDB(
                 null,
@@ -54,11 +55,12 @@ class PedidoController: Controller() {
                 setOf<LoteDB>()
             )
         )
-
+        println("Successfully saved Pedido!")
         pedidos.add(pedido.apply { id = preRes.pedidoId })
 
-
+        println("Now saving lotes...")
         val iRes = loteService.addAll(lotes.map {
+
             LoteDB(
                 null,
                 it.cantidad,
@@ -67,10 +69,13 @@ class PedidoController: Controller() {
                 preRes
             )
         })
+        println("Successfully saved Lotes!")
 
+        println("Adding to existences...")
         iRes.forEach { el ->
             productoController.productos.find { it.id == el.producto.productoId }!!.apply { existencias += el.cantidad }
         }
+        println("Added to existences!")
     }
 
 }
