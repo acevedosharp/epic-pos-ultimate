@@ -5,8 +5,8 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 }
 
-group 'com.acevedosharp'
-version '1.0-SNAPSHOT'
+group 'xyz.acevedosharp'
+version '1'
 
 repositories {
     mavenCentral()

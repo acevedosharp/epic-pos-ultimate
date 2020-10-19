@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -25,11 +28,86 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="Bugfixing and small improvements">
+    <list default="true" id="89eed58a-10a9-413f-a75b-0e26947b930d" name="Default Changelist" comment="refactored domain and changed schema name to something epic ;)">
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/epic_pos_ultimate.main.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/helpers/RecipePrintingService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/helpers/RecipePrintingService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PuntoDeVentaModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PuntoDeVentaModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/acevedosharp/LocalSpringBootApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/acevedosharp/LocalSpringBootApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/ClienteDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/acevedosharp/entities/ClienteDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/EmpleadoDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/acevedosharp/entities/EmpleadoDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/FamiliaDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/acevedosharp/entities/FamiliaDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/ItemVentaDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/acevedosharp/entities/ItemVentaDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/LoteDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/acevedosharp/entities/LoteDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/PedidoDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/acevedosharp/entities/PedidoDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/ProductoDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/acevedosharp/entities/ProductoDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/ProveedorDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/acevedosharp/entities/ProveedorDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/acevedosharp/entities/VentaDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xyz/acevedosharp/entities/VentaDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ClientApplication.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/ClientApplication.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/CustomApplicationContextWrapper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/CustomApplicationContextWrapper.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/ClienteController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/controllers/ClienteController.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/CurrentUncommittedLotes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/controllers/CurrentUncommittedLotes.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/EmpleadoController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/controllers/EmpleadoController.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/FamiliaController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/controllers/FamiliaController.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/LoteController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/controllers/LoteController.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/PedidoController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/controllers/PedidoController.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/ProductoController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/controllers/ProductoController.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/ProveedorController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/controllers/ProveedorController.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/controllers/VentaController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/controllers/VentaController.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repositories/ClienteRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repositories/ClienteRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repositories/EmpleadoRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repositories/EmpleadoRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repositories/FamiliaRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repositories/FamiliaRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repositories/ItemVentaRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repositories/ItemVentaRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repositories/LoteRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repositories/LoteRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repositories/PedidoRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repositories/PedidoRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repositories/ProductoRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repositories/ProductoRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repositories/ProveedorRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repositories/ProveedorRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repositories/VentaRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repositories/VentaRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/ClienteService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repository_services/ClienteService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/EmpleadoService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repository_services/EmpleadoService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/FamiliaService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repository_services/FamiliaService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/ItemVentaService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repository_services/ItemVentaService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/LoteService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repository_services/LoteService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/PedidoService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repository_services/PedidoService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/ProductoService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repository_services/ProductoService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/ProveedorService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repository_services/ProveedorService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/VentaService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repository_services/VentaService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/interfaces/BaseRepoService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repository_services/interfaces/BaseRepoService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/interfaces/BatchSaving.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repository_services/interfaces/BatchSaving.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/persistence_layer/repository_services/interfaces/NonEditableRepoService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/persistence_layer/repository_services/interfaces/NonEditableRepoService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Cliente.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/ui_models/Cliente.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Empleado.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/ui_models/Empleado.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Familia.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/ui_models/Familia.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Lote.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/ui_models/Lote.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Pedido.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/ui_models/Pedido.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Producto.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/ui_models/Producto.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Proveedor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/ui_models/Proveedor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/UncommittedItemVenta.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/ui_models/UncommittedItemVenta.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/ui_models/Venta.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/ui_models/Venta.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/CodigoNotRecognizedDialog.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/CodigoNotRecognizedDialog.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/MainStylesheet.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/MainStylesheet.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/PixelDisplayerView.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/PixelDisplayerView.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/UnknownErrorDialog.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/UnknownErrorDialog.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/helpers/CurrentModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/helpers/CurrentModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/helpers/FormType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/helpers/FormType.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/helpers/RecipePrintingService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/helpers/RecipePrintingService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/ClienteModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/modules/ClienteModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/EmpleadoModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/modules/EmpleadoModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/FamiliaModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/modules/FamiliaModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PedidoModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/modules/PedidoModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/ProductoModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/modules/ProductoModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/ProveedorModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/modules/ProveedorModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/modules/PuntoDeVentaModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/modules/PuntoDeVentaModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/shared_components/ItemVentaComponent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/shared_components/ItemVentaComponent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/shared_components/PedidoDisplay.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/shared_components/PedidoDisplay.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/acevedosharp/views/shared_components/SideNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/xyz/acevedosharp/views/shared_components/SideNavigation.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +186,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="DatabaseDriversLRU" value="mariadb" />
+    <property name="DatabaseDriversLRU" value="mariadb&#10;mysql" />
     <property name="RequestMappingsPanelOrder0" value="0" />
     <property name="RequestMappingsPanelOrder1" value="1" />
     <property name="RequestMappingsPanelWidth0" value="75" />
@@ -166,7 +244,18 @@
       <command value="gradle clean build" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.epic-pos-basic-desktop [clean build]">
+  <component name="RunManager" selected="Spring Boot.LocalSpringBootApplication">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="epic-pos-basic-desktop [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -225,29 +314,15 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="epic_pos_ultimate [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="clean" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="LocalSpringBoot" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-      <module name="epic_pos_ultimate.main" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.acevedosharp.LocalSpringBootApplication" />
-      <option name="ALTERNATIVE_JRE_PATH" />
+    <configuration name="LocalSpringBootApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="epic-pos-basic-desktop.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="xyz.acevedosharp.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="SPRING_BOOT_MAIN_CLASS" value="xyz.acevedosharp.LocalSpringBootApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -266,22 +341,22 @@
     </configuration>
     <list>
       <item itemvalue="Docker.general-purpose-dev-db" />
-      <item itemvalue="Gradle.epic_pos_ultimate [clean]" />
-      <item itemvalue="Spring Boot.LocalSpringBoot" />
       <item itemvalue="Gradle.epic-pos-basic-desktop [build]" />
       <item itemvalue="Gradle.epic-pos-basic-desktop [jar]" />
       <item itemvalue="Gradle.epic-pos-basic-desktop [clean build]" />
+      <item itemvalue="Spring Boot.LocalSpringBootApplication" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Spring Boot.LocalSpringBootApplication" />
         <item itemvalue="Gradle.epic-pos-basic-desktop [clean build]" />
         <item itemvalue="Gradle.epic-pos-basic-desktop [build]" />
         <item itemvalue="Gradle.epic-pos-basic-desktop [jar]" />
         <item itemvalue="Docker.general-purpose-dev-db" />
-        <item itemvalue="Gradle.epic_pos_ultimate [clean]" />
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -341,6 +416,7 @@
       <workItem from="1595485634614" duration="196000" />
       <workItem from="1595485931526" duration="779000" />
       <workItem from="1595533528779" duration="8695000" />
+      <workItem from="1603073755435" duration="3591000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit: Brand new TornadoFX app to replace the epic-point-of-sale. Implemented the Producto module.">
       <created>1591730038419</created>
@@ -549,7 +625,7 @@
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -576,7 +652,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Search feature on Productos" />
     <MESSAGE value="Completed validation in Productos module." />
     <MESSAGE value="Refactored Forms in the ProductoModule.kt, minor fixes and organization improvement." />
     <MESSAGE value="Navigation now works. Implemeted ProveedorModule and its model classes; still missing a few refactors though!" />
@@ -601,13 +676,10 @@
     <MESSAGE value="Missing mapping on VentaDB" />
     <MESSAGE value="Almost there!!!!! Implemented a lot of things that I don't care to write about. Sorry." />
     <MESSAGE value="Bugfixing and small improvements" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bugfixing and small improvements" />
+    <MESSAGE value="refactored domain and changed schema name to something epic ;)" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactored domain and changed schema name to something epic ;)" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="859" y="431" key="#Assign_Data_Sources" timestamp="1592422162658">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="859" y="431" key="#Assign_Data_Sources/62.0.1858.1080@62.0.1858.1080" timestamp="1592422162658" />
     <state x="697" y="206" key="#Docker_Image" timestamp="1595486151137">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
@@ -615,202 +687,93 @@
     <state x="881" y="199" key="#Plugins" timestamp="1595485667881">
       <screen x="66" y="23" width="1854" height="1057" />
     </state>
-    <state x="879" y="180" key="#Plugins/62.0.1858.1080@62.0.1858.1080" timestamp="1592418266884" />
     <state x="881" y="199" key="#Plugins/66.23.1854.1057@66.23.1854.1057" timestamp="1595485667881" />
     <state x="853" y="443" key="#Port_bindings" timestamp="1595486273198">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
     <state x="853" y="443" key="#Port_bindings/0.23.1920.1057@0.23.1920.1057" timestamp="1595486273198" />
-    <state x="708" y="164" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595542999255">
-      <screen x="66" y="23" width="1854" height="1057" />
+    <state x="705" y="144" width="1092" height="715" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603079602388">
+      <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state x="895" y="103" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1920.1057@0.23.1920.1057" timestamp="1595486333497" />
-    <state x="491" y="246" key="#com.intellij.execution.impl.EditConfigurationsDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1593287541997" />
+    <state x="705" y="144" width="1092" height="715" key="#com.intellij.execution.impl.EditConfigurationsDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1603079602388" />
     <state x="708" y="164" key="#com.intellij.execution.impl.EditConfigurationsDialog/66.23.1854.1057@66.23.1854.1057" timestamp="1595542999255" />
-    <state x="772" y="341" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1592428024080">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="772" y="341" key="#com.intellij.fileTypes.FileTypeChooser/62.0.1858.1080@62.0.1858.1080" timestamp="1592428024080" />
-    <state x="1172" y="256" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1591611880991">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="1172" y="256" key="#com.intellij.ide.macro.MacrosDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1591611880991" />
-    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser" timestamp="1593282477889">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="1247" y="259" key="#com.intellij.ide.util.MemberChooser/62.0.1858.1080@62.0.1858.1080" timestamp="1593282477889" />
-    <state x="690" y="315" key="#com.intellij.ide.util.PackageChooserDialog" timestamp="1592979958241">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="690" y="315" key="#com.intellij.ide.util.PackageChooserDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1592979958241" />
     <state x="1024" y="347" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1595542889683">
       <screen x="66" y="23" width="1854" height="1057" />
     </state>
-    <state x="1022" y="331" key="#com.intellij.ide.util.TreeClassChooserDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1593024139318" />
     <state x="1024" y="347" key="#com.intellij.ide.util.TreeClassChooserDialog/66.23.1854.1057@66.23.1854.1057" timestamp="1595542889683" />
-    <state x="1111" y="464" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1592422673589">
+    <state width="1815" height="591" key="GridCell.Tab.0.bottom" timestamp="1603079970853">
       <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="1111" y="464" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1592422673589" />
-    <state x="774" y="408" width="433" height="269" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1592428033676">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="774" y="408" width="433" height="269" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/62.0.1858.1080@62.0.1858.1080" timestamp="1592428033676" />
-    <state x="756" y="421" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.packages" timestamp="1592422675228">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="756" y="421" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.packages/62.0.1858.1080@62.0.1858.1080" timestamp="1592422675228" />
-    <state x="703" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1593287070432">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="703" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1593287070432" />
-    <state x="721" y="286" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1592606234099">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="721" y="286" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1592606234099" />
-    <state x="700" y="275" key="#init.sql" timestamp="1592582529990">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="700" y="275" key="#init.sql/62.0.1858.1080@62.0.1858.1080" timestamp="1592582529990" />
-    <state x="739" y="318" width="604" height="444" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog" timestamp="1593035021548">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="739" y="318" width="604" height="444" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1593035021548" />
-    <state x="552" y="124" key="CommitChangelistDialog2" timestamp="1591729954902">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="552" y="124" key="CommitChangelistDialog2/62.0.1858.1080@62.0.1858.1080" timestamp="1591729954902" />
-    <state x="154" y="92" width="1674" height="896" key="DiffContextDialog" timestamp="1592581508644">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="154" y="92" width="1674" height="896" key="DiffContextDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1592581508644" />
-    <state x="771" y="281" key="FileChooserDialogImpl" timestamp="1592583548673">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="771" y="281" key="FileChooserDialogImpl/62.0.1858.1080@62.0.1858.1080" timestamp="1592583548673" />
-    <state width="1812" height="149" key="GridCell.Tab.0.bottom" timestamp="1595557120990">
-      <screen x="66" y="23" width="1854" height="1057" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.0.bottom/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789206" />
-    <state width="1876" height="334" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817942" />
+    <state width="1815" height="591" key="GridCell.Tab.0.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1603079970853" />
     <state width="1812" height="149" key="GridCell.Tab.0.bottom/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120990" />
-    <state width="1812" height="149" key="GridCell.Tab.0.center" timestamp="1595557120989">
-      <screen x="66" y="23" width="1854" height="1057" />
+    <state width="1815" height="591" key="GridCell.Tab.0.center" timestamp="1603079970853">
+      <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.0.center/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789205" />
-    <state width="1876" height="334" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817937" />
+    <state width="1815" height="591" key="GridCell.Tab.0.center/62.0.1858.1080@62.0.1858.1080" timestamp="1603079970853" />
     <state width="1812" height="149" key="GridCell.Tab.0.center/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120989" />
-    <state width="1812" height="149" key="GridCell.Tab.0.left" timestamp="1595557120988">
-      <screen x="66" y="23" width="1854" height="1057" />
+    <state width="1815" height="591" key="GridCell.Tab.0.left" timestamp="1603079970853">
+      <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.0.left/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789205" />
-    <state width="1876" height="334" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817937" />
+    <state width="1815" height="591" key="GridCell.Tab.0.left/62.0.1858.1080@62.0.1858.1080" timestamp="1603079970853" />
     <state width="1812" height="149" key="GridCell.Tab.0.left/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120988" />
-    <state width="1812" height="149" key="GridCell.Tab.0.right" timestamp="1595557120989">
-      <screen x="66" y="23" width="1854" height="1057" />
+    <state width="1815" height="591" key="GridCell.Tab.0.right" timestamp="1603079970853">
+      <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.0.right/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789205" />
-    <state width="1876" height="334" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817942" />
+    <state width="1815" height="591" key="GridCell.Tab.0.right/62.0.1858.1080@62.0.1858.1080" timestamp="1603079970853" />
     <state width="1812" height="149" key="GridCell.Tab.0.right/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120989" />
-    <state width="1812" height="149" key="GridCell.Tab.1.bottom" timestamp="1595557120991">
-      <screen x="66" y="23" width="1854" height="1057" />
+    <state width="1815" height="591" key="GridCell.Tab.1.bottom" timestamp="1603079970869">
+      <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.1.bottom/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789207" />
-    <state width="1876" height="334" key="GridCell.Tab.1.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817942" />
+    <state width="1815" height="591" key="GridCell.Tab.1.bottom/62.0.1858.1080@62.0.1858.1080" timestamp="1603079970869" />
     <state width="1812" height="149" key="GridCell.Tab.1.bottom/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120991" />
-    <state width="1812" height="149" key="GridCell.Tab.1.center" timestamp="1595557120990">
-      <screen x="66" y="23" width="1854" height="1057" />
+    <state width="1815" height="591" key="GridCell.Tab.1.center" timestamp="1603079970853">
+      <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.1.center/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789206" />
-    <state width="1876" height="334" key="GridCell.Tab.1.center/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817942" />
+    <state width="1815" height="591" key="GridCell.Tab.1.center/62.0.1858.1080@62.0.1858.1080" timestamp="1603079970853" />
     <state width="1812" height="149" key="GridCell.Tab.1.center/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120990" />
-    <state width="1812" height="149" key="GridCell.Tab.1.left" timestamp="1595557120990">
-      <screen x="66" y="23" width="1854" height="1057" />
+    <state width="1815" height="591" key="GridCell.Tab.1.left" timestamp="1603079970853">
+      <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.1.left/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789206" />
-    <state width="1876" height="334" key="GridCell.Tab.1.left/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817942" />
+    <state width="1815" height="591" key="GridCell.Tab.1.left/62.0.1858.1080@62.0.1858.1080" timestamp="1603079970853" />
     <state width="1812" height="149" key="GridCell.Tab.1.left/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120990" />
-    <state width="1812" height="149" key="GridCell.Tab.1.right" timestamp="1595557120990">
-      <screen x="66" y="23" width="1854" height="1057" />
+    <state width="1815" height="591" key="GridCell.Tab.1.right" timestamp="1603079970869">
+      <screen x="62" y="0" width="1858" height="1080" />
     </state>
     <state width="1878" height="373" key="GridCell.Tab.1.right/0.23.1920.1057@0.23.1920.1057" timestamp="1595486789207" />
-    <state width="1876" height="334" key="GridCell.Tab.1.right/62.0.1858.1080@62.0.1858.1080" timestamp="1593316817942" />
+    <state width="1815" height="591" key="GridCell.Tab.1.right/62.0.1858.1080@62.0.1858.1080" timestamp="1603079970869" />
     <state width="1812" height="149" key="GridCell.Tab.1.right/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120990" />
     <state width="221" height="448" key="HiddenNamespacesPopup" timestamp="1595486399145">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
     <state width="221" height="448" key="HiddenNamespacesPopup/0.23.1920.1057@0.23.1920.1057" timestamp="1595486399145" />
-    <state width="196" height="457" key="HiddenNamespacesPopup/62.0.1858.1080@62.0.1858.1080" timestamp="1592422844230" />
-    <state x="689" y="242" key="RollbackChangesDialog" timestamp="1591729922151">
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2" timestamp="1603079850961">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="689" y="242" key="RollbackChangesDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1591729922151" />
-    <state x="539" y="190" width="1295" height="757" key="SettingsEditor" timestamp="1592524231037">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="539" y="190" width="1295" height="757" key="SettingsEditor/62.0.1858.1080@62.0.1858.1080" timestamp="1592524231037" />
-    <state width="498" height="446" key="SwitcherDM" timestamp="1591843895456">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state width="498" height="446" key="SwitcherDM/62.0.1858.1080@62.0.1858.1080" timestamp="1591843895456" />
-    <state x="586" y="289" key="Vcs.Push.Dialog.v2" timestamp="1595550772618">
-      <screen x="66" y="23" width="1854" height="1057" />
-    </state>
-    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1593287933296" />
+    <state x="583" y="272" key="Vcs.Push.Dialog.v2/62.0.1858.1080@62.0.1858.1080" timestamp="1603079850961" />
     <state x="586" y="289" key="Vcs.Push.Dialog.v2/66.23.1854.1057@66.23.1854.1057" timestamp="1595550772618" />
-    <state x="890" y="412" width="202" height="280" key="com.intellij.database.actions.DdlActions$CreateObject$1" timestamp="1592422172308">
+    <state x="890" y="415" key="com.intellij.database.actions.DdlActions$CreateObject$1" timestamp="1603079626227">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="890" y="412" width="202" height="280" key="com.intellij.database.actions.DdlActions$CreateObject$1/62.0.1858.1080@62.0.1858.1080" timestamp="1592422172308" />
+    <state x="890" y="415" key="com.intellij.database.actions.DdlActions$CreateObject$1/62.0.1858.1080@62.0.1858.1080" timestamp="1603079626227" />
     <state x="823" y="433" width="323" height="238" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1" timestamp="1595546080509">
       <screen x="66" y="23" width="1854" height="1057" />
     </state>
-    <state x="821" y="419" width="339" height="248" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1/62.0.1858.1080@62.0.1858.1080" timestamp="1593304748583" />
     <state x="823" y="433" width="323" height="238" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1/66.23.1854.1057@66.23.1854.1057" timestamp="1595546080509" />
-    <state x="825" y="208" width="759" height="738" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog" timestamp="1592581981152">
+    <state x="697" y="96" width="587" height="888" key="find.popup" timestamp="1603079512374">
       <screen x="62" y="0" width="1858" height="1080" />
     </state>
-    <state x="825" y="208" width="759" height="738" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1592581981152" />
-    <state x="800" y="453" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1592581508317">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="800" y="453" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/62.0.1858.1080@62.0.1858.1080" timestamp="1592581508317" />
-    <state x="55" y="0" width="943" height="1087" key="dock-window-1" timestamp="1592420349264">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="55" y="0" width="943" height="1087" key="dock-window-1/62.0.1858.1080@62.0.1858.1080" timestamp="1592420349264" />
-    <state x="100" y="100" width="1720" height="880" key="dock-window-2" timestamp="1592420349264">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="100" y="100" width="1720" height="880" key="dock-window-2/62.0.1858.1080@62.0.1858.1080" timestamp="1592420349264" />
-    <state x="795" y="401" key="git4idea.rebase.GitRebaseDialog" timestamp="1591729889354">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="795" y="401" key="git4idea.rebase.GitRebaseDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1591729889354" />
-    <state x="792" y="446" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1591730125248">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="792" y="446" key="git4idea.remote.GitConfigureRemotesDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1591730125248" />
-    <state x="776" y="434" key="git4idea.ui.GitResetDialog" timestamp="1591729876463">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="776" y="434" key="git4idea.ui.GitResetDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1591729876463" />
-    <state x="751" y="329" key="git4idea.ui.GitUnstashDialog" timestamp="1591729942903">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="751" y="329" key="git4idea.ui.GitUnstashDialog/62.0.1858.1080@62.0.1858.1080" timestamp="1591729942903" />
-    <state x="857" y="406" width="250" height="278" key="jetbrains.javascript.buildTools.run-task-popup" timestamp="1592401437907">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="857" y="406" width="250" height="278" key="jetbrains.javascript.buildTools.run-task-popup/62.0.1858.1080@62.0.1858.1080" timestamp="1592401437907" />
+    <state x="697" y="96" width="587" height="888" key="find.popup/62.0.1858.1080@62.0.1858.1080" timestamp="1603079512374" />
     <state x="1113" y="272" width="670" height="675" key="run.anything.popup" timestamp="1595557120908">
       <screen x="66" y="23" width="1854" height="1057" />
     </state>
-    <state x="1111" y="254" key="run.anything.popup/62.0.1858.1080@62.0.1858.1080" timestamp="1593300744617" />
     <state x="1113" y="272" width="670" height="675" key="run.anything.popup/66.23.1854.1057@66.23.1854.1057" timestamp="1595557120908" />
-    <state x="1111" y="200" width="672" height="676" key="search.everywhere.popup" timestamp="1591721136149">
-      <screen x="62" y="0" width="1858" height="1080" />
-    </state>
-    <state x="1111" y="200" width="672" height="676" key="search.everywhere.popup/62.0.1858.1080@62.0.1858.1080" timestamp="1591721136149" />
   </component>
 </project>
