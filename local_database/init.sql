@@ -1,12 +1,11 @@
-# create the database user
-create user 'mercamas'@'localhost' identified by 'fADw0CHKJqpDinkW';
-grant all privileges on app.* to 'mercamas'@'localhost';
-
 # create & use the app schema
-create schema app;
-use app;
+create schema if not exists epic;
 
-# ------------------------ creation of familia table ------------------------
+# create the database user
+create user if not exists 'mercamas'@'localhost' identified by 'fADw0CHKJqpDinkW';
+grant all privileges on epic.* to 'mercamas'@'localhost';
+
+/*# ------------------------ creation of familia table ------------------------
 create table familia
 (
     familia_id int auto_increment
@@ -180,4 +179,4 @@ begin
     update producto
     set existencias = existencias - new.cantidad
     where producto_id = new.producto;
-end;
+end;*/

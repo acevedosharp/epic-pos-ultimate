@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'xyz.acevedosharp'
-version '1'
+version '1.0'
 
 repositories {
     mavenCentral()
@@ -17,8 +17,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation "no.tornado:tornadofx:1.7.20"
     compile group: 'no.tornado', name: 'tornadofx-controls', version: '1.0.6'
-    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.6.0'
-
+    compile 'mysql:mysql-connector-java:8.0.19'
 }
 
 compileKotlin {
