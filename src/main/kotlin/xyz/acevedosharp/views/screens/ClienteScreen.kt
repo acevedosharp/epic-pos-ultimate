@@ -1,8 +1,8 @@
-package xyz.acevedosharp.views.modules
+package xyz.acevedosharp.views.screens
 
-import xyz.acevedosharp.controllers.EmpleadoController
-import xyz.acevedosharp.ui_models.Empleado
-import xyz.acevedosharp.ui_models.EmpleadoModel
+import xyz.acevedosharp.controllers.ClienteController
+import xyz.acevedosharp.ui_models.Cliente
+import xyz.acevedosharp.ui_models.ClienteModel
 import xyz.acevedosharp.views.helpers.FormType
 import xyz.acevedosharp.views.helpers.FormType.*
 import xyz.acevedosharp.views.helpers.CurrentModule.*
@@ -17,18 +17,18 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*
 
-class EmpleadoView : View("Módulo de empleados") {
+class ClienteView : View("Módulo de clientes") {
 
-    private val empleadoController = find<EmpleadoController>()
-    private val model: EmpleadoModel by inject()
+    private val clienteController = find<ClienteController>()
+    private val model: ClienteModel by inject()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty()
-    private var table: TableView<Empleado> by singleAssign()
+    private var table: TableView<Cliente> by singleAssign()
     private val view = this
 
     init {
         searchByNombre.onChange {
-            table.items = empleadoController.empleados.filter {
+            table.items = clienteController.clientes.filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
@@ -36,7 +36,7 @@ class EmpleadoView : View("Módulo de empleados") {
 
     override val root = hbox {
         setPrefSize(1920.0, 1080.0)
-        add(SideNavigation(EMPLEADOS, view))
+        add(SideNavigation(CLIENTES, view))
         borderpane {
             setPrefSize(1720.0, 1080.0)
             top {
@@ -44,17 +44,17 @@ class EmpleadoView : View("Módulo de empleados") {
                     addClass(MainStylesheet.topBar)
                     paddingBottom = 4
                     useMaxWidth = true
-                    button("Nuevo Empleado") {
+                    button("Nuevo Cliente") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                         action {
-                            openInternalWindow<NewEmpleadoFormView>(closeButton = false, modal = true)
+                            openInternalWindow<NewClienteFormView>(closeButton = false, modal = true)
                         }
                     }
                     button("Editar selección") {
                         enableWhen(existsSelection)
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.blueButton)
                         action {
-                            openInternalWindow<EditEmpleadoFormView>(
+                            openInternalWindow<EditClienteFormView>(
                                 closeButton = false,
                                 modal = true
                             )
@@ -78,9 +78,10 @@ class EmpleadoView : View("Módulo de empleados") {
 
             center {
                 hbox {
-                    table = tableview(empleadoController.empleados) {
-                        column("Nombre", Empleado::nombreProperty)
-                        column("Teléfono", Empleado::telefonoProperty)
+                    table = tableview(clienteController.clientes) {
+                        column("Nombre", Cliente::nombreProperty)
+                        column("Teléfono", Cliente::telefonoProperty)
+                        column("Dirección", Cliente::direccionProperty).remainingWidth()
 
                         smartResize()
 
@@ -106,15 +107,15 @@ class EmpleadoView : View("Módulo de empleados") {
     }
 }
 
-class BaseEmpleadoFormView(formType: FormType): Fragment() {
+class BaseClienteFormView(formType: FormType): Fragment() {
 
-    private val empleadoController = find<EmpleadoController>()
-    private val model = if (formType == CREATE) EmpleadoModel() else find(EmpleadoModel::class)
+    private val clienteController = find<ClienteController>()
+    private val model = if (formType == CREATE) ClienteModel() else find(ClienteModel::class)
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
         prefWidth = 800.0
-        label(if (formType == CREATE) "Nuevo Empleado" else "Editar Empleado") {
+        label(if (formType == CREATE) "Nuevo Cliente" else "Editar Cliente") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
             addClass(if (formType == CREATE) MainStylesheet.greenLabel else MainStylesheet.blueLabel)
@@ -124,8 +125,8 @@ class BaseEmpleadoFormView(formType: FormType): Fragment() {
                 field("Nombre") {
                     textfield(model.nombre).validator {
                         when {
-                            if (formType == CREATE) empleadoController.isNombreAvailable(it.toString())
-                            else empleadoController.existsOtherWithNombre(it.toString(), model.id.value)
+                            if (formType == CREATE) clienteController.isNombreAvailable(it.toString())
+                            else clienteController.existsOtherWithNombre(it.toString(), model.id.value)
                             -> error("Nombre no disponible")
                             it.isNullOrBlank() -> error("Nombre requerido")
                             it.length > 50 -> error("Máximo 50 caracteres (${it.length})")
@@ -136,11 +137,19 @@ class BaseEmpleadoFormView(formType: FormType): Fragment() {
                 field("Teléfono") {
                     textfield(model.telefono).validator {
                         when {
-                            if (formType == CREATE) empleadoController.isTelefonoAvailable(it.toString())
-                            else empleadoController.existsOtherWithTelefono(it.toString(), model.id.value)
+                            if (formType == CREATE) clienteController.isTelefonoAvailable(it.toString())
+                            else clienteController.existsOtherWithTelefono(it.toString(), model.id.value)
                             -> error("Teléfono no disponible")
                             it.isNullOrBlank() -> error("Teléfono requerido")
                             it.length > 20 -> error("Máximo 20 caracteres (${it.length})")
+                            else -> null
+                        }
+                    }
+                }
+                field("Dirección") {
+                    textfield(model.direccion).validator {
+                        when {
+                            !it.isNullOrBlank() && it.length > 100 -> error("Máximo 100 caracteres (${it.length})")
                             else -> null
                         }
                     }
@@ -152,11 +161,12 @@ class BaseEmpleadoFormView(formType: FormType): Fragment() {
                             if (formType == CREATE) {
                                 try {
                                     model.commit {
-                                        empleadoController.add(
-                                            Empleado(
+                                        clienteController.add(
+                                            Cliente(
                                                 null,
                                                 model.nombre.value,
-                                                model.telefono.value
+                                                model.telefono.value,
+                                                model.direccion.value
                                             )
                                         )
                                         close()
@@ -168,7 +178,7 @@ class BaseEmpleadoFormView(formType: FormType): Fragment() {
                             } else {
                                 try {
                                     model.commit {
-                                        empleadoController.edit(model.item)
+                                        clienteController.edit(model.item)
                                         close()
                                     }
                                 } catch (e: Exception) {
@@ -196,10 +206,10 @@ class BaseEmpleadoFormView(formType: FormType): Fragment() {
 }
 
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
-class NewEmpleadoFormView : Fragment() {
-    override val root = BaseEmpleadoFormView(CREATE).root
+class NewClienteFormView : Fragment() {
+    override val root = BaseClienteFormView(CREATE).root
 }
 
-class EditEmpleadoFormView : Fragment() {
-    override val root = BaseEmpleadoFormView(EDIT).root
+class EditClienteFormView : Fragment() {
+    override val root = BaseClienteFormView(EDIT).root
 }

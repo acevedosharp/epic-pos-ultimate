@@ -1,7 +1,7 @@
 package xyz.acevedosharp
 
 import xyz.acevedosharp.views.MainStylesheet
-import xyz.acevedosharp.views.modules.ProductoView
+import xyz.acevedosharp.views.screens.ProductoView
 import javafx.scene.image.Image
 import javafx.stage.Stage
 import org.springframework.boot.builder.SpringApplicationBuilder

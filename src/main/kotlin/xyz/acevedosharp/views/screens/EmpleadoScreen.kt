@@ -1,8 +1,8 @@
-package xyz.acevedosharp.views.modules
+package xyz.acevedosharp.views.screens
 
-import xyz.acevedosharp.controllers.FamiliaController
-import xyz.acevedosharp.ui_models.Familia
-import xyz.acevedosharp.ui_models.FamiliaModel
+import xyz.acevedosharp.controllers.EmpleadoController
+import xyz.acevedosharp.ui_models.Empleado
+import xyz.acevedosharp.ui_models.EmpleadoModel
 import xyz.acevedosharp.views.helpers.FormType
 import xyz.acevedosharp.views.helpers.FormType.*
 import xyz.acevedosharp.views.helpers.CurrentModule.*
@@ -17,18 +17,18 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*
 
-class FamiliaView : View("Módulo de familias") {
+class EmpleadoView : View("Módulo de empleados") {
 
-    private val familiaController = find<FamiliaController>()
-    private val model: FamiliaModel by inject()
+    private val empleadoController = find<EmpleadoController>()
+    private val model: EmpleadoModel by inject()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty()
-    private var table: TableView<Familia> by singleAssign()
+    private var table: TableView<Empleado> by singleAssign()
     private val view = this
 
     init {
         searchByNombre.onChange {
-            table.items = familiaController.familias.filter {
+            table.items = empleadoController.empleados.filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
@@ -36,7 +36,7 @@ class FamiliaView : View("Módulo de familias") {
 
     override val root = hbox {
         setPrefSize(1920.0, 1080.0)
-        add(SideNavigation(FAMILIAS, view))
+        add(SideNavigation(EMPLEADOS, view))
         borderpane {
             setPrefSize(1720.0, 1080.0)
             top {
@@ -44,17 +44,17 @@ class FamiliaView : View("Módulo de familias") {
                     addClass(MainStylesheet.topBar)
                     paddingBottom = 4
                     useMaxWidth = true
-                    button("Nueva Familia") {
+                    button("Nuevo Empleado") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                         action {
-                            openInternalWindow<NewFamiliaFormView>(closeButton = false, modal = true)
+                            openInternalWindow<NewEmpleadoFormView>(closeButton = false, modal = true)
                         }
                     }
                     button("Editar selección") {
                         enableWhen(existsSelection)
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.blueButton)
                         action {
-                            openInternalWindow<EditFamiliaFormView>(
+                            openInternalWindow<EditEmpleadoFormView>(
                                 closeButton = false,
                                 modal = true
                             )
@@ -78,8 +78,9 @@ class FamiliaView : View("Módulo de familias") {
 
             center {
                 hbox {
-                    table = tableview(familiaController.familias) {
-                        column("Nombre", Familia::nombreProperty)
+                    table = tableview(empleadoController.empleados) {
+                        column("Nombre", Empleado::nombreProperty)
+                        column("Teléfono", Empleado::telefonoProperty)
 
                         smartResize()
 
@@ -105,15 +106,15 @@ class FamiliaView : View("Módulo de familias") {
     }
 }
 
-class BaseFamiliaFormView(formType: FormType): Fragment() {
+class BaseEmpleadoFormView(formType: FormType): Fragment() {
 
-    private val familiaController = find<FamiliaController>()
-    private val model = if (formType == CREATE) FamiliaModel() else find(FamiliaModel::class)
+    private val empleadoController = find<EmpleadoController>()
+    private val model = if (formType == CREATE) EmpleadoModel() else find(EmpleadoModel::class)
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
         prefWidth = 800.0
-        label(if (formType == CREATE) "Nueva Familia" else "Editar Familia") {
+        label(if (formType == CREATE) "Nuevo Empleado" else "Editar Empleado") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
             addClass(if (formType == CREATE) MainStylesheet.greenLabel else MainStylesheet.blueLabel)
@@ -123,11 +124,23 @@ class BaseFamiliaFormView(formType: FormType): Fragment() {
                 field("Nombre") {
                     textfield(model.nombre).validator {
                         when {
-                            if (formType == CREATE) familiaController.isNombreAvailable(it.toString())
-                            else familiaController.existsOtherWithNombre(it.toString(), model.id.value)
+                            if (formType == CREATE) empleadoController.isNombreAvailable(it.toString())
+                            else empleadoController.existsOtherWithNombre(it.toString(), model.id.value)
                             -> error("Nombre no disponible")
                             it.isNullOrBlank() -> error("Nombre requerido")
-                            it.length > 30 -> error("Máximo 30 caracteres (${it.length})")
+                            it.length > 50 -> error("Máximo 50 caracteres (${it.length})")
+                            else -> null
+                        }
+                    }
+                }
+                field("Teléfono") {
+                    textfield(model.telefono).validator {
+                        when {
+                            if (formType == CREATE) empleadoController.isTelefonoAvailable(it.toString())
+                            else empleadoController.existsOtherWithTelefono(it.toString(), model.id.value)
+                            -> error("Teléfono no disponible")
+                            it.isNullOrBlank() -> error("Teléfono requerido")
+                            it.length > 20 -> error("Máximo 20 caracteres (${it.length})")
                             else -> null
                         }
                     }
@@ -139,10 +152,11 @@ class BaseFamiliaFormView(formType: FormType): Fragment() {
                             if (formType == CREATE) {
                                 try {
                                     model.commit {
-                                        familiaController.add(
-                                            Familia(
+                                        empleadoController.add(
+                                            Empleado(
                                                 null,
-                                                model.nombre.value
+                                                model.nombre.value,
+                                                model.telefono.value
                                             )
                                         )
                                         close()
@@ -154,7 +168,7 @@ class BaseFamiliaFormView(formType: FormType): Fragment() {
                             } else {
                                 try {
                                     model.commit {
-                                        familiaController.edit(model.item)
+                                        empleadoController.edit(model.item)
                                         close()
                                     }
                                 } catch (e: Exception) {
@@ -182,10 +196,10 @@ class BaseFamiliaFormView(formType: FormType): Fragment() {
 }
 
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
-class NewFamiliaFormView: Fragment() {
-    override val root = BaseFamiliaFormView(CREATE).root
+class NewEmpleadoFormView : Fragment() {
+    override val root = BaseEmpleadoFormView(CREATE).root
 }
 
-class EditFamiliaFormView: Fragment() {
-    override val root = BaseFamiliaFormView(EDIT).root
+class EditEmpleadoFormView : Fragment() {
+    override val root = BaseEmpleadoFormView(EDIT).root
 }

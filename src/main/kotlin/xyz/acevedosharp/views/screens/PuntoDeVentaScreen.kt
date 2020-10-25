@@ -1,4 +1,4 @@
-package xyz.acevedosharp.views.modules
+package xyz.acevedosharp.views.screens
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
 import xyz.acevedosharp.controllers.ClienteController

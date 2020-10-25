@@ -1,9 +1,6 @@
 package xyz.acevedosharp.ui_models
 
 import tornadofx.*
-import javafx.scene.control.Button
-import xyz.acevedosharp.views.MainStylesheet
-import xyz.acevedosharp.views.modules.NewProductoFormView
 import javafx.beans.property.*
 
 class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Double, existencias: Int, familia: Familia?) {

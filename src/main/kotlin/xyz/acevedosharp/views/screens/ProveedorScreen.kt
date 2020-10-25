@@ -1,4 +1,4 @@
-package xyz.acevedosharp.views.modules
+package xyz.acevedosharp.views.screens
 
 import xyz.acevedosharp.controllers.ProveedorController
 import xyz.acevedosharp.ui_models.Proveedor

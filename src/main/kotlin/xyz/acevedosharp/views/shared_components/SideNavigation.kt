@@ -4,7 +4,7 @@ import xyz.acevedosharp.views.MainStylesheet
 import javafx.geometry.Pos
 import xyz.acevedosharp.views.helpers.CurrentModule
 import xyz.acevedosharp.views.helpers.CurrentModule.*
-import xyz.acevedosharp.views.modules.*
+import xyz.acevedosharp.views.screens.*
 import tornadofx.*
 
 class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
