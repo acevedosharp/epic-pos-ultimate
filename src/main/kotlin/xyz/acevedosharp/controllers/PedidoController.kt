@@ -12,37 +12,19 @@ import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
 import java.sql.Timestamp
 
-class PedidoController: Controller() {
+class PedidoController: Controller(), UpdateSnapshot {
 
-    private val pedidoService =
-        find<CustomApplicationContextWrapper>().context.getBean<PedidoService>(PedidoService::class.java)
-
-    private val loteService =
-        find<CustomApplicationContextWrapper>().context.getBean<LoteService>(LoteService::class.java)
-
-    private val proveedorService =
-        find<CustomApplicationContextWrapper>().context.getBean<ProveedorService>(ProveedorService::class.java)
-
-    private val empleadoService =
-        find<CustomApplicationContextWrapper>().context.getBean<EmpleadoService>(EmpleadoService::class.java)
-
-    private val productoService =
-        find<CustomApplicationContextWrapper>().context.getBean<ProductoService>(ProductoService::class.java)
+    private val pedidoService = find<CustomApplicationContextWrapper>().context.getBean(PedidoService::class.java)
+    private val loteService = find<CustomApplicationContextWrapper>().context.getBean(LoteService::class.java)
+    private val proveedorService = find<CustomApplicationContextWrapper>().context.getBean(ProveedorService::class.java)
+    private val empleadoService = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoService::class.java)
+    private val productoService = find<CustomApplicationContextWrapper>().context.getBean(ProductoService::class.java)
 
     private val proveedorController = find<ProveedorController>()
     private val empleadoController = find<EmpleadoController>()
     private val productoController = find<ProductoController>()
 
-    val pedidos: ObservableList<Pedido> = FXCollections.observableArrayList<Pedido>(
-        pedidoService.all().map { dbObject: PedidoDB ->
-            Pedido(
-                dbObject.pedidoId,
-                dbObject.fechaHora.toLocalDateTime(),
-                proveedorController.proveedores.first { it.id == dbObject.proveedor.proveedorId },
-                empleadoController.empleados.first { it.id == dbObject.empleado.empleadoId }
-            )
-        }
-    )
+    val pedidos: ObservableList<Pedido> = FXCollections.observableArrayList()
 
     fun add(pedido: Pedido, lotes: List<Lote>) {
         println("Now saving Pedido...")
@@ -56,7 +38,7 @@ class PedidoController: Controller() {
             )
         )
         println("Successfully saved Pedido!")
-        pedidos.add(pedido.apply { id = preRes.pedidoId })
+        updateSnapshot()
 
         println("Now saving lotes...")
         val iRes = loteService.addAll(lotes.map {
@@ -75,6 +57,19 @@ class PedidoController: Controller() {
             productoController.productos.find { it.id == el.producto.productoId }!!.apply { existencias += el.cantidad }
         }
         println("Added to existences!")
+    }
+
+    override fun updateSnapshot() {
+        pedidos.setAll(
+            pedidoService.all().map { dbObject: PedidoDB ->
+                Pedido(
+                    dbObject.pedidoId,
+                    dbObject.fechaHora.toLocalDateTime(),
+                    proveedorController.proveedores.first { it.id == dbObject.proveedor.proveedorId },
+                    empleadoController.empleados.first { it.id == dbObject.empleado.empleadoId }
+                )
+            }
+        )
     }
 
 }

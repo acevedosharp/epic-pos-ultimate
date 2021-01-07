@@ -8,44 +8,31 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import tornadofx.Controller
 
-class EmpleadoController: Controller() {
-    private val empleadoService =
-        find<CustomApplicationContextWrapper>().context.getBean<EmpleadoService>(EmpleadoService::class.java)
+class EmpleadoController : Controller(), UpdateSnapshot {
+    private val empleadoService = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoService::class.java)
 
-    val empleados: ObservableList<Empleado> = FXCollections.observableArrayList<Empleado>(
-        empleadoService.all().map {
-            Empleado(
-                it.empleadoId,
-                it.nombre,
-                it.telefono
-            )
-        }
-    )
+    val empleados: ObservableList<Empleado> = FXCollections.observableArrayList()
 
     fun add(empleado: Empleado) {
-        val res = empleadoService.add(
+        empleadoService.add(
             EmpleadoDB(
                 null,
                 empleado.nombre,
                 empleado.telefono
             )
         )
-        empleados.add(empleado.apply { id = res.empleadoId })
+        updateSnapshot()
     }
 
     fun edit(empleado: Empleado) {
-        val res = empleadoService.edit(
+        empleadoService.edit(
             EmpleadoDB(
                 empleado.id,
                 empleado.nombre,
                 empleado.telefono
             )
         )
-
-        empleado.apply {
-            nombre = res.nombre
-            telefono = res.telefono
-        }
+        updateSnapshot()
     }
 
 
@@ -57,5 +44,17 @@ class EmpleadoController: Controller() {
     fun isTelefonoAvailable(telefono: String): Boolean = empleadoService.repo.existsByTelefono(telefono)
     fun existsOtherWithTelefono(telefono: String, id: Int): Boolean {
         return empleadoService.repo.existsByTelefono(telefono) && (empleadoService.repo.findByTelefono(telefono).empleadoId != id)
+    }
+
+    override fun updateSnapshot() {
+        empleados.setAll(
+            empleadoService.all().map {
+                Empleado(
+                    it.empleadoId,
+                    it.nombre,
+                    it.telefono
+                )
+            }
+        )
     }
 }

@@ -6,5 +6,5 @@ import javafx.collections.ObservableList
 import tornadofx.*
 
 class CurrentUncommittedLotes : Controller() {
-    val lotes: ObservableList<Lote> = FXCollections.observableArrayList<Lote>()
+    val lotes: ObservableList<Lote> = FXCollections.observableArrayList()
 }

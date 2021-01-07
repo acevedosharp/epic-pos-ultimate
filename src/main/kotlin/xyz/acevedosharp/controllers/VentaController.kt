@@ -12,38 +12,18 @@ import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
 import java.sql.Timestamp
 
-class VentaController: Controller() {
-    private val ventaService =
-        find<CustomApplicationContextWrapper>().context.getBean<VentaService>(VentaService::class.java)
-
-    private val itemVentaService =
-        find<CustomApplicationContextWrapper>().context.getBean<ItemVentaService>(ItemVentaService::class.java)
-
-    private val productoService =
-        find<CustomApplicationContextWrapper>().context.getBean<ProductoService>(ProductoService::class.java)
-
-    private val empleadoService =
-        find<CustomApplicationContextWrapper>().context.getBean<EmpleadoService>(EmpleadoService::class.java)
-
-    private val clienteService =
-        find<CustomApplicationContextWrapper>().context.getBean<ClienteService>(ClienteService::class.java)
+class VentaController: Controller(), UpdateSnapshot {
+    private val ventaService = find<CustomApplicationContextWrapper>().context.getBean(VentaService::class.java)
+    private val itemVentaService = find<CustomApplicationContextWrapper>().context.getBean(ItemVentaService::class.java)
+    private val productoService = find<CustomApplicationContextWrapper>().context.getBean(ProductoService::class.java)
+    private val empleadoService = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoService::class.java)
+    private val clienteService = find<CustomApplicationContextWrapper>().context.getBean(ClienteService::class.java)
 
     private val empleadoController = find<EmpleadoController>()
     private val clienteController = find<ClienteController>()
     private val productoController = find<ProductoController>()
 
-    val ventas: ObservableList<Venta> = FXCollections.observableArrayList<Venta>(
-        ventaService.all().map { dbObject: VentaDB ->
-            Venta(
-                dbObject.ventaId,
-                dbObject.fechaHora.toLocalDateTime(),
-                dbObject.precioTotal,
-                dbObject.pagoRecibido,
-                empleadoController.empleados.first { it.id == dbObject.empleado.empleadoId },
-                clienteController.clientes.first { it.id == dbObject.cliente.clienteId }
-            )
-        }
-    )
+    val ventas: ObservableList<Venta> = FXCollections.observableArrayList()
 
     fun add(venta: Venta, items: List<UncommittedItemVenta>): VentaDB {
         val preRes = ventaService.add(
@@ -58,7 +38,7 @@ class VentaController: Controller() {
             )
         )
 
-        ventas.add(venta.apply { id = preRes.ventaId })
+        updateSnapshot()
 
         val iRes = itemVentaService.addAll(items.map {
             ItemVentaDB(
@@ -77,5 +57,20 @@ class VentaController: Controller() {
         preRes.items = iRes.toSet()
 
         return preRes
+    }
+
+    override fun updateSnapshot() {
+        ventas.setAll(
+            ventaService.all().map { dbObject: VentaDB ->
+                Venta(
+                    dbObject.ventaId,
+                    dbObject.fechaHora.toLocalDateTime(),
+                    dbObject.precioTotal,
+                    dbObject.pagoRecibido,
+                    empleadoController.empleados.first { it.id == dbObject.empleado.empleadoId },
+                    clienteController.clientes.first { it.id == dbObject.cliente.clienteId }
+                )
+            }
+        )
     }
 }

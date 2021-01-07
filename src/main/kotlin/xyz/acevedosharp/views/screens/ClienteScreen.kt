@@ -32,6 +32,13 @@ class ClienteView : View("Módulo de clientes") {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
+
+        clienteController.clientes.onChange {
+            // force refresh
+            table.items = clienteController.clientes.filter {
+                it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
+            }.asObservable()
+        }
     }
 
     override val root = hbox {

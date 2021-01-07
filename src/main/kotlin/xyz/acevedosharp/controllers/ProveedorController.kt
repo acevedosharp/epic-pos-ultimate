@@ -8,24 +8,13 @@ import xyz.acevedosharp.ui_models.Proveedor
 import javafx.collections.ObservableList
 import tornadofx.Controller
 
-class ProveedorController: Controller() {
-    private val proveedorService =
-        find<CustomApplicationContextWrapper>().context.getBean<ProveedorService>(ProveedorService::class.java)
+class ProveedorController : Controller(), UpdateSnapshot {
+    private val proveedorService = find<CustomApplicationContextWrapper>().context.getBean(ProveedorService::class.java)
 
-    val proveedores: ObservableList<Proveedor> = FXCollections.observableArrayList<Proveedor>(
-        proveedorService.all().map {
-            Proveedor(
-                it.proveedorId,
-                it.nombre,
-                it.telefono,
-                it.direccion,
-                it.correo
-            )
-        }
-    )
+    val proveedores: ObservableList<Proveedor> = FXCollections.observableArrayList()
 
     fun add(proveedor: Proveedor) {
-        val res = proveedorService.add(
+        proveedorService.add(
             ProveedorDB(
                 null,
                 proveedor.nombre,
@@ -34,11 +23,11 @@ class ProveedorController: Controller() {
                 proveedor.direccion
             )
         )
-        proveedores.add(proveedor.apply { id = res.proveedorId })
+        updateSnapshot()
     }
 
     fun edit(proveedor: Proveedor) {
-        val res = proveedorService.edit(
+        proveedorService.edit(
             ProveedorDB(
                 proveedor.id,
                 proveedor.nombre,
@@ -47,15 +36,8 @@ class ProveedorController: Controller() {
                 proveedor.direccion
             )
         )
-
-        proveedor.apply {
-            nombre = res.nombre
-            telefono = res.telefono
-            correo = res.correo
-            direccion = res.direccion
-        }
+        updateSnapshot()
     }
-
 
     fun isNombreAvailable(nombre: String): Boolean = proveedorService.repo.existsByNombre(nombre)
     fun existsOtherWithNombre(nombre: String, id: Int): Boolean {
@@ -70,5 +52,19 @@ class ProveedorController: Controller() {
     fun isCorreoAvailable(correo: String): Boolean = proveedorService.repo.existsByCorreo(correo)
     fun existsOtherWithCorreo(correo: String, id: Int): Boolean {
         return proveedorService.repo.existsByCorreo(correo) && (proveedorService.repo.findByCorreo(correo).proveedorId != id)
+    }
+
+    override fun updateSnapshot() {
+        proveedores.setAll(
+            proveedorService.all().map {
+                Proveedor(
+                    it.proveedorId,
+                    it.nombre,
+                    it.telefono,
+                    it.direccion,
+                    it.correo
+                )
+            }
+        )
     }
 }

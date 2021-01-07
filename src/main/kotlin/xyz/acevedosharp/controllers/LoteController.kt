@@ -11,16 +11,13 @@ import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
 
 class LoteController : Controller() {
-    private val loteService =
-        find<CustomApplicationContextWrapper>().context.getBean<LoteService>(LoteService::class.java)
+    private val loteService = find<CustomApplicationContextWrapper>().context.getBean<LoteService>(LoteService::class.java)
 
-    private val productoService =
-        find<CustomApplicationContextWrapper>().context.getBean<ProductoService>(ProductoService::class.java)
+    private val productoService = find<CustomApplicationContextWrapper>().context.getBean<ProductoService>(ProductoService::class.java)
 
     private val productoController = find<ProductoController>()
 
-    fun lotesFromProducto(id: Int): List<Lote> =
-        loteService.repo.findAllByProductoEquals(productoService.repo.findByIdOrNull(id)!!).map { dbObject: LoteDB ->
+    fun lotesFromProducto(id: Int): List<Lote> = loteService.repo.findAllByProductoEquals(productoService.repo.findByIdOrNull(id)!!).map { dbObject: LoteDB ->
             Lote(
                 dbObject.loteId,
                 dbObject.cantidad,
@@ -29,7 +26,7 @@ class LoteController : Controller() {
             )
         }
 
-    val lotes: ObservableList<Lote> = FXCollections.observableArrayList<Lote>(
+    val lotes: ObservableList<Lote> = FXCollections.observableArrayList(
         loteService.all().map { dbObject: LoteDB ->
             Lote(
                 dbObject.loteId,

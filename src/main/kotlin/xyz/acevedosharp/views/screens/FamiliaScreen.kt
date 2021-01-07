@@ -32,6 +32,13 @@ class FamiliaView : View("Módulo de familias") {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
+
+        familiaController.familias.onChange {
+            // force refresh
+            table.items = familiaController.familias.filter {
+                it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
+            }.asObservable()
+        }
     }
 
     override val root = hbox {

@@ -28,8 +28,7 @@ class PedidoView : View("Módulo de pedidos") {
 
     private val pedidoController = find<PedidoController>()
     private val proveedorController = find<ProveedorController>()
-    val pedidoService =
-        find<CustomApplicationContextWrapper>().context.getBean<PedidoService>(PedidoService::class.java)
+    val pedidoService = find<CustomApplicationContextWrapper>().context.getBean<PedidoService>(PedidoService::class.java)
 
     private val items: ObservableList<Node> = FXCollections.observableArrayList(
         pedidoController.pedidos.sortedByDescending { it.fechaHora }.map { PedidoDisplay(it, this).root }

@@ -8,45 +8,50 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import tornadofx.Controller
 
-class FamiliaController: Controller() {
+class FamiliaController: Controller(), UpdateSnapshot {
     private val familiaService =
-        find<CustomApplicationContextWrapper>().context.getBean<FamiliaService>(FamiliaService::class.java)
+        find<CustomApplicationContextWrapper>().context.getBean(FamiliaService::class.java)
 
-    val familias: ObservableList<Familia> = FXCollections.observableArrayList<Familia>(
-        familiaService.all().map {
-            Familia(
-                it.familiaId,
-                it.nombre
-            )
-        }
-    )
+    val familias: ObservableList<Familia> = FXCollections.observableArrayList()
+
+    init {
+        updateSnapshot()
+    }
 
     fun add(familia: Familia) {
-        val res = familiaService.add(
+        familiaService.add(
             FamiliaDB(
                 null,
                 familia.nombre
             )
         )
-        familias.add(familia.apply { id = res.familiaId })
+        updateSnapshot()
     }
 
     fun edit(familia: Familia) {
-        val res = familiaService.edit(
+        familiaService.edit(
             FamiliaDB(
                 familia.id,
                 familia.nombre
             )
         )
-
-        familia.apply {
-            nombre = res.nombre
-        }
+        updateSnapshot()
     }
 
 
     fun isNombreAvailable(nombre: String): Boolean = familiaService.repo.existsByNombre(nombre)
     fun existsOtherWithNombre(nombre: String, id: Int): Boolean {
         return familiaService.repo.existsByNombre(nombre) && (familiaService.repo.findByNombre(nombre).familiaId != id)
+    }
+
+    override fun updateSnapshot() {
+        familias.setAll(
+            familiaService.all().map {
+                Familia(
+                    it.familiaId,
+                    it.nombre
+                )
+            }
+        )
     }
 }

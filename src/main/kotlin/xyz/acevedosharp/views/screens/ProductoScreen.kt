@@ -24,7 +24,6 @@ import tornadofx.*
 class ProductoView : View("Módulo de productos") {
 
     private val productoController = find<ProductoController>()
-    private val familiaController = find<FamiliaController>()
 
     private val model: ProductoModel by inject()
     private val existsSelection = SimpleBooleanProperty(false)
@@ -45,6 +44,14 @@ class ProductoView : View("Módulo de productos") {
             table.items = productoController.productos.filter {
                 it.descLarga.toLowerCase().contains(searchByDescripcion.value.toLowerCase()) ||
                 it.descCorta.toLowerCase().contains(searchByDescripcion.value.toLowerCase())
+            }.asObservable()
+        }
+
+        // force refresh
+        productoController.productos.onChange {
+            searchByDescripcion.value = ""
+            table.items = productoController.productos.filter {
+                it.codigo.toLowerCase().contains(searchByCodigo.value.toLowerCase())
             }.asObservable()
         }
     }

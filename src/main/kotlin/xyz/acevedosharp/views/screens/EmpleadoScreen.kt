@@ -32,6 +32,13 @@ class EmpleadoView : View("Módulo de empleados") {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
+
+        // force refresh
+        empleadoController.empleados.onChange {
+            table.items = empleadoController.empleados.filter {
+                it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
+            }.asObservable()
+        }
     }
 
     override val root = hbox {

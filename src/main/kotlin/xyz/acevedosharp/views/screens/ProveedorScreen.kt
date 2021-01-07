@@ -32,6 +32,13 @@ class ProveedorView : View("Módulo de proveedores") {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
+
+        proveedorController.proveedores.onChange {
+            // force refresh
+            table.items = proveedorController.proveedores.filter {
+                it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
+            }.asObservable()
+        }
     }
 
     override val root = hbox {

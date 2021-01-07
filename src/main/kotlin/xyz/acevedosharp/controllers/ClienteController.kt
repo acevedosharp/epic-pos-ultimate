@@ -8,23 +8,13 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import tornadofx.Controller
 
-class ClienteController: Controller() {
-    private val clienteService =
-        find<CustomApplicationContextWrapper>().context.getBean<ClienteService>(ClienteService::class.java)
+class ClienteController : Controller(), UpdateSnapshot {
+    private val clienteService = find<CustomApplicationContextWrapper>().context.getBean(ClienteService::class.java)
 
-    val clientes: ObservableList<Cliente> = FXCollections.observableArrayList<Cliente>(
-        clienteService.all().map {
-            Cliente(
-                it.clienteId,
-                it.nombre,
-                it.telefono,
-                it.direccion
-            )
-        }
-    )
+    val clientes: ObservableList<Cliente> = FXCollections.observableArrayList()
 
     fun add(cliente: Cliente) {
-        val res = clienteService.add(
+        clienteService.add(
             ClienteDB(
                 null,
                 cliente.nombre,
@@ -32,11 +22,11 @@ class ClienteController: Controller() {
                 cliente.direccion
             )
         )
-        clientes.add(cliente.apply { id = res.clienteId })
+        updateSnapshot()
     }
 
     fun edit(cliente: Cliente) {
-        val res = clienteService.edit(
+        clienteService.edit(
             ClienteDB(
                 cliente.id,
                 cliente.nombre,
@@ -44,12 +34,7 @@ class ClienteController: Controller() {
                 cliente.direccion
             )
         )
-
-        cliente.apply {
-            nombre = res.nombre
-            telefono = res.telefono
-            direccion = res.direccion
-        }
+        updateSnapshot()
     }
 
 
@@ -61,5 +46,18 @@ class ClienteController: Controller() {
     fun isTelefonoAvailable(telefono: String): Boolean = clienteService.repo.existsByTelefono(telefono)
     fun existsOtherWithTelefono(telefono: String, id: Int): Boolean {
         return clienteService.repo.existsByTelefono(telefono) && (clienteService.repo.findByTelefono(telefono).clienteId != id)
+    }
+
+    override fun updateSnapshot() {
+        clientes.setAll(
+            clienteService.all().map {
+                Cliente(
+                    it.clienteId,
+                    it.nombre,
+                    it.telefono,
+                    it.direccion
+                )
+            }
+        )
     }
 }
