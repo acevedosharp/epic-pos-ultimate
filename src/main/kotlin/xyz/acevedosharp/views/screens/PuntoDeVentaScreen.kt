@@ -46,14 +46,14 @@ class PuntoDeVentaView : View("Punto de venta") {
     private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> = FXCollections.observableArrayList()
     private val uncommittedItems: ObservableList<Node> = FXCollections.observableArrayList()
     private val dineroEntregado = SimpleIntegerProperty()
-    private val valorTotal = SimpleDoubleProperty()
-    private val valorTotalRoundedAndFormatted = SimpleStringProperty()
+    private val valorTotal = SimpleDoubleProperty(0.0)
+    private val valorTotalRoundedAndFormatted = SimpleStringProperty("0")
     private val currentCodigo = SimpleStringProperty()
 
     private lateinit var currentCodigoTextField: TextField
 
     init {
-        valorTotal.onChange { valorTotalRoundedAndFormatted.setValue("${NumberFormat.getIntegerInstance().format(it.roundToInt())}") }
+        valorTotal.onChange { valorTotalRoundedAndFormatted.value = NumberFormat.getIntegerInstance().format(it.roundToInt()) }
         uncommittedItemsAsViews.onChange {
             uncommittedItemsAsViews.forEachIndexed { index, node: ItemVentaComponent ->
                 node.indexProperty.set(index)
@@ -171,12 +171,12 @@ class PuntoDeVentaView : View("Punto de venta") {
                     }.style {
                         fontSize = 32.px
                     }
-                    button("\uD83D\uDD0D") {
-                        addClass(MainStylesheet.greenButton)
-                        style {
-                            fontSize = 32.px
-                            textFill = Color.WHITE
+                    button {
+                        graphic = imageview("images/lupa.png") {
+                            fitWidth = 50.0
+                            fitHeight = 50.0
                         }
+                        addClass(MainStylesheet.greenButton)
                         action {
                             openInternalWindow<CreateItemVentaManuallyForm>(
                                 closeButton = false, modal = true, params =
@@ -188,7 +188,6 @@ class PuntoDeVentaView : View("Punto de venta") {
                             removeAlwaysFocusListener()
                         }
                     }
-
                 }
             }
             center {
@@ -392,7 +391,7 @@ class PuntoDeVentaView : View("Punto de venta") {
                             textFill = Color.WHITE
                         }
                         action {
-                            if(dineroEntregado.value >= valorTotal.value) {
+                            if(uncommittedItems.size > 0 && dineroEntregado.value >= valorTotal.value) {
                                 openInternalWindow<CommitVenta>(
                                     closeButton = false, modal = true, params =
                                     mapOf(

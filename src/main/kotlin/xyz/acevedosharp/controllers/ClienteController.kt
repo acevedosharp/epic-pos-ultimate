@@ -13,6 +13,10 @@ class ClienteController : Controller(), UpdateSnapshot {
 
     val clientes: ObservableList<Cliente> = FXCollections.observableArrayList()
 
+    init {
+        updateSnapshot()
+    }
+
     fun add(cliente: Cliente) {
         clienteService.add(
             ClienteDB(

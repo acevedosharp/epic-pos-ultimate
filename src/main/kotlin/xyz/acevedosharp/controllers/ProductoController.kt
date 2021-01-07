@@ -20,6 +20,10 @@ class ProductoController: Controller(), UpdateSnapshot {
 
     val productos: ObservableList<Producto> = FXCollections.observableArrayList()
 
+    init {
+        updateSnapshot()
+    }
+
     fun add(producto: Producto) {
         productoService.add(
             ProductoDB(

@@ -13,6 +13,10 @@ class EmpleadoController : Controller(), UpdateSnapshot {
 
     val empleados: ObservableList<Empleado> = FXCollections.observableArrayList()
 
+    init {
+        updateSnapshot()
+    }
+
     fun add(empleado: Empleado) {
         empleadoService.add(
             EmpleadoDB(

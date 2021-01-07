@@ -13,6 +13,10 @@ class ProveedorController : Controller(), UpdateSnapshot {
 
     val proveedores: ObservableList<Proveedor> = FXCollections.observableArrayList()
 
+    init {
+        updateSnapshot()
+    }
+
     fun add(proveedor: Proveedor) {
         proveedorService.add(
             ProveedorDB(

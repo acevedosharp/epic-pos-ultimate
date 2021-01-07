@@ -25,6 +25,10 @@ class VentaController: Controller(), UpdateSnapshot {
 
     val ventas: ObservableList<Venta> = FXCollections.observableArrayList()
 
+    init {
+        updateSnapshot()
+    }
+
     fun add(venta: Venta, items: List<UncommittedItemVenta>): VentaDB {
         val preRes = ventaService.add(
             VentaDB(

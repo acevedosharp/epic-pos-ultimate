@@ -26,6 +26,10 @@ class PedidoController: Controller(), UpdateSnapshot {
 
     val pedidos: ObservableList<Pedido> = FXCollections.observableArrayList()
 
+    init {
+        updateSnapshot()
+    }
+
     fun add(pedido: Pedido, lotes: List<Lote>) {
         println("Now saving Pedido...")
         val preRes = pedidoService.add(
