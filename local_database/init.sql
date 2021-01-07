@@ -1,11 +1,11 @@
-# create & use the app schema
-create schema if not exists epic;
+-- # create & use the app schema
+-- create schema if not exists epic;
+--
+-- # create the database user
+-- create user if not exists 'mercamas'@'localhost' identified by 'fADw0CHKJqpDinkW';
+-- grant all privileges on epic.* to 'mercamas'@'localhost';
 
-# create the database user
-create user if not exists 'mercamas'@'localhost' identified by 'fADw0CHKJqpDinkW';
-grant all privileges on epic.* to 'mercamas'@'localhost';
-
-/*# ------------------------ creation of familia table ------------------------
+# ------------------------ creation of familia table ------------------------
 create table familia
 (
     familia_id int auto_increment
@@ -162,7 +162,7 @@ create table item_venta
 # ======================== parse lote and add existencias to producto ========================
 create trigger lote_existencias_producto_trg
     after insert
-    on app.lote
+    on epic.lote
     for each row
 begin
     update producto
@@ -173,10 +173,10 @@ end;
 # ======================== parse item_venta and subtract existencias to producto ========================
 create trigger item_venta_existencias_producto_trg
     after insert
-    on app.item_venta
+    on epic.item_venta
     for each row
 begin
     update producto
     set existencias = existencias - new.cantidad
     where producto_id = new.producto;
-end;*/
+end;
