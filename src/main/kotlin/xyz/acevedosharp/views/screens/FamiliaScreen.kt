@@ -22,7 +22,7 @@ class FamiliaView : View("Módulo de familias") {
     private val familiaController = find<FamiliaController>()
     private val model: FamiliaModel by inject()
     private val existsSelection = SimpleBooleanProperty(false)
-    private val searchByNombre = SimpleStringProperty()
+    private val searchByNombre = SimpleStringProperty("")
     private var table: TableView<Familia> by singleAssign()
     private val view = this
 

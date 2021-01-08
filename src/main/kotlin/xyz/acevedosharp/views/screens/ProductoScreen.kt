@@ -27,8 +27,8 @@ class ProductoView : View("Módulo de productos") {
 
     private val model: ProductoModel by inject()
     private val existsSelection = SimpleBooleanProperty(false)
-    private val searchByCodigo = SimpleStringProperty()
-    private val searchByDescripcion = SimpleStringProperty()
+    private val searchByCodigo = SimpleStringProperty("")
+    private val searchByDescripcion = SimpleStringProperty("")
     private var table: TableView<Producto> by singleAssign()
     private val view = this
 

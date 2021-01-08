@@ -22,7 +22,7 @@ class ProveedorView : View("Módulo de proveedores") {
     private val proveedorController = find<ProveedorController>()
     private val model: ProveedorModel by inject()
     private val existsSelection = SimpleBooleanProperty(false)
-    private val searchByNombre = SimpleStringProperty()
+    private val searchByNombre = SimpleStringProperty("")
     private var table: TableView<Proveedor> by singleAssign()
     private val view = this
 

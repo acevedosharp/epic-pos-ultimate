@@ -22,7 +22,7 @@ class EmpleadoView : View("Módulo de empleados") {
     private val empleadoController = find<EmpleadoController>()
     private val model: EmpleadoModel by inject()
     private val existsSelection = SimpleBooleanProperty(false)
-    private val searchByNombre = SimpleStringProperty()
+    private val searchByNombre = SimpleStringProperty("")
     private var table: TableView<Empleado> by singleAssign()
     private val view = this
 

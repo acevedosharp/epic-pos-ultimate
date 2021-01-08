@@ -22,7 +22,7 @@ class ClienteView : View("Módulo de clientes") {
     private val clienteController = find<ClienteController>()
     private val model: ClienteModel by inject()
     private val existsSelection = SimpleBooleanProperty(false)
-    private val searchByNombre = SimpleStringProperty()
+    private val searchByNombre = SimpleStringProperty("")
     private var table: TableView<Cliente> by singleAssign()
     private val view = this
 

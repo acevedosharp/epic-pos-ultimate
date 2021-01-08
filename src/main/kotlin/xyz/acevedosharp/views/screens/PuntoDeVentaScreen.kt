@@ -510,8 +510,7 @@ class CreateItemVentaManuallyForm : Fragment() {
 
 class CommitVenta : Fragment() {
 
-    private val printingService =
-        find<CustomApplicationContextWrapper>().context.getBean<RecipePrintingService>(RecipePrintingService::class.java)
+    private val printingService = find<CustomApplicationContextWrapper>().context.getBean(RecipePrintingService::class.java)
 
     private val empleadoController = find<EmpleadoController>()
     private val clienteController = find<ClienteController>()
@@ -523,7 +522,7 @@ class CommitVenta : Fragment() {
     private val papi: PuntoDeVentaView = params["papi"] as PuntoDeVentaView
     private val dineroEntregado = params["dineroEntregado"] as SimpleIntegerProperty
     private val valorTotal = params["valorTotal"] as SimpleDoubleProperty
-    private val impresora = SimpleStringProperty(printingService.getPrinters()[0])
+    //private val impresora = SimpleStringProperty(printingService.getPrinters()[0])
 
     private val imprimirFactura = SimpleStringProperty("Sí")
 
@@ -567,12 +566,12 @@ class CommitVenta : Fragment() {
                         makeAutocompletable(false)
                     }
                 }
-                field("Impresora seleccionada") {
-                    combobox<String>(impresora, printingService.getPrinters()).apply {
-                        prefWidth = 400.0
-                        makeAutocompletable(false)
-                    }
-                }
+                //field("Impresora seleccionada") {
+                //    combobox(impresora, printingService.getPrinters()).apply {
+                //        prefWidth = 400.0
+                //        makeAutocompletable(false)
+                //    }
+                //}
 
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
@@ -602,9 +601,9 @@ class CommitVenta : Fragment() {
                                         }
                                     )
 
-                                    if (imprimirFactura.value == "Sí")
                                     // Print recipe
-                                        printingService.printRecipe(res, impresora.value)
+                                    //if (imprimirFactura.value == "Sí")
+                                    //    printingService.printRecipe(res, impresora.value)
 
                                     uncommittedItemsAsViews.clear()
 
