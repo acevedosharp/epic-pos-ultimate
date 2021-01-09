@@ -80,4 +80,16 @@ public class VentaDB {
     public void setPagoRecibido(Integer pagoRecibido) {
         this.pagoRecibido = pagoRecibido;
     }
+
+    @Override public String toString() {
+        return "VentaDB{" +
+                "ventaId=" + ventaId +
+                ", fechaHora=" + fechaHora +
+                ", precioTotal=" + precioTotal +
+                ", pagoRecibido=" + pagoRecibido +
+                ", empleado=" + empleado +
+                ", cliente=" + cliente +
+                ", items=" + items +
+                '}';
+    }
 }

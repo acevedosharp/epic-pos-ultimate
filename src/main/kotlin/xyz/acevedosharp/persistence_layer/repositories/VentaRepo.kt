@@ -2,9 +2,8 @@ package xyz.acevedosharp.persistence_layer.repositories
 
 import xyz.acevedosharp.entities.VentaDB
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
-import xyz.acevedosharp.ui_models.Venta
+import java.sql.Timestamp
 
 @Repository
 interface VentaRepo: JpaRepository<VentaDB, Int> {
@@ -13,4 +12,6 @@ interface VentaRepo: JpaRepository<VentaDB, Int> {
 
     // newest venta
     fun findFirstByOrderByVentaIdDesc(): VentaDB
+
+    fun findAllByFechaHoraBetween(start: Timestamp, end: Timestamp): List<VentaDB>
 }

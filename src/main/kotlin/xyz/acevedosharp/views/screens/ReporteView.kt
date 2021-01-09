@@ -119,7 +119,13 @@ class ReporteView : View("Módulo de Reportes") {
                         }
                         action {
                             contentContainer.children.setAll(
-                                reportesController.generateReport()
+                                reportesController.generateReport(
+                                    reportType.value,
+                                    productQuantity.value,
+                                    if (selectedProduct.isNull.value) selectedProduct.value else null,
+                                    startDate.value,
+                                    endDate.value
+                                )
                             )
                         }
                     }

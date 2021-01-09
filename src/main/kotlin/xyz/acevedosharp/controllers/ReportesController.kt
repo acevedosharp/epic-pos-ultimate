@@ -1,11 +1,16 @@
 package xyz.acevedosharp.controllers
 
+import javafx.beans.property.SimpleDoubleProperty
+import javafx.beans.property.SimpleIntegerProperty
+import javafx.beans.property.SimpleStringProperty
 import javafx.scene.layout.HBox
 import tornadofx.*
 import xyz.acevedosharp.CustomApplicationContextWrapper
 import xyz.acevedosharp.persistence_layer.repositories.PedidoRepo
 import xyz.acevedosharp.persistence_layer.repositories.ProductoRepo
 import xyz.acevedosharp.persistence_layer.repositories.VentaRepo
+import xyz.acevedosharp.ui_models.Producto
+import java.sql.Timestamp
 import java.util.*
 
 class ReportesController : Controller() {
@@ -79,16 +84,73 @@ class ReportesController : Controller() {
         }
     }
 
-    fun generateReport(/*reportType: String, productQuantity: String, selectedProduct: String, startDate: Date, endDate: Date*/): HBox {
-        return object : View() {
-            override val root = hbox {
-                button("Joe") {
-                    action {
-                        this.text = "Joe Mama"
+    fun generateReport(reportType: String, productQuantity: String, selectedProduct: Producto?, startDate: String, endDate: String): HBox {
+
+        val startDateMonthYear = decodeMonthAndYearRaw(startDate)
+        val startCalendar = Calendar.getInstance()
+        startCalendar.set(Calendar.MONTH, startDateMonthYear.first - 1)
+        startCalendar.set(Calendar.YEAR, startDateMonthYear.second)
+        startCalendar.set(Calendar.DATE, 1)
+        startCalendar.set(Calendar.HOUR_OF_DAY, 0)
+        startCalendar.set(Calendar.MINUTE, 0)
+        startCalendar.set(Calendar.SECOND, 0)
+        startCalendar.set(Calendar.MILLISECOND, 0)
+        val startDateTimestamp = Timestamp(startCalendar.timeInMillis)
+
+        val endDateMonthYear = decodeMonthAndYearRaw(endDate)
+        val endCalendar = Calendar.getInstance()
+        endCalendar.set(Calendar.YEAR, endDateMonthYear.second)
+        endCalendar.set(Calendar.MONTH, endDateMonthYear.first - 1)
+        endCalendar.set(Calendar.DATE, endCalendar.getActualMaximum(Calendar.DATE))
+        endCalendar.set(Calendar.HOUR_OF_DAY, 23)
+        endCalendar.set(Calendar.MINUTE, 59)
+        endCalendar.set(Calendar.SECOND, 59)
+        endCalendar.set(Calendar.MILLISECOND, 999)
+        val endDateTimestamp = Timestamp(endCalendar.timeInMillis)
+
+
+        if (productQuantity == "Todos los productos") {
+            var data: List<RankingReportDisplay>
+
+            if (reportType == "Ventas") {
+                val res = ventaRepo.findAllByFechaHoraBetween(startDateTimestamp, endDateTimestamp)
+
+
+                return object : View() {
+                    override val root = hbox {
+                        button("Joe") {
+                            action {
+                                this.text = "Joe Mama"
+                            }
+                        }
+                    }
+                }.root
+            } else // Pedidos
+                data = arrayListOf()
+
+            return object : View() {
+                override val root = hbox {
+                    button("Joe") {
+                        action {
+                            this.text = "Joe Mama"
+                        }
                     }
                 }
-            }
-        }.root
+            }.root
+
+        } else {
+
+            return object : View() {
+                override val root = hbox {
+                    button("Joe") {
+                        action {
+                            this.text = "Joe Mama"
+                        }
+                    }
+                }
+            }.root
+
+        }
     }
 
     private fun encodeMonthAndYearRaw(month: Int, year: Int): String {
@@ -99,5 +161,14 @@ class ReportesController : Controller() {
         val split = str.split(monthYearSeparator)
 
         return monthToNumber[split[1]]!! to split[0].toInt()
+    }
+
+
+    class RankingReportDisplay(barCode: String, longDesc: String, soldValue: Int, soldQuantity: Int, percentage: Double) {
+        val barCode = SimpleStringProperty(barCode)
+        val longDesc = SimpleStringProperty(longDesc)
+        val soldValue = SimpleIntegerProperty(soldValue)
+        val soldAmount = SimpleIntegerProperty(soldQuantity)
+        val percentage = SimpleDoubleProperty(percentage)
     }
 }
