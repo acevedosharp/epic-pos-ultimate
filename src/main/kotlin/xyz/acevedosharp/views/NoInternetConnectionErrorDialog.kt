@@ -3,16 +3,16 @@ package xyz.acevedosharp.views
 import javafx.geometry.Pos
 import tornadofx.*
 
-class UnknownErrorDialog(message: String): Fragment() {
+class NoInternetConnectionErrorDialog : Fragment() {
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        label("Ocurrió un error inesperado") {
+        label("No hay acceso a internet") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
             addClass(MainStylesheet.redLabel)
         }
-        label("Mensaje: $message").style {
+        label("Por favor cambie de red y vuelva a intentar.").style {
             padding = box(vertical = 30.px, horizontal = 5.px)
         }
         hbox(spacing = 80, alignment = Pos.CENTER) {
@@ -27,3 +27,4 @@ class UnknownErrorDialog(message: String): Fragment() {
         }
     }
 }
+

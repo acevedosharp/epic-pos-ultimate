@@ -7,6 +7,7 @@ import javafx.scene.control.TableView
 import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import tornadofx.*
+import xyz.acevedosharp.Joe
 import xyz.acevedosharp.controllers.ProductoController
 import xyz.acevedosharp.controllers.ReportesController
 import xyz.acevedosharp.ui_models.Cliente
@@ -33,6 +34,8 @@ class ReporteView : View("Módulo de Reportes") {
     private val endDates = FXCollections.observableArrayList<String>()
 
     init {
+        Joe.currentView = view
+
         reportType.onChange { currentValue ->
             startDates.setAll( reportesController.getStartDates(currentValue!!) )
         }

@@ -5,8 +5,10 @@ import xyz.acevedosharp.persistence_layer.repository_services.FamiliaService
 import xyz.acevedosharp.ui_models.Familia
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import tornadofx.Controller
+import javafx.scene.Parent
+import tornadofx.*
 import xyz.acevedosharp.persistence_layer.entities.FamiliaDB
+import xyz.acevedosharp.views.NoInternetConnectionErrorDialog
 
 class FamiliaController: Controller(), UpdateSnapshot {
     private val familiaService =
@@ -39,7 +41,9 @@ class FamiliaController: Controller(), UpdateSnapshot {
     }
 
 
-    fun isNombreAvailable(nombre: String): Boolean = familiaService.repo.existsByNombre(nombre)
+    fun isNombreAvailable(nombre: String): Boolean {
+        return familiaService.repo.existsByNombre(nombre)
+    }
     fun existsOtherWithNombre(nombre: String, id: Int): Boolean {
         return familiaService.repo.existsByNombre(nombre) && (familiaService.repo.findByNombre(nombre).familiaId != id)
     }

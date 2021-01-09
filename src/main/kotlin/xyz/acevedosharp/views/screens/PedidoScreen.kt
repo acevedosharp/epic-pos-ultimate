@@ -20,6 +20,7 @@ import javafx.scene.control.ComboBox
 import javafx.scene.layout.Priority
 import tornadofx.*
 import tornadofx.control.DateTimePicker
+import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence_layer.entities.PedidoDB
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -39,6 +40,8 @@ class PedidoView : View("Módulo de pedidos") {
     private val view = this
 
     init {
+        Joe.currentView = view
+
         pedidosSnapshot.onChange {
             items.setAll(pedidoController.pedidos.sortedByDescending { it.fechaHora }.map { PedidoDisplay(it, this).root })
         }
@@ -220,8 +223,7 @@ class NewPedidoFormView : Fragment() {
                                     close()
                                 }
                             } catch (e: Exception) {
-                                openInternalWindow(UnknownErrorDialog())
-                                e.printStackTrace()
+                                openInternalWindow(UnknownErrorDialog(e.message!!))
                             }
                         }
                     }
@@ -369,8 +371,7 @@ class AddLoteView : Fragment() {
                                 close()
                             }
                         } catch (e: Exception) {
-                            openInternalWindow(UnknownErrorDialog())
-                            e.printStackTrace()
+                            openInternalWindow(UnknownErrorDialog(e.message!!))
                         }
                     }
                 }

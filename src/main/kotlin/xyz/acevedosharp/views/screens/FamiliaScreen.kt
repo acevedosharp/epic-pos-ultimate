@@ -16,6 +16,7 @@ import javafx.scene.control.*
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*
+import xyz.acevedosharp.Joe
 
 class FamiliaView : View("Módulo de familias") {
 
@@ -27,6 +28,8 @@ class FamiliaView : View("Módulo de familias") {
     private val view = this
 
     init {
+        Joe.currentView = view
+
         searchByNombre.onChange {
             table.items = familiaController.familias.filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
@@ -54,17 +57,15 @@ class FamiliaView : View("Módulo de familias") {
                     button("Nueva Familia") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                         action {
-                            openInternalWindow<NewFamiliaFormView>(closeButton = false, modal = true)
+                            openInternalWindow<NewFamiliaFormView>(closeButton = false, modal = true, params = mapOf("owner" to view))
                         }
+
                     }
                     button("Editar selección") {
                         enableWhen(existsSelection)
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.blueButton)
                         action {
-                            openInternalWindow<EditFamiliaFormView>(
-                                closeButton = false,
-                                modal = true
-                            )
+                            openInternalWindow<EditFamiliaFormView>(closeButton = false, modal = true, params = mapOf("owner" to view))
                         }
                     }
                     rectangle(width = 10, height = 0)
@@ -112,10 +113,15 @@ class FamiliaView : View("Módulo de familias") {
     }
 }
 
-class BaseFamiliaFormView(formType: FormType): Fragment() {
+class BaseFamiliaFormView(formType: FormType) : Fragment() {
 
     private val familiaController = find<FamiliaController>()
     private val model = if (formType == CREATE) FamiliaModel() else find(FamiliaModel::class)
+    private val view = this
+
+    init {
+        Joe.currentView = view
+    }
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
@@ -144,6 +150,7 @@ class BaseFamiliaFormView(formType: FormType): Fragment() {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
                             if (formType == CREATE) {
+
                                 try {
                                     model.commit {
                                         familiaController.add(
@@ -155,9 +162,9 @@ class BaseFamiliaFormView(formType: FormType): Fragment() {
                                         close()
                                     }
                                 } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog())
-                                    println(e.message)
+                                    openInternalWindow(UnknownErrorDialog(e.message!!))
                                 }
+
                             } else {
                                 try {
                                     model.commit {
@@ -165,8 +172,7 @@ class BaseFamiliaFormView(formType: FormType): Fragment() {
                                         close()
                                     }
                                 } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog())
-                                    println(e.message)
+                                    openInternalWindow(UnknownErrorDialog(e.message!!))
                                 }
                             }
                         }
@@ -189,10 +195,30 @@ class BaseFamiliaFormView(formType: FormType): Fragment() {
 }
 
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
-class NewFamiliaFormView: Fragment() {
+class NewFamiliaFormView : Fragment() {
     override val root = BaseFamiliaFormView(CREATE).root
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 }
 
-class EditFamiliaFormView: Fragment() {
+class EditFamiliaFormView : Fragment() {
     override val root = BaseFamiliaFormView(EDIT).root
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 }

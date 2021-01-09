@@ -32,6 +32,7 @@ import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
 import javafx.util.Duration
 import tornadofx.*
+import xyz.acevedosharp.Joe
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
@@ -53,6 +54,8 @@ class PuntoDeVentaView : View("Punto de venta") {
     private lateinit var currentCodigoTextField: TextField
 
     init {
+        Joe.currentView = view
+
         valorTotal.onChange { valorTotalRoundedAndFormatted.value = NumberFormat.getIntegerInstance().format(it.roundToInt()) }
         uncommittedItemsAsViews.onChange {
             uncommittedItemsAsViews.forEachIndexed { index, node: ItemVentaComponent ->
@@ -490,7 +493,7 @@ class CreateItemVentaManuallyForm : Fragment() {
                                     close()
                                 }
                             } catch (e: Exception) {
-                                openInternalWindow(UnknownErrorDialog())
+                                openInternalWindow(UnknownErrorDialog(e.message!!))
                                 e.printStackTrace()
                             }
                         }
@@ -614,8 +617,7 @@ class CommitVenta : Fragment() {
                                     close()
                                 }
                             } catch (e: Exception) {
-                                openInternalWindow(UnknownErrorDialog())
-                                e.printStackTrace()
+                                openInternalWindow(UnknownErrorDialog(e.message!!))
                             }
                         }
                     }

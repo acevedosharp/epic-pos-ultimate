@@ -20,6 +20,7 @@ import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*
+import xyz.acevedosharp.Joe
 
 class ProductoView : View("Módulo de productos") {
 
@@ -33,6 +34,8 @@ class ProductoView : View("Módulo de productos") {
     private val view = this
 
     init {
+        Joe.currentView = view
+
         searchByCodigo.onChange {
             searchByDescripcion.value = ""
             table.items = productoController.productos.filter {
@@ -247,8 +250,7 @@ class BaseProductoFormView(formType: FormType) : Fragment() {
                                         close()
                                     }
                                 } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog())
-                                    e.printStackTrace()
+                                    openInternalWindow(UnknownErrorDialog(e.message!!))
                                 }
                             } else {
                                 try {
@@ -257,8 +259,7 @@ class BaseProductoFormView(formType: FormType) : Fragment() {
                                         close()
                                     }
                                 } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog())
-                                   e.printStackTrace()
+                                    openInternalWindow(UnknownErrorDialog(e.message!!))
                                 }
                             }
                         }

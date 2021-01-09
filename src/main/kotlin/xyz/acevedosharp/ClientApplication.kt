@@ -6,8 +6,8 @@ import javafx.scene.image.Image
 import javafx.stage.Stage
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.ConfigurableApplicationContext
-import tornadofx.App
-import tornadofx.FX
+import tornadofx.*
+import xyz.acevedosharp.views.NoInternetConnectionErrorDialog
 
 
 class ClientApplication : App(ProductoView::class, MainStylesheet::class) {
@@ -22,6 +22,10 @@ class ClientApplication : App(ProductoView::class, MainStylesheet::class) {
         stage.isResizable = true
         stage.isFullScreen = true
         stage.icons.add(Image("images/store_logo_icon.png"))
+
+        Thread.setDefaultUncaughtExceptionHandler { t, e ->
+            Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog())
+        }
     }
 }
 

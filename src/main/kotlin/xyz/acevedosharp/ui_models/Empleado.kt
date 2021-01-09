@@ -12,7 +12,6 @@ class Empleado(var id: Int?, nombre: String, telefono: String) {
     val telefonoProperty = SimpleStringProperty(this, "telefono", telefono)
     var telefono by telefonoProperty
 
-
     override fun toString(): String = nombre
 }
 

@@ -16,6 +16,7 @@ import javafx.scene.control.*
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*
+import xyz.acevedosharp.Joe
 
 class ClienteView : View("Módulo de clientes") {
 
@@ -27,6 +28,8 @@ class ClienteView : View("Módulo de clientes") {
     private val view = this
 
     init {
+        Joe.currentView = view
+
         searchByNombre.onChange {
             table.items = clienteController.clientes.filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
@@ -179,8 +182,7 @@ class BaseClienteFormView(formType: FormType): Fragment() {
                                         close()
                                     }
                                 } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog())
-                                    println(e.message)
+                                    openInternalWindow(UnknownErrorDialog(e.message!!))
                                 }
                             } else {
                                 try {
@@ -189,7 +191,7 @@ class BaseClienteFormView(formType: FormType): Fragment() {
                                         close()
                                     }
                                 } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog())
+                                    openInternalWindow(UnknownErrorDialog(e.message!!))
                                     println(e.message)
                                 }
                             }
