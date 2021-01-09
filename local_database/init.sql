@@ -146,10 +146,11 @@ create table item_venta
 (
     item_venta_id int auto_increment
         primary key,
-    cantidad      int    not null,
-    precio_venta  double not null,
-    producto      int    not null,
-    venta         int    not null,
+    fecha_hora    datetime not null,
+    cantidad      int      not null,
+    precio_venta  double   not null,
+    producto      int      not null,
+    venta         int      not null,
     constraint item_venta_producto_producto_id_fk
         foreign key (producto) references producto (producto_id)
             on update cascade,

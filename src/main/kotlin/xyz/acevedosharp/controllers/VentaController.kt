@@ -6,13 +6,11 @@ import xyz.acevedosharp.entities.VentaDB
 import xyz.acevedosharp.persistence_layer.repository_services.*
 import xyz.acevedosharp.ui_models.UncommittedItemVenta
 import xyz.acevedosharp.ui_models.Venta
-import javafx.collections.FXCollections
-import javafx.collections.ObservableList
 import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
 import java.sql.Timestamp
 
-class VentaController: Controller(), UpdateSnapshot {
+class VentaController: Controller()/*, UpdateSnapshot*/ {
     private val ventaService = find<CustomApplicationContextWrapper>().context.getBean(VentaService::class.java)
     private val itemVentaService = find<CustomApplicationContextWrapper>().context.getBean(ItemVentaService::class.java)
     private val productoService = find<CustomApplicationContextWrapper>().context.getBean(ProductoService::class.java)
@@ -23,11 +21,11 @@ class VentaController: Controller(), UpdateSnapshot {
     private val clienteController = find<ClienteController>()
     private val productoController = find<ProductoController>()
 
-    val ventas: ObservableList<Venta> = FXCollections.observableArrayList()
+    //val ventas: ObservableList<Venta> = FXCollections.observableArrayList()
 
-    init {
-        updateSnapshot()
-    }
+    //init {
+    //    updateSnapshot()
+    //}
 
     fun add(venta: Venta, items: List<UncommittedItemVenta>): VentaDB {
         val preRes = ventaService.add(
@@ -42,11 +40,12 @@ class VentaController: Controller(), UpdateSnapshot {
             )
         )
 
-        updateSnapshot()
+        //updateSnapshot()
 
         val iRes = itemVentaService.addAll(items.map {
             ItemVentaDB(
                 null,
+                Timestamp.valueOf(venta.fechaHora),
                 it.cantidad,
                 it.producto.precioVenta,
                 productoService.repo.findByIdOrNull(it.producto.id),
@@ -63,18 +62,18 @@ class VentaController: Controller(), UpdateSnapshot {
         return preRes
     }
 
-    override fun updateSnapshot() {
-        ventas.setAll(
-            ventaService.all().map { dbObject: VentaDB ->
-                Venta(
-                    dbObject.ventaId,
-                    dbObject.fechaHora.toLocalDateTime(),
-                    dbObject.precioTotal,
-                    dbObject.pagoRecibido,
-                    empleadoController.empleados.first { it.id == dbObject.empleado.empleadoId },
-                    clienteController.clientes.first { it.id == dbObject.cliente.clienteId }
-                )
-            }
-        )
-    }
+    //override fun updateSnapshot() {
+    //    ventas.setAll(
+    //        ventaService.all().map { dbObject: VentaDB ->
+    //            Venta(
+    //                dbObject.ventaId,
+    //                dbObject.fechaHora.toLocalDateTime(),
+    //                dbObject.precioTotal,
+    //                dbObject.pagoRecibido,
+    //                empleadoController.empleados.first { it.id == dbObject.empleado.empleadoId },
+    //                clienteController.clientes.first { it.id == dbObject.cliente.clienteId }
+    //            )
+    //        }
+    //    )
+    //}
 }

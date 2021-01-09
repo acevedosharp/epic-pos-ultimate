@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.scene.layout.HBox
 import tornadofx.*
 import xyz.acevedosharp.CustomApplicationContextWrapper
+import xyz.acevedosharp.persistence_layer.repositories.ItemVentaRepo
 import xyz.acevedosharp.persistence_layer.repositories.PedidoRepo
 import xyz.acevedosharp.persistence_layer.repositories.ProductoRepo
 import xyz.acevedosharp.persistence_layer.repositories.VentaRepo
@@ -34,7 +35,86 @@ class ReportesController : Controller() {
 
     private val productoRepo = find<CustomApplicationContextWrapper>().context.getBean(ProductoRepo::class.java)
     private val ventaRepo = find<CustomApplicationContextWrapper>().context.getBean(VentaRepo::class.java)
+    private val itemVentaRepo = find<CustomApplicationContextWrapper>().context.getBean(ItemVentaRepo::class.java)
     private val pedidoRepo = find<CustomApplicationContextWrapper>().context.getBean(PedidoRepo::class.java)
+
+    fun generateReport(reportType: String, productQuantity: String, selectedProduct: Producto?, startDate: String, endDate: String): HBox {
+
+        val startDateMonthYear = decodeMonthAndYearRaw(startDate)
+        val startCalendar = Calendar.getInstance()
+        startCalendar.set(Calendar.MONTH, startDateMonthYear.first - 1)
+        startCalendar.set(Calendar.YEAR, startDateMonthYear.second)
+        startCalendar.set(Calendar.DATE, 1)
+        startCalendar.set(Calendar.HOUR_OF_DAY, 0)
+        startCalendar.set(Calendar.MINUTE, 0)
+        startCalendar.set(Calendar.SECOND, 0)
+        startCalendar.set(Calendar.MILLISECOND, 0)
+        val startDateTimestamp = Timestamp(startCalendar.timeInMillis)
+
+        val endDateMonthYear = decodeMonthAndYearRaw(endDate)
+        val endCalendar = Calendar.getInstance()
+        endCalendar.set(Calendar.YEAR, endDateMonthYear.second)
+        endCalendar.set(Calendar.MONTH, endDateMonthYear.first - 1) // gregorian calendar months are 0-11
+        endCalendar.set(Calendar.DATE, endCalendar.getActualMaximum(Calendar.DATE))
+        endCalendar.set(Calendar.HOUR_OF_DAY, 23)
+        endCalendar.set(Calendar.MINUTE, 59)
+        endCalendar.set(Calendar.SECOND, 59)
+        endCalendar.set(Calendar.MILLISECOND, 999)
+        val endDateTimestamp = Timestamp(endCalendar.timeInMillis)
+
+
+        if (productQuantity == "Todos los productos") {
+            var data = arrayListOf<RankingReportDisplay>()
+
+            if (reportType == "Ventas") {
+                val products = productoRepo.findAll()
+
+                products.forEach { producto ->
+                    val matchingSoldItems =
+                        itemVentaRepo.findAllByProductoEqualsAndFechaHoraBetween(
+                            producto,
+                            startDateTimestamp,
+                            endDateTimestamp
+                        )
+
+                    var soldValue = 0
+                    var soldQuantity = 0
+                    var costValue = 0
+
+
+                    matchingSoldItems.forEach {
+                        soldValue += it.cantidad * it.precioVenta.toInt()
+                        soldQuantity += it.cantidad
+                    }
+                }
+
+            } else // Pedidos
+                data = arrayListOf()
+
+            return object : View() {
+                override val root = hbox {
+                    button("Joe") {
+                        action {
+                            this.text = "Joe Mama"
+                        }
+                    }
+                }
+            }.root
+
+        } else {
+
+            return object : View() {
+                override val root = hbox {
+                    button("Joe") {
+                        action {
+                            this.text = "Joe Mama"
+                        }
+                    }
+                }
+            }.root
+
+        }
+    }
 
     fun getStartDates(reportType: String): List<String> {
 
@@ -84,75 +164,6 @@ class ReportesController : Controller() {
         }
     }
 
-    fun generateReport(reportType: String, productQuantity: String, selectedProduct: Producto?, startDate: String, endDate: String): HBox {
-
-        val startDateMonthYear = decodeMonthAndYearRaw(startDate)
-        val startCalendar = Calendar.getInstance()
-        startCalendar.set(Calendar.MONTH, startDateMonthYear.first - 1)
-        startCalendar.set(Calendar.YEAR, startDateMonthYear.second)
-        startCalendar.set(Calendar.DATE, 1)
-        startCalendar.set(Calendar.HOUR_OF_DAY, 0)
-        startCalendar.set(Calendar.MINUTE, 0)
-        startCalendar.set(Calendar.SECOND, 0)
-        startCalendar.set(Calendar.MILLISECOND, 0)
-        val startDateTimestamp = Timestamp(startCalendar.timeInMillis)
-
-        val endDateMonthYear = decodeMonthAndYearRaw(endDate)
-        val endCalendar = Calendar.getInstance()
-        endCalendar.set(Calendar.YEAR, endDateMonthYear.second)
-        endCalendar.set(Calendar.MONTH, endDateMonthYear.first - 1)
-        endCalendar.set(Calendar.DATE, endCalendar.getActualMaximum(Calendar.DATE))
-        endCalendar.set(Calendar.HOUR_OF_DAY, 23)
-        endCalendar.set(Calendar.MINUTE, 59)
-        endCalendar.set(Calendar.SECOND, 59)
-        endCalendar.set(Calendar.MILLISECOND, 999)
-        val endDateTimestamp = Timestamp(endCalendar.timeInMillis)
-
-
-        if (productQuantity == "Todos los productos") {
-            var data: List<RankingReportDisplay>
-
-            if (reportType == "Ventas") {
-                val res = ventaRepo.findAllByFechaHoraBetween(startDateTimestamp, endDateTimestamp)
-
-
-                return object : View() {
-                    override val root = hbox {
-                        button("Joe") {
-                            action {
-                                this.text = "Joe Mama"
-                            }
-                        }
-                    }
-                }.root
-            } else // Pedidos
-                data = arrayListOf()
-
-            return object : View() {
-                override val root = hbox {
-                    button("Joe") {
-                        action {
-                            this.text = "Joe Mama"
-                        }
-                    }
-                }
-            }.root
-
-        } else {
-
-            return object : View() {
-                override val root = hbox {
-                    button("Joe") {
-                        action {
-                            this.text = "Joe Mama"
-                        }
-                    }
-                }
-            }.root
-
-        }
-    }
-
     private fun encodeMonthAndYearRaw(month: Int, year: Int): String {
         return "${year + 1900}${monthYearSeparator}${numberToMonth[month + 1]}"
     }
@@ -164,11 +175,17 @@ class ReportesController : Controller() {
     }
 
 
-    class RankingReportDisplay(barCode: String, longDesc: String, soldValue: Int, soldQuantity: Int, percentage: Double) {
+    class RankingReportDisplay(barCode: String, longDesc: String, soldValue: Int, percentageSold: Double, soldQuantity: Int, costValue: Int, earnings: Int, earningsPercentage: Double) {
         val barCode = SimpleStringProperty(barCode)
         val longDesc = SimpleStringProperty(longDesc)
         val soldValue = SimpleIntegerProperty(soldValue)
-        val soldAmount = SimpleIntegerProperty(soldQuantity)
-        val percentage = SimpleDoubleProperty(percentage)
+        val percentageSold = SimpleDoubleProperty(percentageSold)
+        val soldQuantity = SimpleIntegerProperty(soldQuantity)
+        val costValue = SimpleIntegerProperty(costValue)
+        val earnings = SimpleIntegerProperty(earnings)
+        val earningsPercentage = SimpleDoubleProperty(earningsPercentage)
+        override fun toString(): String {
+            return "RankingReportDisplay(barCode=$barCode, longDesc=$longDesc, soldValue=$soldValue, percentageSold=$percentageSold, soldQuantity=$soldQuantity, costValue=$costValue, earnings=$earnings, earningsPercentage=$earningsPercentage)"
+        }
     }
 }
