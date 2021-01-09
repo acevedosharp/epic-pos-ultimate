@@ -1,8 +1,6 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.entities.LoteDB
-import xyz.acevedosharp.entities.PedidoDB
 import xyz.acevedosharp.persistence_layer.repository_services.*
 import xyz.acevedosharp.ui_models.Lote
 import xyz.acevedosharp.ui_models.Pedido
@@ -10,6 +8,8 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
+import xyz.acevedosharp.persistence_layer.entities.LoteDB
+import xyz.acevedosharp.persistence_layer.entities.PedidoDB
 import java.sql.Timestamp
 
 class PedidoController: Controller(), UpdateSnapshot {
@@ -36,8 +36,8 @@ class PedidoController: Controller(), UpdateSnapshot {
             PedidoDB(
                 null,
                 Timestamp.valueOf(pedido.fechaHora),
-                proveedorService.repo.findByIdOrNull(pedido.proveedor.id),
-                empleadoService.repo.findByIdOrNull(pedido.empleado.id),
+                proveedorService.repo.findByIdOrNull(pedido.proveedor.id)!!,
+                empleadoService.repo.findByIdOrNull(pedido.empleado.id)!!,
                 setOf<LoteDB>()
             )
         )
@@ -50,7 +50,7 @@ class PedidoController: Controller(), UpdateSnapshot {
                 null,
                 it.cantidad,
                 it.precioCompra,
-                productoService.repo.findByIdOrNull(it.producto.id),
+                productoService.repo.findByIdOrNull(it.producto.id)!!,
                 preRes
             )
         })

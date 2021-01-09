@@ -1,9 +1,9 @@
 package xyz.acevedosharp.persistence_layer.repository_services
 
-import xyz.acevedosharp.entities.PedidoDB
 import xyz.acevedosharp.persistence_layer.repositories.PedidoRepo
 import xyz.acevedosharp.persistence_layer.repository_services.interfaces.NonEditableRepoService
 import org.springframework.stereotype.Service
+import xyz.acevedosharp.persistence_layer.entities.PedidoDB
 
 @Service
 class PedidoService(val repo: PedidoRepo):

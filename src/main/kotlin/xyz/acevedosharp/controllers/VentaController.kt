@@ -1,13 +1,13 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.entities.ItemVentaDB
-import xyz.acevedosharp.entities.VentaDB
 import xyz.acevedosharp.persistence_layer.repository_services.*
 import xyz.acevedosharp.ui_models.UncommittedItemVenta
 import xyz.acevedosharp.ui_models.Venta
 import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
+import xyz.acevedosharp.persistence_layer.entities.ItemVentaDB
+import xyz.acevedosharp.persistence_layer.entities.VentaDB
 import java.sql.Timestamp
 
 class VentaController: Controller()/*, UpdateSnapshot*/ {
@@ -27,16 +27,16 @@ class VentaController: Controller()/*, UpdateSnapshot*/ {
     //    updateSnapshot()
     //}
 
-    fun add(venta: Venta, items: List<UncommittedItemVenta>): VentaDB {
+    fun add(venta: Venta, items: List<UncommittedItemVenta>){
         val preRes = ventaService.add(
             VentaDB(
                 null,
                 Timestamp.valueOf(venta.fechaHora),
                 venta.precioTotal,
                 venta.pagoRecibido,
-                empleadoService.repo.findByIdOrNull(venta.empleado.id),
-                clienteService.repo.findByIdOrNull(venta.cliente.id),
-                setOf<ItemVentaDB>()
+                empleadoService.repo.findByIdOrNull(venta.empleado.id)!!,
+                clienteService.repo.findByIdOrNull(venta.cliente.id)!!,
+                setOf()
             )
         )
 
@@ -48,7 +48,7 @@ class VentaController: Controller()/*, UpdateSnapshot*/ {
                 Timestamp.valueOf(venta.fechaHora),
                 it.cantidad,
                 it.producto.precioVenta,
-                productoService.repo.findByIdOrNull(it.producto.id),
+                productoService.repo.findByIdOrNull(it.producto.id)!!,
                 preRes
             )
         })
@@ -56,10 +56,6 @@ class VentaController: Controller()/*, UpdateSnapshot*/ {
         iRes.forEach { el ->
             productoController.productos.find { it.id == el.producto.productoId }!!.apply { existencias -= el.cantidad }
         }
-
-        preRes.items = iRes.toSet()
-
-        return preRes
     }
 
     //override fun updateSnapshot() {

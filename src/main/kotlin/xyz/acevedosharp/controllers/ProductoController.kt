@@ -1,7 +1,6 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.entities.ProductoDB
 import xyz.acevedosharp.persistence_layer.repository_services.FamiliaService
 import javafx.collections.FXCollections
 import xyz.acevedosharp.ui_models.Producto
@@ -9,13 +8,12 @@ import xyz.acevedosharp.persistence_layer.repository_services.ProductoService
 import javafx.collections.ObservableList
 import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
+import xyz.acevedosharp.persistence_layer.entities.ProductoDB
 
 class ProductoController: Controller(), UpdateSnapshot {
 
     private val productoService = find<CustomApplicationContextWrapper>().context.getBean(ProductoService::class.java)
-
     private val familiaService = find<CustomApplicationContextWrapper>().context.getBean(FamiliaService::class.java)
-
     private val familiaController = find<FamiliaController>()
 
     val productos: ObservableList<Producto> = FXCollections.observableArrayList()
@@ -80,7 +78,7 @@ class ProductoController: Controller(), UpdateSnapshot {
                     dbObject.descripcionCorta,
                     dbObject.precioVenta,
                     dbObject.existencias,
-                    if (dbObject.familia == null) null else familiaController.familias.firstOrNull { it.id == dbObject.familia.familiaId }
+                    if (dbObject.familia == null) null else familiaController.familias.firstOrNull { it.id == dbObject.familia!!.familiaId }
                 )
             }
         )

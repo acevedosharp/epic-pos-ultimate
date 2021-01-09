@@ -1,9 +1,9 @@
 package xyz.acevedosharp.persistence_layer.repository_services
 
-import xyz.acevedosharp.entities.ProductoDB
 import xyz.acevedosharp.persistence_layer.repositories.ProductoRepo
 import xyz.acevedosharp.persistence_layer.repository_services.interfaces.BaseRepoService
 import org.springframework.stereotype.Service
+import xyz.acevedosharp.persistence_layer.entities.ProductoDB
 import java.lang.Exception
 
 @Service

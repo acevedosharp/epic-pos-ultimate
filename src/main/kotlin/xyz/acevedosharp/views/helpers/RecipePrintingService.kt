@@ -1,8 +1,8 @@
 package xyz.acevedosharp.views.helpers
 
-import xyz.acevedosharp.entities.ItemVentaDB
-import xyz.acevedosharp.entities.VentaDB
 import org.springframework.stereotype.Service
+import xyz.acevedosharp.persistence_layer.entities.ItemVentaDB
+import xyz.acevedosharp.persistence_layer.entities.VentaDB
 import java.text.SimpleDateFormat
 import javax.print.*
 import javax.print.attribute.HashPrintRequestAttributeSet

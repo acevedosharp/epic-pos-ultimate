@@ -1,12 +1,12 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.entities.EmpleadoDB
 import xyz.acevedosharp.persistence_layer.repository_services.EmpleadoService
 import xyz.acevedosharp.ui_models.Empleado
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import tornadofx.Controller
+import xyz.acevedosharp.persistence_layer.entities.EmpleadoDB
 
 class EmpleadoController : Controller(), UpdateSnapshot {
     private val empleadoService = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoService::class.java)

@@ -584,7 +584,7 @@ class CommitVenta : Fragment() {
                             try {
                                 model.commit {
                                     // Persistence logic
-                                    val res = ventaController.add(
+                                    ventaController.add(
                                         Venta(
                                             null,
                                             LocalDateTime.now(),

@@ -2,7 +2,6 @@ package xyz.acevedosharp.views.screens
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
 import xyz.acevedosharp.controllers.*
-import xyz.acevedosharp.entities.PedidoDB
 import xyz.acevedosharp.persistence_layer.repository_services.PedidoService
 import xyz.acevedosharp.ui_models.*
 import xyz.acevedosharp.views.MainStylesheet
@@ -21,6 +20,7 @@ import javafx.scene.control.ComboBox
 import javafx.scene.layout.Priority
 import tornadofx.*
 import tornadofx.control.DateTimePicker
+import xyz.acevedosharp.persistence_layer.entities.PedidoDB
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

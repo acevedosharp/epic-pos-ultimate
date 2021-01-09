@@ -1,9 +1,9 @@
 package xyz.acevedosharp.persistence_layer.repository_services
 
-import xyz.acevedosharp.entities.ClienteDB
 import xyz.acevedosharp.persistence_layer.repositories.ClienteRepo
 import xyz.acevedosharp.persistence_layer.repository_services.interfaces.BaseRepoService
 import org.springframework.stereotype.Service
+import xyz.acevedosharp.persistence_layer.entities.ClienteDB
 import java.lang.Exception
 
 @Service

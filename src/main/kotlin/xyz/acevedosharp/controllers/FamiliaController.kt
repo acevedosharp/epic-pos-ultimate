@@ -1,12 +1,12 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.entities.FamiliaDB
 import xyz.acevedosharp.persistence_layer.repository_services.FamiliaService
 import xyz.acevedosharp.ui_models.Familia
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import tornadofx.Controller
+import xyz.acevedosharp.persistence_layer.entities.FamiliaDB
 
 class FamiliaController: Controller(), UpdateSnapshot {
     private val familiaService =

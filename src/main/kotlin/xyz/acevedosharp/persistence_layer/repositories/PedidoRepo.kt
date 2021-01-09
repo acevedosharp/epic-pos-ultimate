@@ -1,6 +1,6 @@
 package xyz.acevedosharp.persistence_layer.repositories
 
-import xyz.acevedosharp.entities.PedidoDB
 import org.springframework.data.jpa.repository.JpaRepository
+import xyz.acevedosharp.persistence_layer.entities.PedidoDB
 
 interface PedidoRepo: JpaRepository<PedidoDB, Int>

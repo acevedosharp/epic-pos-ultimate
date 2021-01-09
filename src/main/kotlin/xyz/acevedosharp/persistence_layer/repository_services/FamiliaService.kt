@@ -1,9 +1,9 @@
 package xyz.acevedosharp.persistence_layer.repository_services
 
-import xyz.acevedosharp.entities.FamiliaDB
 import xyz.acevedosharp.persistence_layer.repositories.FamiliaRepo
 import xyz.acevedosharp.persistence_layer.repository_services.interfaces.BaseRepoService
 import org.springframework.stereotype.Service
+import xyz.acevedosharp.persistence_layer.entities.FamiliaDB
 import java.lang.Exception
 
 @Service

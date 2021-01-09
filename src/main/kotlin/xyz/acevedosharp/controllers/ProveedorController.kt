@@ -1,12 +1,12 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.entities.ProveedorDB
 import xyz.acevedosharp.persistence_layer.repository_services.ProveedorService
 import javafx.collections.FXCollections
 import xyz.acevedosharp.ui_models.Proveedor
 import javafx.collections.ObservableList
 import tornadofx.Controller
+import xyz.acevedosharp.persistence_layer.entities.ProveedorDB
 
 class ProveedorController : Controller(), UpdateSnapshot {
     private val proveedorService = find<CustomApplicationContextWrapper>().context.getBean(ProveedorService::class.java)

@@ -1,12 +1,12 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.entities.ClienteDB
 import xyz.acevedosharp.persistence_layer.repository_services.ClienteService
 import xyz.acevedosharp.ui_models.Cliente
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import tornadofx.Controller
+import xyz.acevedosharp.persistence_layer.entities.ClienteDB
 
 class ClienteController : Controller(), UpdateSnapshot {
     private val clienteService = find<CustomApplicationContextWrapper>().context.getBean(ClienteService::class.java)

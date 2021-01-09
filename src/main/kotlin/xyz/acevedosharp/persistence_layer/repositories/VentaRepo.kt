@@ -1,8 +1,8 @@
 package xyz.acevedosharp.persistence_layer.repositories
 
-import xyz.acevedosharp.entities.VentaDB
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import xyz.acevedosharp.persistence_layer.entities.VentaDB
 import java.sql.Timestamp
 
 @Repository
