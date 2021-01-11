@@ -46,7 +46,7 @@ class ProductoView : View("Módulo de productos") {
             searchByCodigo.value = ""
             table.items = productoController.productos.filter {
                 it.descLarga.toLowerCase().contains(searchByDescripcion.value.toLowerCase()) ||
-                it.descCorta.toLowerCase().contains(searchByDescripcion.value.toLowerCase())
+                        it.descCorta.toLowerCase().contains(searchByDescripcion.value.toLowerCase())
             }.asObservable()
         }
 
@@ -72,7 +72,11 @@ class ProductoView : View("Módulo de productos") {
                     button("Nuevo Producto") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                         action {
-                            openInternalWindow<NewProductoFormView>(closeButton = false, modal = true)
+                            openInternalWindow<NewProductoFormView>(
+                                closeButton = false,
+                                modal = true,
+                                params = mapOf("owner" to view)
+                            )
                         }
                     }
                     button("Editar selección") {
@@ -81,7 +85,8 @@ class ProductoView : View("Módulo de productos") {
                         action {
                             openInternalWindow<EditProductoFormView>(
                                 closeButton = false,
-                                modal = true
+                                modal = true,
+                                params = mapOf("owner" to view)
                             )
                         }
                     }
@@ -225,7 +230,13 @@ class BaseProductoFormView(formType: FormType) : Fragment() {
                         }
                         button("+") {
                             addClass(MainStylesheet.addButton, MainStylesheet.greenButton)
-                            action { openInternalWindow<NewFamiliaFormView>(closeButton = false, modal = true) }
+                            action {
+                                openInternalWindow<NewFamiliaFormView>(
+                                    closeButton = false,
+                                    modal = true,
+                                    params = mapOf("owner" to this)
+                                )
+                            }
                         }
                     }
                 }
@@ -234,32 +245,24 @@ class BaseProductoFormView(formType: FormType) : Fragment() {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
                             if (formType == CREATE) {
-                                try {
-                                    model.commit {
-                                        productoController.add(
-                                            Producto(
-                                                null,
-                                                model.codigo.value,
-                                                model.descLarga.value,
-                                                model.descCorta.value,
-                                                model.precioVenta.value.toDouble(),
-                                                model.existencias.value.toInt(),
-                                                model.familia.value
-                                            )
+                                model.commit {
+                                    productoController.add(
+                                        Producto(
+                                            null,
+                                            model.codigo.value,
+                                            model.descLarga.value,
+                                            model.descCorta.value,
+                                            model.precioVenta.value.toDouble(),
+                                            model.existencias.value.toInt(),
+                                            model.familia.value
                                         )
-                                        close()
-                                    }
-                                } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog(e.message!!))
+                                    )
+                                    close()
                                 }
                             } else {
-                                try {
-                                    model.commit {
-                                        productoController.edit(model.item)
-                                        close()
-                                    }
-                                } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog(e.message!!))
+                                model.commit {
+                                    productoController.edit(model.item)
+                                    close()
                                 }
                             }
                         }
@@ -282,10 +285,30 @@ class BaseProductoFormView(formType: FormType) : Fragment() {
 }
 
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
-class NewProductoFormView: Fragment() {
+class NewProductoFormView : Fragment() {
     override val root = BaseProductoFormView(CREATE).root
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 }
 
-class EditProductoFormView: Fragment() {
+class EditProductoFormView : Fragment() {
     override val root = BaseProductoFormView(EDIT).root
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 }

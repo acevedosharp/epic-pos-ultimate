@@ -75,5 +75,4 @@ class PedidoController: Controller(), UpdateSnapshot {
             }
         )
     }
-
 }

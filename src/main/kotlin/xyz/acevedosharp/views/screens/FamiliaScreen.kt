@@ -8,7 +8,6 @@ import xyz.acevedosharp.views.helpers.FormType.*
 import xyz.acevedosharp.views.helpers.CurrentModule.*
 import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.shared_components.SideNavigation
-import xyz.acevedosharp.views.UnknownErrorDialog
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
@@ -57,7 +56,11 @@ class FamiliaView : View("Módulo de familias") {
                     button("Nueva Familia") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                         action {
-                            openInternalWindow<NewFamiliaFormView>(closeButton = false, modal = true, params = mapOf("owner" to view))
+                            openInternalWindow<NewFamiliaFormView>(
+                                closeButton = false,
+                                modal = true,
+                                params = mapOf("owner" to view)
+                            )
                         }
 
                     }
@@ -65,7 +68,11 @@ class FamiliaView : View("Módulo de familias") {
                         enableWhen(existsSelection)
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.blueButton)
                         action {
-                            openInternalWindow<EditFamiliaFormView>(closeButton = false, modal = true, params = mapOf("owner" to view))
+                            openInternalWindow<EditFamiliaFormView>(
+                                closeButton = false,
+                                modal = true,
+                                params = mapOf("owner" to view)
+                            )
                         }
                     }
                     rectangle(width = 10, height = 0)
@@ -119,10 +126,6 @@ class BaseFamiliaFormView(formType: FormType) : Fragment() {
     private val model = if (formType == CREATE) FamiliaModel() else find(FamiliaModel::class)
     private val view = this
 
-    init {
-        Joe.currentView = view
-    }
-
     override val root = vbox(spacing = 0) {
         useMaxSize = true
         prefWidth = 800.0
@@ -150,29 +153,19 @@ class BaseFamiliaFormView(formType: FormType) : Fragment() {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
                             if (formType == CREATE) {
-
-                                try {
-                                    model.commit {
-                                        familiaController.add(
-                                            Familia(
-                                                null,
-                                                model.nombre.value
-                                            )
+                                model.commit {
+                                    familiaController.add(
+                                        Familia(
+                                            null,
+                                            model.nombre.value
                                         )
-                                        close()
-                                    }
-                                } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog(e.message!!))
+                                    )
+                                    close()
                                 }
-
                             } else {
-                                try {
-                                    model.commit {
-                                        familiaController.edit(model.item)
-                                        close()
-                                    }
-                                } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog(e.message!!))
+                                model.commit {
+                                    familiaController.edit(model.item)
+                                    close()
                                 }
                             }
                         }

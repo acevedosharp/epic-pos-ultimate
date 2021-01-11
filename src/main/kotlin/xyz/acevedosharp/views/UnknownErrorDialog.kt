@@ -2,6 +2,7 @@ package xyz.acevedosharp.views
 
 import javafx.geometry.Pos
 import tornadofx.*
+import xyz.acevedosharp.Joe
 
 class UnknownErrorDialog(message: String): Fragment() {
 

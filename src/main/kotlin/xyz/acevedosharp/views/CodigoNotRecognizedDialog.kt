@@ -2,8 +2,19 @@ package xyz.acevedosharp.views
 
 import javafx.geometry.Pos
 import tornadofx.*
+import xyz.acevedosharp.Joe
 
 class CodigoNotRecognizedDialog: Fragment() {
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true

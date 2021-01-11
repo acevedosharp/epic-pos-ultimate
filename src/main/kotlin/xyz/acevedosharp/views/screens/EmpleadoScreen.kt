@@ -57,7 +57,11 @@ class EmpleadoView : View("Módulo de empleados") {
                     button("Nuevo Empleado") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                         action {
-                            openInternalWindow<NewEmpleadoFormView>(closeButton = false, modal = true)
+                            openInternalWindow<NewEmpleadoFormView>(
+                                closeButton = false,
+                                modal = true,
+                                params = mapOf("owner" to view)
+                            )
                         }
                     }
                     button("Editar selección") {
@@ -66,7 +70,8 @@ class EmpleadoView : View("Módulo de empleados") {
                         action {
                             openInternalWindow<EditEmpleadoFormView>(
                                 closeButton = false,
-                                modal = true
+                                modal = true,
+                                params = mapOf("owner" to view)
                             )
                         }
                     }
@@ -206,8 +211,28 @@ class BaseEmpleadoFormView(formType: FormType): Fragment() {
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
 class NewEmpleadoFormView : Fragment() {
     override val root = BaseEmpleadoFormView(CREATE).root
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 }
 
 class EditEmpleadoFormView : Fragment() {
     override val root = BaseEmpleadoFormView(EDIT).root
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 }

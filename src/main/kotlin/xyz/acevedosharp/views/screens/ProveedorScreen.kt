@@ -57,7 +57,11 @@ class ProveedorView : View("Módulo de proveedores") {
                     button("Nuevo Proveedor") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                         action {
-                            openInternalWindow<NewProveedorFormView>(closeButton = false, modal = true)
+                            openInternalWindow<NewProveedorFormView>(
+                                closeButton = false,
+                                modal = true,
+                                params = mapOf("owner" to view)
+                            )
                         }
                     }
                     button("Editar selección") {
@@ -66,7 +70,8 @@ class ProveedorView : View("Módulo de proveedores") {
                         action {
                             openInternalWindow<EditProveedorFormView>(
                                 closeButton = false,
-                                modal = true
+                                modal = true,
+                                params = mapOf("owner" to view)
                             )
                         }
                     }
@@ -118,7 +123,7 @@ class ProveedorView : View("Módulo de proveedores") {
     }
 }
 
-class BaseProveedorFormView(formType: FormType): Fragment() {
+class BaseProveedorFormView(formType: FormType) : Fragment() {
 
     private val proveedorController = find<ProveedorController>()
     private val model = if (formType == CREATE) ProveedorModel() else find(ProveedorModel::class)
@@ -181,30 +186,22 @@ class BaseProveedorFormView(formType: FormType): Fragment() {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
                             if (formType == CREATE) {
-                                try {
-                                    model.commit {
-                                        proveedorController.add(
-                                            Proveedor(
-                                                null,
-                                                model.nombre.value,
-                                                model.telefono.value,
-                                                model.direccion.value,
-                                                model.correo.value
-                                            )
+                                model.commit {
+                                    proveedorController.add(
+                                        Proveedor(
+                                            null,
+                                            model.nombre.value,
+                                            model.telefono.value,
+                                            model.direccion.value,
+                                            model.correo.value
                                         )
-                                        close()
-                                    }
-                                } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog(e.message!!))
+                                    )
+                                    close()
                                 }
                             } else {
-                                try {
-                                    model.commit {
-                                        proveedorController.edit(model.item)
-                                        close()
-                                    }
-                                } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog(e.message!!))
+                                model.commit {
+                                    proveedorController.edit(model.item)
+                                    close()
                                 }
                             }
                         }
@@ -229,8 +226,28 @@ class BaseProveedorFormView(formType: FormType): Fragment() {
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
 class NewProveedorFormView : Fragment() {
     override val root = BaseProveedorFormView(CREATE).root
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 }
 
 class EditProveedorFormView : Fragment() {
     override val root = BaseProveedorFormView(EDIT).root
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 }

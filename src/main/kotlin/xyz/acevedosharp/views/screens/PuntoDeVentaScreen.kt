@@ -66,7 +66,7 @@ class PuntoDeVentaView : View("Punto de venta") {
         }
         uncommittedItems.setAll(uncommittedItemsAsViews.map { it.root })
 
-        // Let's hope the scene doesn't take longer than this to load
+        // Let's hope the scene doesn't take longer than this to load - probably not, 650ms is a lot of time
         runLater(Duration.millis(650.0)) {
             currentCodigoTextField.requestFocus()
             scene = this.currentStage!!.scene
@@ -166,7 +166,11 @@ class PuntoDeVentaView : View("Punto de venta") {
                                     )
                                 )
                             } else {
-                                openInternalWindow<CodigoNotRecognizedDialog>(closeButton = false, modal = true)
+                                openInternalWindow<CodigoNotRecognizedDialog>(
+                                    closeButton = false,
+                                    modal = true,
+                                    params = mapOf("owner" to view)
+                                )
                             }
                             currentCodigo.set("")
                             recalculateTotal()
@@ -182,7 +186,8 @@ class PuntoDeVentaView : View("Punto de venta") {
                         addClass(MainStylesheet.greenButton)
                         action {
                             openInternalWindow<CreateItemVentaManuallyForm>(
-                                closeButton = false, modal = true, params =
+                                closeButton = false,
+                                modal = true, params =
                                 mapOf(
                                     "observableList" to uncommittedItemsAsViews,
                                     "papi" to view
@@ -394,10 +399,11 @@ class PuntoDeVentaView : View("Punto de venta") {
                             textFill = Color.WHITE
                         }
                         action {
-                            if(uncommittedItems.size > 0 && dineroEntregado.value >= valorTotal.value) {
+                            if (uncommittedItems.size > 0 && dineroEntregado.value >= valorTotal.value) {
                                 openInternalWindow<CommitVenta>(
-                                    closeButton = false, modal = true, params =
-                                    mapOf(
+                                    closeButton = false,
+                                    modal = true,
+                                    params = mapOf(
                                         "observableList" to uncommittedItemsAsViews,
                                         "papi" to view,
                                         "dineroEntregado" to dineroEntregado,
@@ -436,6 +442,16 @@ class CreateItemVentaManuallyForm : Fragment() {
     private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> =
         params["observableList"] as ObservableList<ItemVentaComponent>
     private val papi: PuntoDeVentaView = params["papi"] as PuntoDeVentaView
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["papi"] as UIComponent
+        super.onUndock()
+    }
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
@@ -480,21 +496,16 @@ class CreateItemVentaManuallyForm : Fragment() {
                             MainStylesheet.expandedButton
                         )
                         action {
-                            try {
-                                model.commit {
-                                    uncommittedItemsAsViews.add(
-                                        ItemVentaComponent(
-                                            UncommittedItemVenta(model.producto.value, model.cantidad.value.toInt()),
-                                            uncommittedItemsAsViews,
-                                            uncommittedItemsAsViews.size
-                                        )
+                            model.commit {
+                                uncommittedItemsAsViews.add(
+                                    ItemVentaComponent(
+                                        UncommittedItemVenta(model.producto.value, model.cantidad.value.toInt()),
+                                        uncommittedItemsAsViews,
+                                        uncommittedItemsAsViews.size
                                     )
-                                    papi.addAlwaysFocusListener()
-                                    close()
-                                }
-                            } catch (e: Exception) {
-                                openInternalWindow(UnknownErrorDialog(e.message!!))
-                                e.printStackTrace()
+                                )
+                                papi.addAlwaysFocusListener()
+                                close()
                             }
                         }
                     }
@@ -528,6 +539,16 @@ class CommitVenta : Fragment() {
     //private val impresora = SimpleStringProperty(printingService.getPrinters()[0])
 
     private val imprimirFactura = SimpleStringProperty("Sí")
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["papi"] as UIComponent
+        super.onUndock()
+    }
 
     override val root = vbox(spacing = 0, alignment = Pos.CENTER) {
         useMaxSize = true
@@ -584,40 +605,36 @@ class CommitVenta : Fragment() {
                             MainStylesheet.expandedButton
                         )
                         action {
-                            try {
-                                model.commit {
-                                    // Persistence logic
-                                    ventaController.add(
-                                        Venta(
-                                            null,
-                                            LocalDateTime.now(),
-                                            (if (valorTotal.value % 50 < 25) Math.floor(valorTotal.value / 50)*50 else Math.ceil(valorTotal.value / 50)*50).toInt(),
-                                            dineroEntregado.value,
-                                            model.empleado.value,
-                                            model.cliente.value
-                                        ),
-                                        uncommittedItemsAsViews.map {
-                                            UncommittedItemVenta(
-                                                it.producto,
-                                                it.cantidad.value
-                                            )
-                                        }
-                                    )
+                            model.commit {
+                                // Persistence logic
+                                ventaController.add(
+                                    Venta(
+                                        null,
+                                        LocalDateTime.now(),
+                                        (if (valorTotal.value % 50 < 25) Math.floor(valorTotal.value / 50) * 50 else Math.ceil(valorTotal.value / 50) * 50).toInt(),
+                                        dineroEntregado.value,
+                                        model.empleado.value,
+                                        model.cliente.value
+                                    ),
+                                    uncommittedItemsAsViews.map {
+                                        UncommittedItemVenta(
+                                            it.producto,
+                                            it.cantidad.value
+                                        )
+                                    }
+                                )
 
-                                    // Print recipe
-                                    //if (imprimirFactura.value == "Sí")
-                                    //    printingService.printRecipe(res, impresora.value)
+                                // Print recipe
+                                //if (imprimirFactura.value == "Sí")
+                                //    printingService.printRecipe(res, impresora.value)
 
-                                    uncommittedItemsAsViews.clear()
+                                uncommittedItemsAsViews.clear()
 
-                                    uncommittedItemsAsViews.clear()
-                                    papi.addAlwaysFocusListener()
-                                    valorTotal.set(0.0)
-                                    dineroEntregado.set(0)
-                                    close()
-                                }
-                            } catch (e: Exception) {
-                                openInternalWindow(UnknownErrorDialog(e.message!!))
+                                uncommittedItemsAsViews.clear()
+                                papi.addAlwaysFocusListener()
+                                valorTotal.set(0.0)
+                                dineroEntregado.set(0)
+                                close()
                             }
                         }
                     }

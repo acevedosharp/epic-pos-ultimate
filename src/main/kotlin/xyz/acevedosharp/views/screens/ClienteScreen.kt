@@ -8,7 +8,6 @@ import xyz.acevedosharp.views.helpers.FormType.*
 import xyz.acevedosharp.views.helpers.CurrentModule.*
 import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.shared_components.SideNavigation
-import xyz.acevedosharp.views.UnknownErrorDialog
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
@@ -36,8 +35,8 @@ class ClienteView : View("Módulo de clientes") {
             }.asObservable()
         }
 
+        // force refresh
         clienteController.clientes.onChange {
-            // force refresh
             table.items = clienteController.clientes.filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
@@ -57,7 +56,11 @@ class ClienteView : View("Módulo de clientes") {
                     button("Nuevo Cliente") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                         action {
-                            openInternalWindow<NewClienteFormView>(closeButton = false, modal = true)
+                            openInternalWindow<NewClienteFormView>(
+                                closeButton = false,
+                                modal = true,
+                                params = mapOf("owner" to view)
+                            )
                         }
                     }
                     button("Editar selección") {
@@ -66,7 +69,8 @@ class ClienteView : View("Módulo de clientes") {
                         action {
                             openInternalWindow<EditClienteFormView>(
                                 closeButton = false,
-                                modal = true
+                                modal = true,
+                                params = mapOf("owner" to view)
                             )
                         }
                     }
@@ -117,7 +121,7 @@ class ClienteView : View("Módulo de clientes") {
     }
 }
 
-class BaseClienteFormView(formType: FormType): Fragment() {
+class BaseClienteFormView(formType: FormType) : Fragment() {
 
     private val clienteController = find<ClienteController>()
     private val model = if (formType == CREATE) ClienteModel() else find(ClienteModel::class)
@@ -169,30 +173,21 @@ class BaseClienteFormView(formType: FormType): Fragment() {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
                             if (formType == CREATE) {
-                                try {
-                                    model.commit {
-                                        clienteController.add(
-                                            Cliente(
-                                                null,
-                                                model.nombre.value,
-                                                model.telefono.value,
-                                                model.direccion.value
-                                            )
+                                model.commit {
+                                    clienteController.add(
+                                        Cliente(
+                                            null,
+                                            model.nombre.value,
+                                            model.telefono.value,
+                                            model.direccion.value
                                         )
-                                        close()
-                                    }
-                                } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog(e.message!!))
+                                    )
+                                    close()
                                 }
                             } else {
-                                try {
-                                    model.commit {
-                                        clienteController.edit(model.item)
-                                        close()
-                                    }
-                                } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog(e.message!!))
-                                    println(e.message)
+                                model.commit {
+                                    clienteController.edit(model.item)
+                                    close()
                                 }
                             }
                         }
@@ -217,8 +212,28 @@ class BaseClienteFormView(formType: FormType): Fragment() {
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
 class NewClienteFormView : Fragment() {
     override val root = BaseClienteFormView(CREATE).root
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 }
 
 class EditClienteFormView : Fragment() {
     override val root = BaseClienteFormView(EDIT).root
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 }

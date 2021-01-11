@@ -67,7 +67,11 @@ class PedidoView : View("Módulo de pedidos") {
                     button("Nuevo Pedido") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                         action {
-                            openInternalWindow<NewPedidoFormView>(closeButton = false, modal = true)
+                            openInternalWindow<NewPedidoFormView>(
+                                closeButton = false,
+                                modal = true,
+                                params = mapOf("owner" to view)
+                            )
                         }
                     }
                     rectangle(width = 10, height = 0)
@@ -105,6 +109,16 @@ class PedidoView : View("Módulo de pedidos") {
 }
 
 class NewPedidoFormView : Fragment() {
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 
     private val pedidoController = find<PedidoController>()
     private val proveedorController = find<ProveedorController>()
@@ -155,7 +169,11 @@ class NewPedidoFormView : Fragment() {
                         button("Nuevo Proveedor") {
                             addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                             action {
-                                openInternalWindow<NewProveedorFormView>(closeButton = false, modal = true)
+                                openInternalWindow<NewProveedorFormView>(
+                                    closeButton = false,
+                                    modal = true,
+                                    params = mapOf("owner" to this)
+                                )
                             }
                         }
                     }
@@ -174,7 +192,11 @@ class NewPedidoFormView : Fragment() {
                         button("Nuevo Empleado") {
                             addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                             action {
-                                openInternalWindow<NewEmpleadoFormView>(closeButton = false, modal = true)
+                                openInternalWindow<NewEmpleadoFormView>(
+                                    closeButton = false,
+                                    modal = true,
+                                    params = mapOf("owner" to this)
+                                )
                             }
                         }
                     }
@@ -184,7 +206,11 @@ class NewPedidoFormView : Fragment() {
                         button("Añadir Lote") {
                             addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                             action {
-                                openInternalWindow<AddLoteView>(closeButton = false, modal = true)
+                                openInternalWindow<AddLoteView>(
+                                    closeButton = false,
+                                    modal = true,
+                                    params = mapOf("owner" to this)
+                                )
                             }
                         }
                         tableview(currentUncommittedLotes.lotes) {
@@ -207,23 +233,18 @@ class NewPedidoFormView : Fragment() {
                             MainStylesheet.expandedButton
                         )
                         action {
-                            println("Size of lotes: " + currentUncommittedLotes.lotes.size)
-                            try {
-                                model.commit {
-                                    pedidoController.add(
-                                        Pedido(
-                                            null,
-                                            model.fechaHora.value,
-                                            model.proveedor.value,
-                                            model.empleado.value
-                                        ),
-                                        currentUncommittedLotes.lotes
-                                    )
-                                    currentUncommittedLotes.lotes.clear()
-                                    close()
-                                }
-                            } catch (e: Exception) {
-                                openInternalWindow(UnknownErrorDialog(e.message!!))
+                            model.commit {
+                                pedidoController.add(
+                                    Pedido(
+                                        null,
+                                        model.fechaHora.value,
+                                        model.proveedor.value,
+                                        model.empleado.value
+                                    ),
+                                    currentUncommittedLotes.lotes
+                                )
+                                currentUncommittedLotes.lotes.clear()
+                                close()
                             }
                         }
                     }
@@ -241,8 +262,18 @@ class NewPedidoFormView : Fragment() {
 }
 
 class PedidoSummaryView : Fragment() {
-    val pedido = params["pedido"] as PedidoDB
-    val productoController = find<ProductoController>()
+    private val pedido = params["pedido"] as PedidoDB
+    private val productoController = find<ProductoController>()
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
@@ -295,8 +326,17 @@ class AddLoteView : Fragment() {
 
     private val productoController = find<ProductoController>()
     private val currentUncommittedLotes = find<CurrentUncommittedLotes>()
-
     private val model = LoteModel()
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
@@ -343,7 +383,11 @@ class AddLoteView : Fragment() {
                         button("Nuevo Producto") {
                             addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
                             action {
-                                openInternalWindow<NewProductoFormView>(closeButton = false, modal = true)
+                                openInternalWindow<NewProductoFormView>(
+                                    closeButton = false,
+                                    modal = true,
+                                    params = mapOf("owner" to this)
+                                )
                             }
                         }
                     }
@@ -358,20 +402,16 @@ class AddLoteView : Fragment() {
                         MainStylesheet.expandedButton
                     )
                     action {
-                        try {
-                            model.commit {
-                                currentUncommittedLotes.lotes.add(
-                                    Lote(
-                                        null,
-                                        model.cantidad.value.toInt(),
-                                        model.precioCompra.value.toDouble(),
-                                        model.producto.value
-                                    )
+                        model.commit {
+                            currentUncommittedLotes.lotes.add(
+                                Lote(
+                                    null,
+                                    model.cantidad.value.toInt(),
+                                    model.precioCompra.value.toDouble(),
+                                    model.producto.value
                                 )
-                                close()
-                            }
-                        } catch (e: Exception) {
-                            openInternalWindow(UnknownErrorDialog(e.message!!))
+                            )
+                            close()
                         }
                     }
                 }
