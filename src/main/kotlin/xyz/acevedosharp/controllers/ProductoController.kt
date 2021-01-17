@@ -31,6 +31,8 @@ class ProductoController: Controller(), UpdateSnapshot {
                 producto.descCorta,
                 producto.existencias,
                 producto.precioVenta,
+                producto.precioCompraEfectivo,
+                producto.margen,
                 if (producto.familia == null) null else familiaService.repo.findByIdOrNull(producto.familia.id)
             )
         )
@@ -46,12 +48,13 @@ class ProductoController: Controller(), UpdateSnapshot {
                 producto.descCorta,
                 producto.existencias,
                 producto.precioVenta,
+                producto.precioCompraEfectivo,
+                producto.margen,
                 familiaService.repo.findById(producto.familia.id!!).get()
             )
         )
         updateSnapshot()
     }
-
 
     fun isCodigoAvailable(codigo: String): Boolean = productoService.repo.existsByCodigo(codigo)
     fun existsOtherWithCodigo(codigo: String, id: Int): Boolean {
@@ -77,7 +80,9 @@ class ProductoController: Controller(), UpdateSnapshot {
                     dbObject.descripcionLarga,
                     dbObject.descripcionCorta,
                     dbObject.precioVenta,
+                    dbObject.precioCompraEfectivo,
                     dbObject.existencias,
+                    dbObject.margen,
                     if (dbObject.familia == null) null else familiaController.familias.firstOrNull { it.id == dbObject.familia!!.familiaId }
                 )
             }

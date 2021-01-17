@@ -20,12 +20,7 @@ class ClienteController : Controller(), UpdateSnapshot {
         updateSnapshot()
     }
 
-    fun add(cliente: Cliente): Boolean {
-        if (!InternetConnection.isAvailable()) {
-            Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog())
-            return false
-        }
-
+    fun add(cliente: Cliente) {
         clienteService.add(
             ClienteDB(
                 null,
@@ -35,15 +30,9 @@ class ClienteController : Controller(), UpdateSnapshot {
             )
         )
         updateSnapshot()
-        return true
     }
 
-    fun edit(cliente: Cliente): Boolean {
-        if (!InternetConnection.isAvailable()) {
-            Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog())
-            return false
-        }
-
+    fun edit(cliente: Cliente) {
         clienteService.edit(
             ClienteDB(
                 cliente.id,
@@ -53,37 +42,20 @@ class ClienteController : Controller(), UpdateSnapshot {
             )
         )
         updateSnapshot()
-        return true
     }
 
 
     fun isNombreAvailable(nombre: String): Boolean {
-        if (!InternetConnection.isAvailable()) {
-            Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog())
-            throw RuntimeException()
-        }
         return clienteService.repo.existsByNombre(nombre)
     }
     fun existsOtherWithNombre(nombre: String, id: Int): Boolean {
-        if (!InternetConnection.isAvailable()) {
-            Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog())
-            throw RuntimeException()
-        }
         return clienteService.repo.existsByNombre(nombre) && (clienteService.repo.findByNombre(nombre).clienteId != id)
     }
 
     fun isTelefonoAvailable(telefono: String): Boolean {
-        if (!InternetConnection.isAvailable()) {
-            Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog())
-            throw RuntimeException()
-        }
         return clienteService.repo.existsByTelefono(telefono)
     }
     fun existsOtherWithTelefono(telefono: String, id: Int): Boolean {
-        if (!InternetConnection.isAvailable()) {
-            Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog())
-            throw RuntimeException()
-        }
         return clienteService.repo.existsByTelefono(telefono) && (clienteService.repo.findByTelefono(telefono).clienteId != id)
     }
 

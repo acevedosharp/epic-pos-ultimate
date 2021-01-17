@@ -5,6 +5,7 @@ import xyz.acevedosharp.persistence_layer.repository_services.interfaces.BatchSa
 import xyz.acevedosharp.persistence_layer.repository_services.interfaces.NonEditableRepoService
 import org.springframework.stereotype.Service
 import xyz.acevedosharp.persistence_layer.entities.LoteDB
+import xyz.acevedosharp.persistence_layer.entities.ProductoDB
 
 @Service
 class LoteService(val repo: LoteRepo): NonEditableRepoService<LoteDB>, BatchSaving<LoteDB> {
@@ -13,4 +14,7 @@ class LoteService(val repo: LoteRepo): NonEditableRepoService<LoteDB>, BatchSavi
     override fun add(item: LoteDB): LoteDB = repo.save(item)
 
     override fun addAll(items: List<LoteDB>): List<LoteDB> = repo.saveAll(items)
+
+    fun findMostExpensiveLoteOfProducto(productoDB: ProductoDB) = repo.findMostExpensiveLoteOfProducto(productoDB)
+
 }

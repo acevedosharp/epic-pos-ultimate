@@ -76,7 +76,11 @@ class PedidoDisplay(val pedido: Pedido, val view: View) : Fragment() {
                         closeButton = false,
                         modal = true,
                         owner = view.root,
-                        params = mapOf("pedido" to (view as PedidoView).pedidoService.repo.findByIdOrNull(pedido.id)!!))
+                        params = mapOf(
+                            "pedido" to (view as PedidoView).pedidoService.repo.findByIdOrNull(pedido.id)!!,
+                            "owner" to view
+                        )
+                    )
                 }
             }
         }

@@ -120,6 +120,8 @@ class ProductoView : View("Módulo de productos") {
                         column("Desc. Larga", Producto::descLargaProperty).remainingWidth()
                         column("Desc. Corta", Producto::descCortaProperty).pctWidth(20)
                         column("P. Venta", Producto::precioVentaProperty)
+                        column("P. Compra", Producto::precioCompraEfectivoProperty)
+                        column("Margen", Producto::margenProperty)
                         column("Existencias", Producto::existenciasProperty)
                         column("Familia", Producto::familiaProperty)
 
@@ -202,13 +204,13 @@ class BaseProductoFormView(formType: FormType) : Fragment() {
                 }
                 field("Precio de venta") {
                     if (formType == CREATE) model.precioVenta.value = 50.0
-                    spinner<Double>(
+                    spinner(
                         property = model.precioVenta as Property<Double>,
                         initialValue = 0.0,
                         min = 0.0,
                         max = Double.MAX_VALUE,
                         amountToStepBy = 500.0,
-                        editable = true
+                        editable = !(formType == EDIT && model.margen.value != 0.0)
                     )
                 }
                 field("Existencias") {
@@ -219,6 +221,17 @@ class BaseProductoFormView(formType: FormType) : Fragment() {
                         min = 0,
                         max = Int.MAX_VALUE,
                         amountToStepBy = 1,
+                        editable = true
+                    )
+                }
+                field("Margen (%) (0.0 significa que prefieres poner el precio a mano)") {
+                    if (formType == CREATE) model.margen.value = 0.0
+                    spinner(
+                        property = model.margen as Property<Double>,
+                        initialValue = 0.0,
+                        min = 0.0,
+                        max = 100.0,
+                        amountToStepBy = 0.1,
                         editable = true
                     )
                 }
@@ -253,7 +266,9 @@ class BaseProductoFormView(formType: FormType) : Fragment() {
                                             model.descLarga.value,
                                             model.descCorta.value,
                                             model.precioVenta.value.toDouble(),
+                                            model.precioCompraEfectivo.value.value,
                                             model.existencias.value.toInt(),
+                                            model.margen.value.toDouble(),
                                             model.familia.value
                                         )
                                     )

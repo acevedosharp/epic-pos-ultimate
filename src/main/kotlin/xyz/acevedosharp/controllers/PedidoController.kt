@@ -10,9 +10,10 @@ import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
 import xyz.acevedosharp.persistence_layer.entities.LoteDB
 import xyz.acevedosharp.persistence_layer.entities.PedidoDB
+import xyz.acevedosharp.persistence_layer.entities.ProductoDB
 import java.sql.Timestamp
 
-class PedidoController: Controller(), UpdateSnapshot {
+class PedidoController : Controller(), UpdateSnapshot {
 
     private val pedidoService = find<CustomApplicationContextWrapper>().context.getBean(PedidoService::class.java)
     private val loteService = find<CustomApplicationContextWrapper>().context.getBean(LoteService::class.java)
@@ -38,14 +39,14 @@ class PedidoController: Controller(), UpdateSnapshot {
                 Timestamp.valueOf(pedido.fechaHora),
                 proveedorService.repo.findByIdOrNull(pedido.proveedor.id)!!,
                 empleadoService.repo.findByIdOrNull(pedido.empleado.id)!!,
-                setOf<LoteDB>()
+                setOf()
             )
         )
         println("Successfully saved Pedido!")
         updateSnapshot()
 
         println("Now saving lotes...")
-        val iRes = loteService.addAll(lotes.map {
+        val lotesPersist = loteService.addAll(lotes.map {
             LoteDB(
                 null,
                 it.cantidad,
@@ -54,13 +55,28 @@ class PedidoController: Controller(), UpdateSnapshot {
                 preRes
             )
         })
-        println("Successfully saved Lotes!")
 
-        println("Adding to existences...")
-        iRes.forEach { el ->
-            productoController.productos.find { it.id == el.producto.productoId }!!.apply { existencias += el.cantidad }
+        lotesPersist.forEach { currentLote ->
+            if (currentLote.producto.margen > 0.0) {
+                val expensiveLote = loteService.findMostExpensiveLoteOfProducto(currentLote.producto)
+
+                if (expensiveLote != null) {
+                    val rawLoteSellPrice = currentLote.precioCompra / (1 - currentLote.producto.margen)
+                    val roundedLoteSellPrice = rawLoteSellPrice + (50 - (rawLoteSellPrice % 50)) // round to upper 50
+                    val originalSellPrice = currentLote.producto.precioVenta
+
+                    if (roundedLoteSellPrice > originalSellPrice) {
+                        val newProduct = currentLote.producto.apply {
+                            precioVenta = roundedLoteSellPrice
+                        }
+
+                        println("The price of ${newProduct.descripcionCorta} has changed from $originalSellPrice to $$roundedLoteSellPrice")
+
+                        productoService.add(newProduct)
+                    }
+                }
+            }
         }
-        println("Added to existences!")
     }
 
     override fun updateSnapshot() {
@@ -75,4 +91,7 @@ class PedidoController: Controller(), UpdateSnapshot {
             }
         )
     }
+
+    fun findMostExpensiveLoteOfProducto(productoDB: ProductoDB) = loteService.findMostExpensiveLoteOfProducto(productoDB)
+
 }

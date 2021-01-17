@@ -12,16 +12,22 @@ import xyz.acevedosharp.views.shared_components.PedidoDisplay
 import javafx.beans.binding.Bindings
 import javafx.beans.property.Property
 import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.control.ComboBox
 import javafx.scene.layout.Priority
+import javafx.scene.paint.Color
+import javafx.scene.text.FontWeight
+import org.springframework.data.repository.findByIdOrNull
 import tornadofx.*
 import tornadofx.control.DateTimePicker
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence_layer.entities.PedidoDB
+import xyz.acevedosharp.persistence_layer.repository_services.LoteService
+import xyz.acevedosharp.persistence_layer.repository_services.ProductoService
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -29,7 +35,7 @@ class PedidoView : View("Módulo de pedidos") {
 
     private val pedidoController = find<PedidoController>()
     private val proveedorController = find<ProveedorController>()
-    val pedidoService = find<CustomApplicationContextWrapper>().context.getBean<PedidoService>(PedidoService::class.java)
+    val pedidoService = find<CustomApplicationContextWrapper>().context.getBean(PedidoService::class.java)
 
     private val items: ObservableList<Node> = FXCollections.observableArrayList(
         pedidoController.pedidos.sortedByDescending { it.fechaHora }.map { PedidoDisplay(it, this).root }
@@ -109,6 +115,13 @@ class PedidoView : View("Módulo de pedidos") {
 }
 
 class NewPedidoFormView : Fragment() {
+    private val pedidoController = find<PedidoController>()
+    private val proveedorController = find<ProveedorController>()
+    private val empleadoController = find<EmpleadoController>()
+    private val currentUncommittedLotes = find<CurrentUncommittedLotes>()
+    private val view = this
+
+    private val model = PedidoModel()
 
     override fun onDock() {
         Joe.currentView = this
@@ -120,16 +133,9 @@ class NewPedidoFormView : Fragment() {
         super.onUndock()
     }
 
-    private val pedidoController = find<PedidoController>()
-    private val proveedorController = find<ProveedorController>()
-    private val empleadoController = find<EmpleadoController>()
-    private val currentUncommittedLotes = find<CurrentUncommittedLotes>()
-
-    private val model = PedidoModel()
-
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        prefWidth = 800.0
+        prefWidth = 1000.0
         label("Nuevo Pedido") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
@@ -209,7 +215,7 @@ class NewPedidoFormView : Fragment() {
                                 openInternalWindow<AddLoteView>(
                                     closeButton = false,
                                     modal = true,
-                                    params = mapOf("owner" to this)
+                                    params = mapOf("owner" to view)
                                 )
                             }
                         }
@@ -277,7 +283,7 @@ class PedidoSummaryView : Fragment() {
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        prefWidth = 800.0
+        prefWidth = 1000.0
         label("Viendo pedido") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.blueLabel)
@@ -326,7 +332,40 @@ class AddLoteView : Fragment() {
 
     private val productoController = find<ProductoController>()
     private val currentUncommittedLotes = find<CurrentUncommittedLotes>()
+    private val pedidoController = find<PedidoController>()
     private val model = LoteModel()
+    private val productoService = find<CustomApplicationContextWrapper>().context.getBean(ProductoService::class.java)
+
+    private val maxPriceDisplay = SimpleStringProperty("Selecciona un producto")
+
+    init {
+        model.producto.onChange {
+            val currentProduct = productoService.repo.findByIdOrNull(it!!.id)
+
+            if (currentProduct != null) {
+                val expensiveLote = pedidoController.findMostExpensiveLoteOfProducto(currentProduct)
+                if (expensiveLote == null)
+                    maxPriceDisplay.value = "No hay pedidos anteriores del producto"
+                else {
+                    val res = expensiveLote.precioCompra.toString()
+
+                    val split = res.split(".")
+                    val integerPart = split[0]
+                    val decimalPart = split[1]
+
+                    if (integerPart.length > 3) {
+                        val beforeSpace = integerPart.substring(0, integerPart.length - 3)
+                        val afterSpace = integerPart.substring(integerPart.length - 3, integerPart.length)
+                        maxPriceDisplay.value = "$$beforeSpace,$afterSpace.$decimalPart"
+                    } else {
+                        maxPriceDisplay.value = "$$res"
+                    }
+                }
+            } else {
+                maxPriceDisplay.value = "Selecciona un producto"
+            }
+        }
+    }
 
     override fun onDock() {
         Joe.currentView = this
@@ -340,7 +379,7 @@ class AddLoteView : Fragment() {
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        prefWidth = 800.0
+        prefWidth = 1000.0
         label("Añadir Lote") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
@@ -360,14 +399,26 @@ class AddLoteView : Fragment() {
                 }
                 field("Precio de compra") {
                     model.precioCompra.value = 50.0
-                    spinner<Double>(
-                        property = model.precioCompra as Property<Double>,
-                        initialValue = 0.0,
-                        min = 0.0,
-                        max = Double.MAX_VALUE,
-                        amountToStepBy = 500.0,
-                        editable = true
-                    )
+                    hbox(spacing = 10) {
+                        spinner(
+                            property = model.precioCompra as Property<Double>,
+                            initialValue = 0.0,
+                            min = 0.0,
+                            max = Double.MAX_VALUE,
+                            amountToStepBy = 500.0,
+                            editable = true
+                        )
+
+                        vbox(spacing = 2) {
+                            label("Costo efectivo anterior: ").style {
+                                fontSize = 22.px
+                            }
+                            label(maxPriceDisplay).style {
+                                fontSize = 22.px
+                                textFill = Color.GREEN
+                            }
+                        }
+                    }
                 }
                 field("Producto") {
                     hbox(spacing = 8) {

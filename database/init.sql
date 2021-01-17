@@ -19,15 +19,17 @@ create table familia
 # ------------------------ creation of producto table ------------------------
 create table producto
 (
-    producto_id  int auto_increment
+    producto_id            int auto_increment
         primary key,
-    codigo       varchar(20)          not null,
-    desc_larga   varchar(50)          not null,
-    desc_corta   varchar(25)          not null,
-    precio_venta double               not null,
-    existencias  int                  not null,
-    activo       tinyint(1) default 1 not null,
-    familia      int                  null,
+    codigo                 varchar(20)          not null,
+    desc_larga             varchar(50)          not null,
+    desc_corta             varchar(25)          not null,
+    precio_venta           double               not null,
+    precio_compra_efectivo double               null,
+    margen                 double               not null,
+    existencias            int                  not null,
+    activo                 tinyint(1) default 1 not null,
+    familia                int                  null,
     constraint producto_codigo_uindex
         unique (codigo),
     constraint producto_desc_corta_uindex

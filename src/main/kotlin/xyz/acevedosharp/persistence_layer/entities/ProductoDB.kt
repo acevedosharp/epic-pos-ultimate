@@ -25,6 +25,12 @@ class ProductoDB(
     @Column(name = "precio_venta")
     var precioVenta: Double,
 
+    @Column(name = "precio_compra_efectivo")
+    var precioCompraEfectivo: Double?,
+
+    @Column(name = "margen")
+    var margen: Double,
+
     @ManyToOne @JoinColumn(name = "familia")
-    var familia: FamiliaDB?,
+    var familia: FamiliaDB?
 )
