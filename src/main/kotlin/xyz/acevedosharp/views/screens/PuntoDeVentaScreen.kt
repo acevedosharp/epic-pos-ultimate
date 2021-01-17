@@ -158,7 +158,7 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 uncommittedItemsAsViews.add(
                                     ItemVentaComponent(
                                         UncommittedItemVenta(
-                                            productoController.productos.firstOrNull { it.codigo == currentCodigo.value }!!,
+                                            productoController.findByCodigo(currentCodigo.value).toModel(),
                                             1
                                         ),
                                         uncommittedItemsAsViews,
@@ -463,7 +463,7 @@ class CreateItemVentaManuallyForm : Fragment() {
         form {
             fieldset {
                 field("Producto") {
-                    combobox<Producto>(model.producto, productoController.productos).apply {
+                    combobox<Producto>(model.producto, productoController.productos.map { it.toModel() }).apply {
                         prefWidth = 400.0
                         makeAutocompletable(false)
                     }.validator {
@@ -563,7 +563,7 @@ class CommitVenta : Fragment() {
         form {
             fieldset {
                 field("Empleado") {
-                    combobox<Empleado>(model.empleado, empleadoController.empleados).apply {
+                    combobox<Empleado>(model.empleado, empleadoController.empleados.map { it.toModel() }).apply {
                         prefWidth = 400.0
                         makeAutocompletable(false)
                     }.validator {
@@ -574,7 +574,7 @@ class CommitVenta : Fragment() {
                     }
                 }
                 field("Cliente") {
-                    combobox<Cliente>(model.cliente, clienteController.clientes).apply {
+                    combobox<Cliente>(model.cliente, clienteController.clientes.map { it.toModel() }).apply {
                         prefWidth = 400.0
                         makeAutocompletable(false)
                     }.validator {

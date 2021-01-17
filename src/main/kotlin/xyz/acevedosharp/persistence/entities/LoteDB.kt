@@ -1,6 +1,6 @@
-package xyz.acevedosharp.persistence_layer.entities
+package xyz.acevedosharp.persistence.entities
 
-import java.sql.Timestamp
+import xyz.acevedosharp.ui_models.Lote
 import javax.persistence.*
 
 @Entity
@@ -22,4 +22,11 @@ class LoteDB(
 
     @ManyToOne @JoinColumn(name = "pedido")
     var pedido: PedidoDB
-)
+) {
+    fun toModel() = Lote(
+        loteId,
+        cantidad,
+        precioCompra,
+        producto.toModel()
+    )
+}

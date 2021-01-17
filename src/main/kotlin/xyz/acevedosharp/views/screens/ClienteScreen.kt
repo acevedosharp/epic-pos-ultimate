@@ -1,14 +1,13 @@
 package xyz.acevedosharp.views.screens
 
 import xyz.acevedosharp.controllers.ClienteController
-import xyz.acevedosharp.ui_models.Cliente
-import xyz.acevedosharp.ui_models.ClienteModel
 import xyz.acevedosharp.views.helpers.FormType
 import xyz.acevedosharp.views.helpers.FormType.*
 import xyz.acevedosharp.views.helpers.CurrentModule.*
 import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.shared_components.SideNavigation
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.*
@@ -16,14 +15,16 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*
 import xyz.acevedosharp.Joe
+import xyz.acevedosharp.persistence.entities.ClienteDB
+import xyz.acevedosharp.ui_models.ClienteModel
 
 class ClienteView : View("Módulo de clientes") {
 
     private val clienteController = find<ClienteController>()
-    private val model: ClienteModel by inject()
+    private val selectedId = SimpleIntegerProperty()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty("")
-    private var table: TableView<Cliente> by singleAssign()
+    private var table: TableView<ClienteDB> by singleAssign()
     private val view = this
 
     init {
@@ -35,7 +36,6 @@ class ClienteView : View("Módulo de clientes") {
             }.asObservable()
         }
 
-        // force refresh
         clienteController.clientes.onChange {
             table.items = clienteController.clientes.filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
@@ -70,7 +70,10 @@ class ClienteView : View("Módulo de clientes") {
                             openInternalWindow<EditClienteFormView>(
                                 closeButton = false,
                                 modal = true,
-                                params = mapOf("owner" to view)
+                                params = mapOf(
+                                    "id" to selectedId.value,
+                                    "owner" to view
+                                )
                             )
                         }
                     }
@@ -93,16 +96,17 @@ class ClienteView : View("Módulo de clientes") {
             center {
                 hbox {
                     table = tableview(clienteController.clientes) {
-                        column("Nombre", Cliente::nombreProperty)
-                        column("Teléfono", Cliente::telefonoProperty)
-                        column("Dirección", Cliente::direccionProperty).remainingWidth()
+                        column("Nombre", ClienteDB::nombre)
+                        column("Teléfono", ClienteDB::telefono)
+                        column("Dirección", ClienteDB::direccion).remainingWidth()
 
                         smartResize()
 
-                        bindSelected(model)
                         selectionModel.selectedItemProperty().onChange {
                             existsSelection.value = it != null
-                            model.id.value = it?.id
+                            if (it != null) {
+                                selectedId.set(it.clienteId!!)
+                            }
                         }
 
                         hgrow = Priority.ALWAYS
@@ -121,10 +125,20 @@ class ClienteView : View("Módulo de clientes") {
     }
 }
 
-class BaseClienteFormView(formType: FormType) : Fragment() {
+class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
 
     private val clienteController = find<ClienteController>()
-    private val model = if (formType == CREATE) ClienteModel() else find(ClienteModel::class)
+    private val model: ClienteModel = if (formType == CREATE)
+        ClienteModel()
+    else
+        ClienteModel().apply {
+            val cliente = clienteController.findById(id!!)!!.toModel()
+
+            this.id.value = cliente.id
+            this.nombre.value = cliente.nombre
+            this.telefono.value = cliente.telefono
+            this.direccion.value = cliente.direccion
+        }
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
@@ -137,7 +151,7 @@ class BaseClienteFormView(formType: FormType) : Fragment() {
         form {
             fieldset {
                 field("Nombre") {
-                    textfield(model.nombre).validator {
+                    textfield(model.nombre).validator(trigger = ValidationTrigger.OnBlur) {
                         when {
                             if (formType == CREATE) clienteController.isNombreAvailable(it.toString())
                             else clienteController.existsOtherWithNombre(it.toString(), model.id.value)
@@ -149,7 +163,7 @@ class BaseClienteFormView(formType: FormType) : Fragment() {
                     }
                 }
                 field("Teléfono") {
-                    textfield(model.telefono).validator {
+                    textfield(model.telefono).validator(trigger = ValidationTrigger.OnBlur) {
                         when {
                             if (formType == CREATE) clienteController.isTelefonoAvailable(it.toString())
                             else clienteController.existsOtherWithTelefono(it.toString(), model.id.value)
@@ -161,7 +175,7 @@ class BaseClienteFormView(formType: FormType) : Fragment() {
                     }
                 }
                 field("Dirección") {
-                    textfield(model.direccion).validator {
+                    textfield(model.direccion).validator(trigger = ValidationTrigger.OnBlur) {
                         when {
                             !it.isNullOrBlank() && it.length > 100 -> error("Máximo 100 caracteres (${it.length})")
                             else -> null
@@ -172,35 +186,16 @@ class BaseClienteFormView(formType: FormType) : Fragment() {
                     button("Aceptar") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
-                            if (formType == CREATE) {
-                                model.commit {
-                                    clienteController.add(
-                                        Cliente(
-                                            null,
-                                            model.nombre.value,
-                                            model.telefono.value,
-                                            model.direccion.value
-                                        )
-                                    )
-                                    close()
-                                }
-                            } else {
-                                model.commit {
-                                    clienteController.edit(model.item)
-                                    close()
-                                }
+                            model.commit {
+                                clienteController.save(model.item)
+                                close()
                             }
                         }
                     }
                     button("Cancelar") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
                         action {
-                            if (formType == CREATE) {
-                                close()
-                            } else {
-                                model.rollback()
-                                close()
-                            }
+                            close()
                         }
                     }
                 }
@@ -209,9 +204,8 @@ class BaseClienteFormView(formType: FormType) : Fragment() {
     }
 }
 
-// 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
 class NewClienteFormView : Fragment() {
-    override val root = BaseClienteFormView(CREATE).root
+    override val root = BaseClienteFormView(CREATE, null).root
 
     override fun onDock() {
         Joe.currentView = this
@@ -225,7 +219,7 @@ class NewClienteFormView : Fragment() {
 }
 
 class EditClienteFormView : Fragment() {
-    override val root = BaseClienteFormView(EDIT).root
+    override val root = BaseClienteFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
         Joe.currentView = this

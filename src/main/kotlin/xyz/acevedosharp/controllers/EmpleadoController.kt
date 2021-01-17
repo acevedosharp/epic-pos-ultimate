@@ -1,35 +1,29 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.persistence_layer.repository_services.EmpleadoService
 import xyz.acevedosharp.ui_models.Empleado
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
-import xyz.acevedosharp.persistence_layer.entities.EmpleadoDB
+import xyz.acevedosharp.persistence.entities.EmpleadoDB
+import xyz.acevedosharp.persistence.repositories.EmpleadoRepo
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class EmpleadoController : Controller(), UpdateSnapshot {
-    private val empleadoService = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoService::class.java)
+    private val empleadoRepo = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoRepo::class.java)
 
-    val empleados: ObservableList<Empleado> = FXCollections.observableArrayList()
-
-    init {
+    val empleados: ObservableList<EmpleadoDB> = FXCollections.observableArrayList()
+    get() {
         updateSnapshot()
+        return field
     }
 
-    fun add(empleado: Empleado) {
-        empleadoService.add(
-            EmpleadoDB(
-                null,
-                empleado.nombre,
-                empleado.telefono
-            )
-        )
-        updateSnapshot()
-    }
+    fun findById(id: Int) = empleadoRepo.findByIdOrNull(id)
 
-    fun edit(empleado: Empleado) {
-        empleadoService.edit(
+    fun save(empleado: Empleado) {
+        empleadoRepo.save(
             EmpleadoDB(
                 empleado.id,
                 empleado.nombre,
@@ -39,26 +33,25 @@ class EmpleadoController : Controller(), UpdateSnapshot {
         updateSnapshot()
     }
 
-
-    fun isNombreAvailable(nombre: String): Boolean = empleadoService.repo.existsByNombre(nombre)
-    fun existsOtherWithNombre(nombre: String, id: Int): Boolean {
-        return empleadoService.repo.existsByNombre(nombre) && (empleadoService.repo.findByNombre(nombre).empleadoId != id)
+    fun isNombreAvailable(nombre: String): Boolean {
+        return empleadoRepo.existsByNombre(nombre)
     }
 
-    fun isTelefonoAvailable(telefono: String): Boolean = empleadoService.repo.existsByTelefono(telefono)
+    fun existsOtherWithNombre(nombre: String, id: Int): Boolean {
+        return empleadoRepo.existsByNombre(nombre) && (empleadoRepo.findByNombre(nombre).empleadoId != id)
+    }
+
+    fun isTelefonoAvailable(telefono: String): Boolean {
+        return empleadoRepo.existsByTelefono(telefono)
+    }
+
     fun existsOtherWithTelefono(telefono: String, id: Int): Boolean {
-        return empleadoService.repo.existsByTelefono(telefono) && (empleadoService.repo.findByTelefono(telefono).empleadoId != id)
+        return empleadoRepo.existsByTelefono(telefono) && (empleadoRepo.findByTelefono(telefono).empleadoId != id)
     }
 
     override fun updateSnapshot() {
-        empleados.setAll(
-            empleadoService.all().map {
-                Empleado(
-                    it.empleadoId,
-                    it.nombre,
-                    it.telefono
-                )
-            }
-        )
+        println("Triggered update snapshot for Empleado once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
+
+        empleados.setAll(empleadoRepo.findAll())
     }
 }

@@ -6,10 +6,10 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.scene.layout.HBox
 import tornadofx.*
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.persistence_layer.repositories.ItemVentaRepo
-import xyz.acevedosharp.persistence_layer.repositories.PedidoRepo
-import xyz.acevedosharp.persistence_layer.repositories.ProductoRepo
-import xyz.acevedosharp.persistence_layer.repositories.VentaRepo
+import xyz.acevedosharp.persistence.repositories.ItemVentaRepo
+import xyz.acevedosharp.persistence.repositories.PedidoRepo
+import xyz.acevedosharp.persistence.repositories.ProductoRepo
+import xyz.acevedosharp.persistence.repositories.VentaRepo
 import xyz.acevedosharp.ui_models.Producto
 import java.sql.Timestamp
 import java.util.*

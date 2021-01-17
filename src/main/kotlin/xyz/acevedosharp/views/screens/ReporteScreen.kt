@@ -16,7 +16,7 @@ import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.helpers.CurrentModule.REPORTES
 import xyz.acevedosharp.views.shared_components.SideNavigation
 
-class ReporteView : View("Módulo de Reportes") {
+class ReporteScreen : View("Módulo de Reportes") {
 
     private val reportesController = find<ReportesController>()
     private val productoController = find<ProductoController>()
@@ -82,7 +82,7 @@ class ReporteView : View("Módulo de Reportes") {
                         label("Selecciona un producto").apply { addClass(MainStylesheet.searchLabel) }
                         combobox<Producto>(
                             property = selectedProduct,
-                            values = productoController.productos
+                            values = productoController.productos.map { it.toModel() }
                         ) {
                             prefWidth = 400.0
                             makeAutocompletable(true)

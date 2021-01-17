@@ -1,4 +1,4 @@
-package xyz.acevedosharp.persistence_layer.entities
+package xyz.acevedosharp.persistence.entities
 
 import java.sql.Timestamp
 import javax.persistence.*

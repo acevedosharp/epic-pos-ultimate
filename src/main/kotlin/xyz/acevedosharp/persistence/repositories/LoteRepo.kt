@@ -1,11 +1,11 @@
-package xyz.acevedosharp.persistence_layer.repositories
+package xyz.acevedosharp.persistence.repositories
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
-import xyz.acevedosharp.persistence_layer.entities.LoteDB
-import xyz.acevedosharp.persistence_layer.entities.ProductoDB
+import xyz.acevedosharp.persistence.entities.LoteDB
+import xyz.acevedosharp.persistence.entities.ProductoDB
 
 @Repository
 interface LoteRepo : JpaRepository<LoteDB, Int> {

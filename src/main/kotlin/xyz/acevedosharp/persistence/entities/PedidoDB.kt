@@ -1,5 +1,6 @@
-package xyz.acevedosharp.persistence_layer.entities
+package xyz.acevedosharp.persistence.entities
 
+import xyz.acevedosharp.ui_models.Pedido
 import java.sql.Timestamp
 import javax.persistence.*
 
@@ -22,4 +23,11 @@ class PedidoDB(
 
     @OneToMany(mappedBy = "pedido", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     val lotes: Set<LoteDB>
-)
+) {
+    fun toModel() = Pedido(
+        pedidoId,
+        fechaHora.toLocalDateTime(),
+        proveedor.toModel(),
+        empleado.toModel()
+    )
+}

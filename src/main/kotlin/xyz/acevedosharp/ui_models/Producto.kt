@@ -3,7 +3,7 @@ package xyz.acevedosharp.ui_models
 import tornadofx.*
 import javafx.beans.property.*
 
-class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Double, precioCompraEfectivo: Double?, existencias: Int, margen: Double, familia: Familia?) {
+class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Double, precioCompraEfectivo: Double, existencias: Int, margen: Double, familia: Familia?) {
     val codigoProperty = SimpleStringProperty(this, "codigo", codigo)
     var codigo by codigoProperty
 
@@ -16,7 +16,7 @@ class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: Strin
     val precioVentaProperty = SimpleDoubleProperty(this, "precioVenta", precioVenta)
     var precioVenta by precioVentaProperty
 
-    val precioCompraEfectivoProperty = SimpleObjectProperty<Double?>(this, "precioCompraEfectivo", precioCompraEfectivo)
+    val precioCompraEfectivoProperty = SimpleDoubleProperty(this, "precioCompraEfectivo", precioCompraEfectivo)
     var precioCompraEfectivo by precioCompraEfectivoProperty
 
     val existenciasProperty = SimpleIntegerProperty(this, "existencias", existencias)

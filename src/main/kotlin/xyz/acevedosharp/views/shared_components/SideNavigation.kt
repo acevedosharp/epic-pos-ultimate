@@ -74,7 +74,7 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
                 fitHeight = 50.0
             }
             action {
-                root.replaceWith(ReporteView())
+                root.replaceWith(ReporteScreen())
             }
         }
         line(startX = 0, endX = 175).style {

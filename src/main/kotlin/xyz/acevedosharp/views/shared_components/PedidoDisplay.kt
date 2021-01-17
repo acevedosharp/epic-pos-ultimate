@@ -9,11 +9,14 @@ import javafx.scene.paint.LinearGradient
 import javafx.scene.paint.Stop
 import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
-import org.springframework.data.repository.findByIdOrNull
 import tornadofx.*
+import xyz.acevedosharp.controllers.PedidoController
 import java.time.format.DateTimeFormatter
 
 class PedidoDisplay(val pedido: Pedido, val view: View) : Fragment() {
+
+    private val pedidoController = find<PedidoController>()
+
     override val root = vbox {
         prefWidth = 300.0
         prefHeight = 300.0
@@ -77,7 +80,7 @@ class PedidoDisplay(val pedido: Pedido, val view: View) : Fragment() {
                         modal = true,
                         owner = view.root,
                         params = mapOf(
-                            "pedido" to (view as PedidoView).pedidoService.repo.findByIdOrNull(pedido.id)!!,
+                            "pedido" to pedidoController.findById(pedido.id!!)!!,
                             "owner" to view
                         )
                     )

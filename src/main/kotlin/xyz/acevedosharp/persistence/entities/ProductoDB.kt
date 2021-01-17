@@ -1,5 +1,6 @@
-package xyz.acevedosharp.persistence_layer.entities
+package xyz.acevedosharp.persistence.entities
 
+import xyz.acevedosharp.ui_models.Producto
 import javax.persistence.*
 
 @Entity
@@ -26,11 +27,23 @@ class ProductoDB(
     var precioVenta: Double,
 
     @Column(name = "precio_compra_efectivo")
-    var precioCompraEfectivo: Double?,
+    var precioCompraEfectivo: Double,
 
     @Column(name = "margen")
     var margen: Double,
 
     @ManyToOne @JoinColumn(name = "familia")
     var familia: FamiliaDB?
-)
+) {
+    fun toModel() = Producto(
+        productoId,
+        codigo,
+        descripcionLarga,
+        descripcionCorta,
+        precioVenta,
+        precioCompraEfectivo,
+        existencias,
+        margen,
+        familia?.toModel()
+    )
+}

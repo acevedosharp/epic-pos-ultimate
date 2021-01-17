@@ -9,6 +9,7 @@ import xyz.acevedosharp.views.helpers.CurrentModule.*
 import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.shared_components.SideNavigation
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.*
@@ -16,14 +17,15 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*
 import xyz.acevedosharp.Joe
+import xyz.acevedosharp.persistence.entities.FamiliaDB
 
 class FamiliaView : View("Módulo de familias") {
 
     private val familiaController = find<FamiliaController>()
-    private val model: FamiliaModel by inject()
+    private val selectedId = SimpleIntegerProperty()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty("")
-    private var table: TableView<Familia> by singleAssign()
+    private var table: TableView<FamiliaDB> by singleAssign()
     private val view = this
 
     init {
@@ -36,7 +38,6 @@ class FamiliaView : View("Módulo de familias") {
         }
 
         familiaController.familias.onChange {
-            // force refresh
             table.items = familiaController.familias.filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
@@ -71,7 +72,10 @@ class FamiliaView : View("Módulo de familias") {
                             openInternalWindow<EditFamiliaFormView>(
                                 closeButton = false,
                                 modal = true,
-                                params = mapOf("owner" to view)
+                                params = mapOf(
+                                    "id" to selectedId.value,
+                                    "owner" to view
+                                )
                             )
                         }
                     }
@@ -94,14 +98,15 @@ class FamiliaView : View("Módulo de familias") {
             center {
                 hbox {
                     table = tableview(familiaController.familias) {
-                        column("Nombre", Familia::nombreProperty)
+                        column("Nombre", FamiliaDB::nombre)
 
                         smartResize()
 
-                        bindSelected(model)
                         selectionModel.selectedItemProperty().onChange {
                             existsSelection.value = it != null
-                            model.id.value = it?.id
+                            if (it != null) {
+                                selectedId.set(it.familiaId!!)
+                            }
                         }
 
                         hgrow = Priority.ALWAYS
@@ -120,11 +125,18 @@ class FamiliaView : View("Módulo de familias") {
     }
 }
 
-class BaseFamiliaFormView(formType: FormType) : Fragment() {
+class BaseFamiliaFormView(formType: FormType, id: Int?) : Fragment() {
 
     private val familiaController = find<FamiliaController>()
-    private val model = if (formType == CREATE) FamiliaModel() else find(FamiliaModel::class)
-    private val view = this
+    private val model = if (formType == CREATE)
+        FamiliaModel()
+    else
+        FamiliaModel().apply {
+            val familia = familiaController.findById(id!!)!!.toModel()
+
+            this.id.value = familia.id
+            this.nombre.value = familia.nombre
+        }
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
@@ -137,7 +149,7 @@ class BaseFamiliaFormView(formType: FormType) : Fragment() {
         form {
             fieldset {
                 field("Nombre") {
-                    textfield(model.nombre).validator {
+                    textfield(model.nombre).validator(trigger = ValidationTrigger.OnBlur) {
                         when {
                             if (formType == CREATE) familiaController.isNombreAvailable(it.toString())
                             else familiaController.existsOtherWithNombre(it.toString(), model.id.value)
@@ -152,33 +164,16 @@ class BaseFamiliaFormView(formType: FormType) : Fragment() {
                     button("Aceptar") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
-                            if (formType == CREATE) {
-                                model.commit {
-                                    familiaController.add(
-                                        Familia(
-                                            null,
-                                            model.nombre.value
-                                        )
-                                    )
-                                    close()
-                                }
-                            } else {
-                                model.commit {
-                                    familiaController.edit(model.item)
-                                    close()
-                                }
+                            model.commit {
+                                familiaController.save(model.item)
+                                close()
                             }
                         }
                     }
                     button("Cancelar") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
                         action {
-                            if (formType == CREATE) {
-                                close()
-                            } else {
-                                model.rollback()
-                                close()
-                            }
+                            close()
                         }
                     }
                 }
@@ -189,7 +184,7 @@ class BaseFamiliaFormView(formType: FormType) : Fragment() {
 
 // 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
 class NewFamiliaFormView : Fragment() {
-    override val root = BaseFamiliaFormView(CREATE).root
+    override val root = BaseFamiliaFormView(CREATE, null).root
 
     override fun onDock() {
         Joe.currentView = this
@@ -203,7 +198,7 @@ class NewFamiliaFormView : Fragment() {
 }
 
 class EditFamiliaFormView : Fragment() {
-    override val root = BaseFamiliaFormView(EDIT).root
+    override val root = BaseFamiliaFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
         Joe.currentView = this

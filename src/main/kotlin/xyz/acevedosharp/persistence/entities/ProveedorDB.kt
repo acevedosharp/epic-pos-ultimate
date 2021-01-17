@@ -1,5 +1,6 @@
-package xyz.acevedosharp.persistence_layer.entities
+package xyz.acevedosharp.persistence.entities
 
+import xyz.acevedosharp.ui_models.Proveedor
 import javax.persistence.*
 
 @Entity
@@ -21,4 +22,12 @@ class ProveedorDB(
 
     @Column(name = "direccion")
     var direccion: String?,
-)
+) {
+    fun toModel() = Proveedor(
+        proveedorId,
+        nombre,
+        telefono,
+        direccion,
+        correo
+    )
+}

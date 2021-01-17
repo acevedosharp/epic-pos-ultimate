@@ -1,39 +1,29 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.persistence_layer.repository_services.ClienteService
 import xyz.acevedosharp.ui_models.Cliente
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
-import xyz.acevedosharp.InternetConnection
-import xyz.acevedosharp.Joe
-import xyz.acevedosharp.persistence_layer.entities.ClienteDB
-import xyz.acevedosharp.views.NoInternetConnectionErrorDialog
+import xyz.acevedosharp.persistence.entities.ClienteDB
+import xyz.acevedosharp.persistence.repositories.ClienteRepo
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class ClienteController : Controller(), UpdateSnapshot {
-    private val clienteService = find<CustomApplicationContextWrapper>().context.getBean(ClienteService::class.java)
+    private val clienteRepo = find<CustomApplicationContextWrapper>().context.getBean(ClienteRepo::class.java)
 
-    val clientes: ObservableList<Cliente> = FXCollections.observableArrayList()
-
-    init {
+    val clientes: ObservableList<ClienteDB> = FXCollections.observableArrayList()
+    get() {
         updateSnapshot()
+        return field
     }
 
-    fun add(cliente: Cliente) {
-        clienteService.add(
-            ClienteDB(
-                null,
-                cliente.nombre,
-                cliente.telefono,
-                cliente.direccion
-            )
-        )
-        updateSnapshot()
-    }
+    fun findById(id: Int) = clienteRepo.findByIdOrNull(id)
 
-    fun edit(cliente: Cliente) {
-        clienteService.edit(
+    fun save(cliente: Cliente) {
+        clienteRepo.save(
             ClienteDB(
                 cliente.id,
                 cliente.nombre,
@@ -46,29 +36,23 @@ class ClienteController : Controller(), UpdateSnapshot {
 
 
     fun isNombreAvailable(nombre: String): Boolean {
-        return clienteService.repo.existsByNombre(nombre)
+        return clienteRepo.existsByNombre(nombre)
     }
+
     fun existsOtherWithNombre(nombre: String, id: Int): Boolean {
-        return clienteService.repo.existsByNombre(nombre) && (clienteService.repo.findByNombre(nombre).clienteId != id)
+        return clienteRepo.existsByNombre(nombre) && (clienteRepo.findByNombre(nombre).clienteId != id)
     }
 
     fun isTelefonoAvailable(telefono: String): Boolean {
-        return clienteService.repo.existsByTelefono(telefono)
+        return clienteRepo.existsByTelefono(telefono)
     }
+
     fun existsOtherWithTelefono(telefono: String, id: Int): Boolean {
-        return clienteService.repo.existsByTelefono(telefono) && (clienteService.repo.findByTelefono(telefono).clienteId != id)
+        return clienteRepo.existsByTelefono(telefono) && (clienteRepo.findByTelefono(telefono).clienteId != id)
     }
 
     override fun updateSnapshot() {
-        clientes.setAll(
-            clienteService.all().map {
-                Cliente(
-                    it.clienteId,
-                    it.nombre,
-                    it.telefono,
-                    it.direccion
-                )
-            }
-        )
+        println("Triggered update snapshot for Cliente once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
+        clientes.setAll(clienteRepo.findAll())
     }
 }

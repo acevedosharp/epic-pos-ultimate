@@ -1,5 +1,6 @@
-package xyz.acevedosharp.persistence_layer.entities
+package xyz.acevedosharp.persistence.entities
 
+import xyz.acevedosharp.ui_models.Venta
 import java.sql.Timestamp
 import javax.persistence.*
 
@@ -28,4 +29,13 @@ class VentaDB(
 
     @OneToMany(mappedBy = "venta", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     val items: Set<ItemVentaDB>
-)
+) {
+    fun toModel() = Venta(
+        ventaId,
+        fechaHora.toLocalDateTime(),
+        precioTotal,
+        pagoRecibido,
+        empleado.toModel(),
+        cliente.toModel()
+    )
+}

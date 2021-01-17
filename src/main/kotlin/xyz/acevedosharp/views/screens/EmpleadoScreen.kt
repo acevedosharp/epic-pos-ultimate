@@ -10,6 +10,7 @@ import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.shared_components.SideNavigation
 import xyz.acevedosharp.views.UnknownErrorDialog
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.*
@@ -17,14 +18,15 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*
 import xyz.acevedosharp.Joe
+import xyz.acevedosharp.persistence.entities.EmpleadoDB
 
 class EmpleadoView : View("Módulo de empleados") {
 
     private val empleadoController = find<EmpleadoController>()
-    private val model: EmpleadoModel by inject()
+    private val selectedId = SimpleIntegerProperty()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty("")
-    private var table: TableView<Empleado> by singleAssign()
+    private var table: TableView<EmpleadoDB> by singleAssign()
     private val view = this
 
     init {
@@ -36,7 +38,6 @@ class EmpleadoView : View("Módulo de empleados") {
             }.asObservable()
         }
 
-        // force refresh
         empleadoController.empleados.onChange {
             table.items = empleadoController.empleados.filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
@@ -71,7 +72,10 @@ class EmpleadoView : View("Módulo de empleados") {
                             openInternalWindow<EditEmpleadoFormView>(
                                 closeButton = false,
                                 modal = true,
-                                params = mapOf("owner" to view)
+                                params = mapOf(
+                                    "id" to selectedId.value,
+                                    "owner" to view
+                                )
                             )
                         }
                     }
@@ -94,15 +98,16 @@ class EmpleadoView : View("Módulo de empleados") {
             center {
                 hbox {
                     table = tableview(empleadoController.empleados) {
-                        column("Nombre", Empleado::nombreProperty)
-                        column("Teléfono", Empleado::telefonoProperty)
+                        column("Nombre", EmpleadoDB::nombre)
+                        column("Teléfono", EmpleadoDB::telefono)
 
                         smartResize()
 
-                        bindSelected(model)
                         selectionModel.selectedItemProperty().onChange {
                             existsSelection.value = it != null
-                            model.id.value = it?.id
+                            if (it != null) {
+                                selectedId.set(it.empleadoId!!)
+                            }
                         }
 
                         hgrow = Priority.ALWAYS
@@ -121,10 +126,19 @@ class EmpleadoView : View("Módulo de empleados") {
     }
 }
 
-class BaseEmpleadoFormView(formType: FormType): Fragment() {
+class BaseEmpleadoFormView(formType: FormType, id: Int?) : Fragment() {
 
     private val empleadoController = find<EmpleadoController>()
-    private val model = if (formType == CREATE) EmpleadoModel() else find(EmpleadoModel::class)
+    private val model = if (formType == CREATE)
+        EmpleadoModel()
+    else
+        EmpleadoModel().apply {
+            val empleado = empleadoController.findById(id!!)!!.toModel()
+
+            this.id.value = empleado.id
+            this.nombre.value = empleado.nombre
+            this.telefono.value = empleado.telefono
+        }
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
@@ -137,7 +151,7 @@ class BaseEmpleadoFormView(formType: FormType): Fragment() {
         form {
             fieldset {
                 field("Nombre") {
-                    textfield(model.nombre).validator {
+                    textfield(model.nombre).validator(trigger = ValidationTrigger.OnBlur) {
                         when {
                             if (formType == CREATE) empleadoController.isNombreAvailable(it.toString())
                             else empleadoController.existsOtherWithNombre(it.toString(), model.id.value)
@@ -149,7 +163,7 @@ class BaseEmpleadoFormView(formType: FormType): Fragment() {
                     }
                 }
                 field("Teléfono") {
-                    textfield(model.telefono).validator {
+                    textfield(model.telefono).validator(trigger = ValidationTrigger.OnBlur) {
                         when {
                             if (formType == CREATE) empleadoController.isTelefonoAvailable(it.toString())
                             else empleadoController.existsOtherWithTelefono(it.toString(), model.id.value)
@@ -164,42 +178,16 @@ class BaseEmpleadoFormView(formType: FormType): Fragment() {
                     button("Aceptar") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
-                            if (formType == CREATE) {
-                                try {
-                                    model.commit {
-                                        empleadoController.add(
-                                            Empleado(
-                                                null,
-                                                model.nombre.value,
-                                                model.telefono.value
-                                            )
-                                        )
-                                        close()
-                                    }
-                                } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog(e.message!!))
-                                }
-                            } else {
-                                try {
-                                    model.commit {
-                                        empleadoController.edit(model.item)
-                                        close()
-                                    }
-                                } catch (e: Exception) {
-                                    openInternalWindow(UnknownErrorDialog(e.message!!))
-                                }
+                            model.commit {
+                                empleadoController.save(model.item)
+                                close()
                             }
                         }
                     }
                     button("Cancelar") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
                         action {
-                            if (formType == CREATE) {
-                                close()
-                            } else {
-                                model.rollback()
-                                close()
-                            }
+                            close()
                         }
                     }
                 }
@@ -208,9 +196,8 @@ class BaseEmpleadoFormView(formType: FormType): Fragment() {
     }
 }
 
-// 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
 class NewEmpleadoFormView : Fragment() {
-    override val root = BaseEmpleadoFormView(CREATE).root
+    override val root = BaseEmpleadoFormView(CREATE, null).root
 
     override fun onDock() {
         Joe.currentView = this
@@ -224,7 +211,7 @@ class NewEmpleadoFormView : Fragment() {
 }
 
 class EditEmpleadoFormView : Fragment() {
-    override val root = BaseEmpleadoFormView(EDIT).root
+    override val root = BaseEmpleadoFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
         Joe.currentView = this

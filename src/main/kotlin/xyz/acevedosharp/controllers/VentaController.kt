@@ -1,75 +1,60 @@
 package xyz.acevedosharp.controllers
 
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
+import org.springframework.data.repository.findByIdOrNull
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.persistence_layer.repository_services.*
 import xyz.acevedosharp.ui_models.UncommittedItemVenta
 import xyz.acevedosharp.ui_models.Venta
-import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
-import xyz.acevedosharp.persistence_layer.entities.ItemVentaDB
-import xyz.acevedosharp.persistence_layer.entities.VentaDB
+import xyz.acevedosharp.persistence.entities.ItemVentaDB
+import xyz.acevedosharp.persistence.entities.VentaDB
+import xyz.acevedosharp.persistence.repositories.*
 import java.sql.Timestamp
 
-class VentaController: Controller()/*, UpdateSnapshot*/ {
-    private val ventaService = find<CustomApplicationContextWrapper>().context.getBean(VentaService::class.java)
-    private val itemVentaService = find<CustomApplicationContextWrapper>().context.getBean(ItemVentaService::class.java)
-    private val productoService = find<CustomApplicationContextWrapper>().context.getBean(ProductoService::class.java)
-    private val empleadoService = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoService::class.java)
-    private val clienteService = find<CustomApplicationContextWrapper>().context.getBean(ClienteService::class.java)
+class VentaController: Controller(), UpdateSnapshot {
+    private val empleadoRepo = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoRepo::class.java)
+    private val clienteRepo = find<CustomApplicationContextWrapper>().context.getBean(ClienteRepo::class.java)
+    private val ventaRepo = find<CustomApplicationContextWrapper>().context.getBean(VentaRepo::class.java)
+    private val productoRepo = find<CustomApplicationContextWrapper>().context.getBean(ProductoRepo::class.java)
+    private val itemVentaRepo = find<CustomApplicationContextWrapper>().context.getBean(ItemVentaRepo::class.java)
 
-    private val empleadoController = find<EmpleadoController>()
-    private val clienteController = find<ClienteController>()
-    private val productoController = find<ProductoController>()
-
-    //val ventas: ObservableList<Venta> = FXCollections.observableArrayList()
+    val ventas: ObservableList<VentaDB> = FXCollections.observableArrayList()
 
     //init {
     //    updateSnapshot()
     //}
 
     fun add(venta: Venta, items: List<UncommittedItemVenta>){
-        val preRes = ventaService.add(
+        val preRes = ventaRepo.save(
             VentaDB(
                 null,
                 Timestamp.valueOf(venta.fechaHora),
                 venta.precioTotal,
                 venta.pagoRecibido,
-                empleadoService.repo.findByIdOrNull(venta.empleado.id)!!,
-                clienteService.repo.findByIdOrNull(venta.cliente.id)!!,
+                empleadoRepo.findByIdOrNull(venta.empleado.id)!!,
+                clienteRepo.findByIdOrNull(venta.cliente.id)!!,
                 setOf()
             )
         )
 
-        //updateSnapshot()
+        updateSnapshot()
 
-        val iRes = itemVentaService.addAll(items.map {
+        val productosSnapshot = productoRepo.findAll()
+
+        itemVentaRepo.saveAll(items.map { uncommittedItemVenta ->
             ItemVentaDB(
                 null,
                 Timestamp.valueOf(venta.fechaHora),
-                it.cantidad,
-                it.producto.precioVenta,
-                productoService.repo.findByIdOrNull(it.producto.id)!!,
+                uncommittedItemVenta.cantidad,
+                uncommittedItemVenta.producto.precioVenta,
+                productosSnapshot.find { it.productoId == uncommittedItemVenta.producto.id }!!,
                 preRes
             )
         })
-
-        iRes.forEach { el ->
-            productoController.productos.find { it.id == el.producto.productoId }!!.apply { existencias -= el.cantidad }
-        }
     }
 
-    //override fun updateSnapshot() {
-    //    ventas.setAll(
-    //        ventaService.all().map { dbObject: VentaDB ->
-    //            Venta(
-    //                dbObject.ventaId,
-    //                dbObject.fechaHora.toLocalDateTime(),
-    //                dbObject.precioTotal,
-    //                dbObject.pagoRecibido,
-    //                empleadoController.empleados.first { it.id == dbObject.empleado.empleadoId },
-    //                clienteController.clientes.first { it.id == dbObject.cliente.clienteId }
-    //            )
-    //        }
-    //    )
-    //}
+    override fun updateSnapshot() {
+        ventas.setAll(ventaRepo.findAll())
+    }
 }

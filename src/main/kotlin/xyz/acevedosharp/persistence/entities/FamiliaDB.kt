@@ -1,5 +1,6 @@
-package xyz.acevedosharp.persistence_layer.entities
+package xyz.acevedosharp.persistence.entities
 
+import xyz.acevedosharp.ui_models.Familia
 import javax.persistence.*
 
 @Entity
@@ -12,4 +13,11 @@ class FamiliaDB(
 
     @Column(name = "nombre")
     var nombre: String
-)
+) {
+    fun toModel() = Familia(
+        familiaId,
+        nombre
+    )
+
+    override fun toString() = nombre
+}

@@ -1,5 +1,6 @@
-package xyz.acevedosharp.persistence_layer.entities
+package xyz.acevedosharp.persistence.entities
 
+import xyz.acevedosharp.ui_models.Cliente
 import javax.persistence.*
 
 @Entity
@@ -18,4 +19,11 @@ class ClienteDB(
 
     @Column(name = "direccion")
     var direccion: String?
-)
+) {
+    fun toModel() = Cliente(
+        clienteId,
+        nombre,
+        telefono,
+        direccion
+    )
+}

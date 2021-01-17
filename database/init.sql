@@ -25,7 +25,7 @@ create table producto
     desc_larga             varchar(50)          not null,
     desc_corta             varchar(25)          not null,
     precio_venta           double               not null,
-    precio_compra_efectivo double               null,
+    precio_compra_efectivo double               not null,
     margen                 double               not null,
     existencias            int                  not null,
     activo                 tinyint(1) default 1 not null,

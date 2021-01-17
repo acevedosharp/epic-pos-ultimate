@@ -3,7 +3,7 @@ package xyz.acevedosharp.ui_models
 import tornadofx.*
 import javafx.beans.property.SimpleStringProperty
 
-class Cliente(var id: Int?, nombre: String, telefono: String, direccion: String?) {
+class Cliente(val id: Int?, nombre: String, telefono: String, direccion: String?) {
     val nombreProperty = SimpleStringProperty(this, "nombre", nombre)
     var nombre by nombreProperty
 

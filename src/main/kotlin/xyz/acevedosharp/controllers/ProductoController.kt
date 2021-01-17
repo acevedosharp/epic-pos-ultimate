@@ -1,46 +1,29 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.persistence_layer.repository_services.FamiliaService
 import javafx.collections.FXCollections
 import xyz.acevedosharp.ui_models.Producto
-import xyz.acevedosharp.persistence_layer.repository_services.ProductoService
 import javafx.collections.ObservableList
 import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
-import xyz.acevedosharp.persistence_layer.entities.ProductoDB
+import xyz.acevedosharp.persistence.entities.ProductoDB
+import xyz.acevedosharp.persistence.repositories.FamiliaRepo
+import xyz.acevedosharp.persistence.repositories.ProductoRepo
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
-class ProductoController: Controller(), UpdateSnapshot {
+class ProductoController : Controller(), UpdateSnapshot {
 
-    private val productoService = find<CustomApplicationContextWrapper>().context.getBean(ProductoService::class.java)
-    private val familiaService = find<CustomApplicationContextWrapper>().context.getBean(FamiliaService::class.java)
-    private val familiaController = find<FamiliaController>()
+    private val productoRepo = find<CustomApplicationContextWrapper>().context.getBean(ProductoRepo::class.java)
+    private val familiaRepo = find<CustomApplicationContextWrapper>().context.getBean(FamiliaRepo::class.java)
 
-    val productos: ObservableList<Producto> = FXCollections.observableArrayList()
+    val productos: ObservableList<ProductoDB> = FXCollections.observableArrayList()
 
-    init {
-        updateSnapshot()
-    }
+    fun findById(id: Int) = productoRepo.findByIdOrNull(id)
+    fun findByCodigo(barCode: String) = productoRepo.findByCodigo(barCode)
 
-    fun add(producto: Producto) {
-        productoService.add(
-            ProductoDB(
-                null,
-                producto.codigo,
-                producto.descLarga,
-                producto.descCorta,
-                producto.existencias,
-                producto.precioVenta,
-                producto.precioCompraEfectivo,
-                producto.margen,
-                if (producto.familia == null) null else familiaService.repo.findByIdOrNull(producto.familia.id)
-            )
-        )
-        updateSnapshot()
-    }
-
-    fun edit(producto: Producto) {
-        productoService.edit(
+    fun save(producto: Producto) {
+        productoRepo.save(
             ProductoDB(
                 producto.id,
                 producto.codigo,
@@ -50,42 +33,38 @@ class ProductoController: Controller(), UpdateSnapshot {
                 producto.precioVenta,
                 producto.precioCompraEfectivo,
                 producto.margen,
-                familiaService.repo.findById(producto.familia.id!!).get()
+                if (producto.familia == null) null else familiaRepo.findByIdOrNull(producto.familia.id)
             )
         )
         updateSnapshot()
     }
 
-    fun isCodigoAvailable(codigo: String): Boolean = productoService.repo.existsByCodigo(codigo)
+    fun isCodigoAvailable(codigo: String): Boolean {
+        return productoRepo.existsByCodigo(codigo)
+    }
+
     fun existsOtherWithCodigo(codigo: String, id: Int): Boolean {
-        return productoService.repo.existsByCodigo(codigo) && (productoService.repo.findByCodigo(codigo).productoId != id)
+        return productoRepo.existsByCodigo(codigo) && (productoRepo.findByCodigo(codigo).productoId != id)
     }
 
-    fun isDescLargaAvailable(descLarga: String): Boolean = productoService.repo.existsByDescripcionLarga(descLarga)
+    fun isDescLargaAvailable(descLarga: String): Boolean {
+        return productoRepo.existsByDescripcionLarga(descLarga)
+    }
+
     fun existsOtherWithDescLarga(descLarga: String, id: Int): Boolean {
-        return productoService.repo.existsByDescripcionLarga(descLarga) && (productoService.repo.findByDescripcionLarga(descLarga).productoId != id)
+        return productoRepo.existsByDescripcionLarga(descLarga) && (productoRepo.findByDescripcionLarga(descLarga).productoId != id)
     }
 
-    fun isDescCortaAvailable(descCorta: String): Boolean = productoService.repo.existsByDescripcionCorta(descCorta)
+    fun isDescCortaAvailable(descCorta: String): Boolean {
+        return productoRepo.existsByDescripcionCorta(descCorta)
+    }
+
     fun existsOtherWithDescCorta(descCorta: String, id: Int): Boolean {
-        return productoService.repo.existsByDescripcionCorta(descCorta) && (productoService.repo.findByDescripcionCorta(descCorta).productoId != id)
+        return productoRepo.existsByDescripcionCorta(descCorta) && (productoRepo.findByDescripcionCorta(descCorta).productoId != id)
     }
 
     override fun updateSnapshot() {
-        productos.setAll(
-            productoService.all().map { dbObject: ProductoDB ->
-                Producto(
-                    dbObject.productoId,
-                    dbObject.codigo,
-                    dbObject.descripcionLarga,
-                    dbObject.descripcionCorta,
-                    dbObject.precioVenta,
-                    dbObject.precioCompraEfectivo,
-                    dbObject.existencias,
-                    dbObject.margen,
-                    if (dbObject.familia == null) null else familiaController.familias.firstOrNull { it.id == dbObject.familia!!.familiaId }
-                )
-            }
-        )
+        println("Triggered update snapshot for Producto once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
+        productos.setAll(productoRepo.findAll())
     }
 }

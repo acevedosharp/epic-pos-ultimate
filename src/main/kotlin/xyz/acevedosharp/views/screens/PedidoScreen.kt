@@ -1,11 +1,8 @@
 package xyz.acevedosharp.views.screens
 
-import xyz.acevedosharp.CustomApplicationContextWrapper
 import xyz.acevedosharp.controllers.*
-import xyz.acevedosharp.persistence_layer.repository_services.PedidoService
 import xyz.acevedosharp.ui_models.*
 import xyz.acevedosharp.views.MainStylesheet
-import xyz.acevedosharp.views.UnknownErrorDialog
 import xyz.acevedosharp.views.shared_components.SideNavigation
 import xyz.acevedosharp.views.helpers.CurrentModule.PEDIDOS
 import xyz.acevedosharp.views.shared_components.PedidoDisplay
@@ -20,14 +17,12 @@ import javafx.scene.Node
 import javafx.scene.control.ComboBox
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
-import javafx.scene.text.FontWeight
-import org.springframework.data.repository.findByIdOrNull
 import tornadofx.*
 import tornadofx.control.DateTimePicker
 import xyz.acevedosharp.Joe
-import xyz.acevedosharp.persistence_layer.entities.PedidoDB
-import xyz.acevedosharp.persistence_layer.repository_services.LoteService
-import xyz.acevedosharp.persistence_layer.repository_services.ProductoService
+import xyz.acevedosharp.persistence.entities.LoteDB
+import xyz.acevedosharp.persistence.entities.PedidoDB
+import xyz.acevedosharp.persistence.entities.ProveedorDB
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -35,28 +30,26 @@ class PedidoView : View("Módulo de pedidos") {
 
     private val pedidoController = find<PedidoController>()
     private val proveedorController = find<ProveedorController>()
-    val pedidoService = find<CustomApplicationContextWrapper>().context.getBean(PedidoService::class.java)
 
     private val items: ObservableList<Node> = FXCollections.observableArrayList(
-        pedidoController.pedidos.sortedByDescending { it.fechaHora }.map { PedidoDisplay(it, this).root }
+        pedidoController.pedidos.sortedByDescending { it.fechaHora }.map { PedidoDisplay(it.toModel(), this).root }
     )
-    private val pedidosSnapshot = pedidoController.pedidos
-    private var provComboBox by singleAssign<ComboBox<Proveedor>>()
-    private val searchByProveedor = SimpleObjectProperty<Proveedor>()
+    private var provComboBox by singleAssign<ComboBox<ProveedorDB>>()
+    private val searchByProveedor = SimpleObjectProperty<ProveedorDB>()
     private val view = this
 
     init {
         Joe.currentView = view
 
-        pedidosSnapshot.onChange {
-            items.setAll(pedidoController.pedidos.sortedByDescending { it.fechaHora }.map { PedidoDisplay(it, this).root })
+        pedidoController.pedidos.onChange {
+            items.setAll(pedidoController.pedidos.sortedByDescending { it.fechaHora }.map { PedidoDisplay(it.toModel(), this).root })
         }
         searchByProveedor.onChange { selectedItem ->
             if (selectedItem == null)
-                items.setAll(pedidoController.pedidos.sortedBy { it.fechaHora }.map { PedidoDisplay(it, this).root })
+                items.setAll(pedidoController.pedidos.sortedBy { it.fechaHora }.map { PedidoDisplay(it.toModel(), this).root })
             else
                 items.setAll(pedidoController.pedidos.filter { it.proveedor == selectedItem }.sortedBy { it.fechaHora }
-                    .map { PedidoDisplay(it, this).root })
+                    .map { PedidoDisplay(it.toModel(), this).root })
         }
     }
 
@@ -119,7 +112,6 @@ class NewPedidoFormView : Fragment() {
     private val proveedorController = find<ProveedorController>()
     private val empleadoController = find<EmpleadoController>()
     private val currentUncommittedLotes = find<CurrentUncommittedLotes>()
-    private val view = this
 
     private val model = PedidoModel()
 
@@ -146,7 +138,7 @@ class NewPedidoFormView : Fragment() {
                     hbox(spacing = 8) {
                         add(DateTimePicker().apply {
                             dateTimeValueProperty().bindBidirectional(model.fechaHora)
-                            validator(this, model.fechaHora, ValidationTrigger.OnChange()) {
+                            validator(this, model.fechaHora, ValidationTrigger.OnBlur) {
                                 when (it) {
                                     null -> error("Fecha y hora requeridos")
                                     else -> null
@@ -163,10 +155,10 @@ class NewPedidoFormView : Fragment() {
                 }
                 field("Proveedor") {
                     hbox(spacing = 8) {
-                        combobox<Proveedor>(model.proveedor, proveedorController.proveedores).apply {
+                        combobox<Proveedor>(model.proveedor, proveedorController.proveedores.map { it.toModel() }).apply {
                             prefWidth = 300.0
                             makeAutocompletable(false)
-                        }.validator {
+                        }.validator(trigger = ValidationTrigger.OnBlur) {
                             when (it) {
                                 null -> error("Proveedor requerido")
                                 else -> null
@@ -178,7 +170,7 @@ class NewPedidoFormView : Fragment() {
                                 openInternalWindow<NewProveedorFormView>(
                                     closeButton = false,
                                     modal = true,
-                                    params = mapOf("owner" to this)
+                                    params = mapOf("owner" to this@NewPedidoFormView)
                                 )
                             }
                         }
@@ -186,7 +178,7 @@ class NewPedidoFormView : Fragment() {
                 }
                 field("Empleado") {
                     hbox(spacing = 8) {
-                        combobox<Empleado>(model.empleado, empleadoController.empleados).apply {
+                        combobox<Empleado>(model.empleado, empleadoController.empleados.map { it.toModel() }).apply {
                             prefWidth = 300.0
                             makeAutocompletable(false)
                         }.validator {
@@ -201,7 +193,7 @@ class NewPedidoFormView : Fragment() {
                                 openInternalWindow<NewEmpleadoFormView>(
                                     closeButton = false,
                                     modal = true,
-                                    params = mapOf("owner" to this)
+                                    params = mapOf("owner" to this@NewPedidoFormView)
                                 )
                             }
                         }
@@ -215,7 +207,7 @@ class NewPedidoFormView : Fragment() {
                                 openInternalWindow<AddLoteView>(
                                     closeButton = false,
                                     modal = true,
-                                    params = mapOf("owner" to view)
+                                    params = mapOf("owner" to this@NewPedidoFormView)
                                 )
                             }
                         }
@@ -241,12 +233,7 @@ class NewPedidoFormView : Fragment() {
                         action {
                             model.commit {
                                 pedidoController.add(
-                                    Pedido(
-                                        null,
-                                        model.fechaHora.value,
-                                        model.proveedor.value,
-                                        model.empleado.value
-                                    ),
+                                    model.item,
                                     currentUncommittedLotes.lotes
                                 )
                                 currentUncommittedLotes.lotes.clear()
@@ -269,7 +256,6 @@ class NewPedidoFormView : Fragment() {
 
 class PedidoSummaryView : Fragment() {
     private val pedido = params["pedido"] as PedidoDB
-    private val productoController = find<ProductoController>()
 
     override fun onDock() {
         Joe.currentView = this
@@ -300,12 +286,10 @@ class PedidoSummaryView : Fragment() {
                     textfield(pedido.empleado.nombre).apply { isEditable = false }
                 }
                 field("Lotes") {
-                    val arr = pedido.lotes
-                    arr.forEach { println("${it.producto.descripcionCorta}: ${it.cantidad}") }
-                    tableview(pedido.lotes.map { Lote(it.loteId, it.cantidad, it.precioCompra, productoController.productos.first { prod -> it.producto.productoId == prod.id }) }.asObservable()) {
-                        column("Producto", Lote::productoProperty).remainingWidth()
-                        column("Cantidad", Lote::cantidadProperty)
-                        column("P. Compra", Lote::precioCompraProperty)
+                    tableview(pedido.lotes.toList().asObservable()) {
+                        column("Producto", LoteDB::producto).remainingWidth()
+                        column("Cantidad", LoteDB::cantidad)
+                        column("P. Compra", LoteDB::precioCompra)
 
                         smartResize()
                         paddingAll = 5
@@ -320,7 +304,9 @@ class PedidoSummaryView : Fragment() {
                             MainStylesheet.greenButton,
                             MainStylesheet.expandedButton
                         )
-                        action { close() }
+                        action {
+                            close()
+                        }
                     }
                 }
             }
@@ -332,22 +318,20 @@ class AddLoteView : Fragment() {
 
     private val productoController = find<ProductoController>()
     private val currentUncommittedLotes = find<CurrentUncommittedLotes>()
-    private val pedidoController = find<PedidoController>()
     private val model = LoteModel()
-    private val productoService = find<CustomApplicationContextWrapper>().context.getBean(ProductoService::class.java)
 
     private val maxPriceDisplay = SimpleStringProperty("Selecciona un producto")
 
     init {
         model.producto.onChange {
-            val currentProduct = productoService.repo.findByIdOrNull(it!!.id)
+            val currentProduct = productoController.findById(it!!.id!!)
 
             if (currentProduct != null) {
-                val expensiveLote = pedidoController.findMostExpensiveLoteOfProducto(currentProduct)
-                if (expensiveLote == null)
+                val precioCompra = currentProduct.precioCompraEfectivo
+                if (precioCompra == null)
                     maxPriceDisplay.value = "No hay pedidos anteriores del producto"
                 else {
-                    val res = expensiveLote.precioCompra.toString()
+                    val res = precioCompra.toString()
 
                     val split = res.split(".")
                     val integerPart = split[0]
@@ -422,7 +406,7 @@ class AddLoteView : Fragment() {
                 }
                 field("Producto") {
                     hbox(spacing = 8) {
-                        combobox<Producto>(model.producto, productoController.productos).apply {
+                        combobox<Producto>(model.producto, productoController.productos.map { it.toModel() }).apply {
                             prefWidth = 300.0
                             makeAutocompletable(false)
                         }.validator {
@@ -437,7 +421,7 @@ class AddLoteView : Fragment() {
                                 openInternalWindow<NewProductoFormView>(
                                     closeButton = false,
                                     modal = true,
-                                    params = mapOf("owner" to this)
+                                    params = mapOf("owner" to this@AddLoteView)
                                 )
                             }
                         }
@@ -454,14 +438,7 @@ class AddLoteView : Fragment() {
                     )
                     action {
                         model.commit {
-                            currentUncommittedLotes.lotes.add(
-                                Lote(
-                                    null,
-                                    model.cantidad.value.toInt(),
-                                    model.precioCompra.value.toDouble(),
-                                    model.producto.value
-                                )
-                            )
+                            currentUncommittedLotes.lotes.add(model.item)
                             close()
                         }
                     }

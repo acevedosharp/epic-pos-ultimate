@@ -1,97 +1,81 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.persistence_layer.repository_services.*
 import xyz.acevedosharp.ui_models.Lote
 import xyz.acevedosharp.ui_models.Pedido
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
-import xyz.acevedosharp.persistence_layer.entities.LoteDB
-import xyz.acevedosharp.persistence_layer.entities.PedidoDB
-import xyz.acevedosharp.persistence_layer.entities.ProductoDB
+import xyz.acevedosharp.persistence.entities.LoteDB
+import xyz.acevedosharp.persistence.entities.PedidoDB
+import xyz.acevedosharp.persistence.entities.ProductoDB
+import xyz.acevedosharp.persistence.repositories.*
 import java.sql.Timestamp
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class PedidoController : Controller(), UpdateSnapshot {
 
-    private val pedidoService = find<CustomApplicationContextWrapper>().context.getBean(PedidoService::class.java)
-    private val loteService = find<CustomApplicationContextWrapper>().context.getBean(LoteService::class.java)
-    private val proveedorService = find<CustomApplicationContextWrapper>().context.getBean(ProveedorService::class.java)
-    private val empleadoService = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoService::class.java)
-    private val productoService = find<CustomApplicationContextWrapper>().context.getBean(ProductoService::class.java)
+    private val pedidoRepo = find<CustomApplicationContextWrapper>().context.getBean(PedidoRepo::class.java)
+    private val proveedorRepo = find<CustomApplicationContextWrapper>().context.getBean(ProveedorRepo::class.java)
+    private val empleadoRepo = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoRepo::class.java)
+    private val loteRepo = find<CustomApplicationContextWrapper>().context.getBean(LoteRepo::class.java)
+    private val productoRepo = find<CustomApplicationContextWrapper>().context.getBean(ProductoRepo::class.java)
 
-    private val proveedorController = find<ProveedorController>()
-    private val empleadoController = find<EmpleadoController>()
-    private val productoController = find<ProductoController>()
-
-    val pedidos: ObservableList<Pedido> = FXCollections.observableArrayList()
-
-    init {
+    val pedidos: ObservableList<PedidoDB> = FXCollections.observableArrayList()
+    get() {
         updateSnapshot()
+        return field
     }
 
+    fun findById(id: Int) = pedidoRepo.findByIdOrNull(id)
+
     fun add(pedido: Pedido, lotes: List<Lote>) {
-        println("Now saving Pedido...")
-        val preRes = pedidoService.add(
+        val preRes = pedidoRepo.save(
             PedidoDB(
                 null,
                 Timestamp.valueOf(pedido.fechaHora),
-                proveedorService.repo.findByIdOrNull(pedido.proveedor.id)!!,
-                empleadoService.repo.findByIdOrNull(pedido.empleado.id)!!,
+                proveedorRepo.findByIdOrNull(pedido.proveedor.id)!!,
+                empleadoRepo.findByIdOrNull(pedido.empleado.id)!!,
                 setOf()
             )
         )
-        println("Successfully saved Pedido!")
+
         updateSnapshot()
 
-        println("Now saving lotes...")
-        val lotesPersist = loteService.addAll(lotes.map {
+        val productosSnapshot = productoRepo.findAll()
+
+        val lotesPersist = loteRepo.saveAll(lotes.map { lote ->
             LoteDB(
                 null,
-                it.cantidad,
-                it.precioCompra,
-                productoService.repo.findByIdOrNull(it.producto.id)!!,
+                lote.cantidad,
+                lote.precioCompra,
+                productosSnapshot.find { it.productoId == lote.producto.id }!!,
                 preRes
             )
         })
 
-        lotesPersist.forEach { currentLote ->
-            if (currentLote.producto.margen > 0.0) {
-                val expensiveLote = loteService.findMostExpensiveLoteOfProducto(currentLote.producto)
+        val productosWithNewPrice = lotesPersist.map { currentLote ->
 
-                if (expensiveLote != null) {
-                    val rawLoteSellPrice = currentLote.precioCompra / (1 - currentLote.producto.margen)
-                    val roundedLoteSellPrice = rawLoteSellPrice + (50 - (rawLoteSellPrice % 50)) // round to upper 50
-                    val originalSellPrice = currentLote.producto.precioVenta
+            val producto = currentLote.producto
 
-                    if (roundedLoteSellPrice > originalSellPrice) {
-                        val newProduct = currentLote.producto.apply {
-                            precioVenta = roundedLoteSellPrice
-                        }
-
-                        println("The price of ${newProduct.descripcionCorta} has changed from $originalSellPrice to $$roundedLoteSellPrice")
-
-                        productoService.add(newProduct)
-                    }
-                }
+            if (producto.precioCompraEfectivo == null || producto.precioCompraEfectivo!! < currentLote.precioCompra) {
+                producto.precioCompraEfectivo = currentLote.precioCompra
             }
+
+            val rawSellPrice = producto.precioCompraEfectivo!! / (1 - producto.margen)
+            val roundedSellPrice = rawSellPrice + (50 - (rawSellPrice % 50))
+            producto.precioVenta = roundedSellPrice
+
+            return@map producto
         }
+
+        productoRepo.saveAll(productosWithNewPrice)
     }
 
     override fun updateSnapshot() {
-        pedidos.setAll(
-            pedidoService.all().map { dbObject: PedidoDB ->
-                Pedido(
-                    dbObject.pedidoId,
-                    dbObject.fechaHora.toLocalDateTime(),
-                    proveedorController.proveedores.first { it.id == dbObject.proveedor.proveedorId },
-                    empleadoController.empleados.first { it.id == dbObject.empleado.empleadoId }
-                )
-            }
-        )
+        println("Triggered update snapshot for Pedido once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
+        pedidos.setAll(pedidoRepo.findAll())
     }
-
-    fun findMostExpensiveLoteOfProducto(productoDB: ProductoDB) = loteService.findMostExpensiveLoteOfProducto(productoDB)
-
 }

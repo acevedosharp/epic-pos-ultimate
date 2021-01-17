@@ -8,8 +8,8 @@ import xyz.acevedosharp.views.helpers.FormType.*
 import xyz.acevedosharp.views.helpers.CurrentModule.*
 import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.shared_components.SideNavigation
-import xyz.acevedosharp.views.UnknownErrorDialog
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.*
@@ -17,14 +17,15 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*
 import xyz.acevedosharp.Joe
+import xyz.acevedosharp.persistence.entities.ProveedorDB
 
 class ProveedorView : View("Módulo de proveedores") {
 
     private val proveedorController = find<ProveedorController>()
-    private val model: ProveedorModel by inject()
+    private val selectedId = SimpleIntegerProperty()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty("")
-    private var table: TableView<Proveedor> by singleAssign()
+    private var table: TableView<ProveedorDB> by singleAssign()
     private val view = this
 
     init {
@@ -37,7 +38,6 @@ class ProveedorView : View("Módulo de proveedores") {
         }
 
         proveedorController.proveedores.onChange {
-            // force refresh
             table.items = proveedorController.proveedores.filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
@@ -71,7 +71,10 @@ class ProveedorView : View("Módulo de proveedores") {
                             openInternalWindow<EditProveedorFormView>(
                                 closeButton = false,
                                 modal = true,
-                                params = mapOf("owner" to view)
+                                params = mapOf(
+                                    "id" to selectedId.value,
+                                    "owner" to view
+                                )
                             )
                         }
                     }
@@ -94,17 +97,19 @@ class ProveedorView : View("Módulo de proveedores") {
             center {
                 hbox {
                     table = tableview(proveedorController.proveedores) {
-                        column("Nombre", Proveedor::nombreProperty)
-                        column("Teléfono", Proveedor::telefonoProperty)
-                        column("Correo", Proveedor::correoProperty)
-                        column("Dirección", Proveedor::direccionProperty).remainingWidth()
+                        column("Nombre", ProveedorDB::nombre)
+                        column("Teléfono", ProveedorDB::telefono)
+                        column("Correo", ProveedorDB::correo)
+                        column("Dirección", ProveedorDB::direccion).remainingWidth()
 
                         smartResize()
 
-                        bindSelected(model)
                         selectionModel.selectedItemProperty().onChange {
                             existsSelection.value = it != null
-                            model.id.value = it?.id
+
+                            if (it != null) {
+                                selectedId.set(it.proveedorId!!)
+                            }
                         }
 
                         hgrow = Priority.ALWAYS
@@ -123,10 +128,21 @@ class ProveedorView : View("Módulo de proveedores") {
     }
 }
 
-class BaseProveedorFormView(formType: FormType) : Fragment() {
+class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
 
     private val proveedorController = find<ProveedorController>()
-    private val model = if (formType == CREATE) ProveedorModel() else find(ProveedorModel::class)
+    private val model = if (formType == CREATE)
+        ProveedorModel()
+    else
+        ProveedorModel().apply {
+            val proveedor = proveedorController.findById(id!!)!!.toModel()
+
+            this.id.value = proveedor.id
+            this.nombre.value = proveedor.nombre
+            this.telefono.value = proveedor.telefono
+            this.direccion.value = proveedor.direccion
+            this.correo.value = proveedor.correo
+        }
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
@@ -139,7 +155,7 @@ class BaseProveedorFormView(formType: FormType) : Fragment() {
         form {
             fieldset {
                 field("Nombre") {
-                    textfield(model.nombre).validator {
+                    textfield(model.nombre).validator(trigger = ValidationTrigger.OnBlur) {
                         when {
                             if (formType == CREATE) proveedorController.isNombreAvailable(it.toString())
                             else proveedorController.existsOtherWithNombre(it.toString(), model.id.value)
@@ -151,7 +167,7 @@ class BaseProveedorFormView(formType: FormType) : Fragment() {
                     }
                 }
                 field("Teléfono") {
-                    textfield(model.telefono).validator {
+                    textfield(model.telefono).validator(trigger = ValidationTrigger.OnBlur) {
                         when {
                             if (formType == CREATE) proveedorController.isTelefonoAvailable(it.toString())
                             else proveedorController.existsOtherWithTelefono(it.toString(), model.id.value)
@@ -163,7 +179,7 @@ class BaseProveedorFormView(formType: FormType) : Fragment() {
                     }
                 }
                 field("Correo") {
-                    textfield(model.correo).validator {
+                    textfield(model.correo).validator(trigger = ValidationTrigger.OnBlur) {
                         when {
                             if (formType == CREATE) !it.isNullOrBlank() && proveedorController.isCorreoAvailable(it.toString())
                             else !it.isNullOrBlank() && proveedorController.existsOtherWithCorreo(it.toString(), model.id.value)
@@ -174,7 +190,7 @@ class BaseProveedorFormView(formType: FormType) : Fragment() {
                     }
                 }
                 field("Dirección") {
-                    textfield(model.direccion).validator {
+                    textfield(model.direccion).validator(trigger = ValidationTrigger.OnBlur) {
                         when {
                             !it.isNullOrBlank() && it.length > 100 -> error("Máximo 100 caracteres (${it.length})")
                             else -> null
@@ -185,36 +201,16 @@ class BaseProveedorFormView(formType: FormType) : Fragment() {
                     button("Aceptar") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
-                            if (formType == CREATE) {
-                                model.commit {
-                                    proveedorController.add(
-                                        Proveedor(
-                                            null,
-                                            model.nombre.value,
-                                            model.telefono.value,
-                                            model.direccion.value,
-                                            model.correo.value
-                                        )
-                                    )
-                                    close()
-                                }
-                            } else {
-                                model.commit {
-                                    proveedorController.edit(model.item)
-                                    close()
-                                }
+                            model.commit {
+                                proveedorController.save(model.item)
+                                close()
                             }
                         }
                     }
                     button("Cancelar") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
                         action {
-                            if (formType == CREATE) {
-                                close()
-                            } else {
-                                model.rollback()
-                                close()
-                            }
+                            close()
                         }
                     }
                 }
@@ -223,9 +219,9 @@ class BaseProveedorFormView(formType: FormType) : Fragment() {
     }
 }
 
-// 1. These com.acevedosharp.views need to be accesible from anywhere so that they can be used in other modules for convenience.
+
 class NewProveedorFormView : Fragment() {
-    override val root = BaseProveedorFormView(CREATE).root
+    override val root = BaseProveedorFormView(CREATE, null).root
 
     override fun onDock() {
         Joe.currentView = this
@@ -239,7 +235,7 @@ class NewProveedorFormView : Fragment() {
 }
 
 class EditProveedorFormView : Fragment() {
-    override val root = BaseProveedorFormView(EDIT).root
+    override val root = BaseProveedorFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
         Joe.currentView = this

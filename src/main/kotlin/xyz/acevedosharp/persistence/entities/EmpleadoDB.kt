@@ -1,5 +1,6 @@
-package xyz.acevedosharp.persistence_layer.entities
+package xyz.acevedosharp.persistence.entities
 
+import xyz.acevedosharp.ui_models.Empleado
 import javax.persistence.*
 
 @Entity
@@ -14,4 +15,10 @@ class EmpleadoDB (
 
     @Column(name = "telefono")
     var telefono: String
-)
+) {
+    fun toModel() = Empleado(
+        empleadoId,
+        nombre,
+        telefono
+    )
+}

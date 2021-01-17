@@ -1,37 +1,29 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.persistence_layer.repository_services.ProveedorService
 import javafx.collections.FXCollections
 import xyz.acevedosharp.ui_models.Proveedor
 import javafx.collections.ObservableList
+import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
-import xyz.acevedosharp.persistence_layer.entities.ProveedorDB
+import xyz.acevedosharp.persistence.entities.ProveedorDB
+import xyz.acevedosharp.persistence.repositories.ProveedorRepo
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class ProveedorController : Controller(), UpdateSnapshot {
-    private val proveedorService = find<CustomApplicationContextWrapper>().context.getBean(ProveedorService::class.java)
+    private val proveedorRepo = find<CustomApplicationContextWrapper>().context.getBean(ProveedorRepo::class.java)
 
-    val proveedores: ObservableList<Proveedor> = FXCollections.observableArrayList()
-
-    init {
+    val proveedores: ObservableList<ProveedorDB> = FXCollections.observableArrayList()
+    get() {
         updateSnapshot()
+        return field
     }
 
-    fun add(proveedor: Proveedor) {
-        proveedorService.add(
-            ProveedorDB(
-                null,
-                proveedor.nombre,
-                proveedor.telefono,
-                proveedor.correo,
-                proveedor.direccion
-            )
-        )
-        updateSnapshot()
-    }
+    fun findById(id: Int) = proveedorRepo.findByIdOrNull(id)
 
-    fun edit(proveedor: Proveedor) {
-        proveedorService.edit(
+    fun save(proveedor: Proveedor) {
+        proveedorRepo.save(
             ProveedorDB(
                 proveedor.id,
                 proveedor.nombre,
@@ -43,32 +35,32 @@ class ProveedorController : Controller(), UpdateSnapshot {
         updateSnapshot()
     }
 
-    fun isNombreAvailable(nombre: String): Boolean = proveedorService.repo.existsByNombre(nombre)
+    fun isNombreAvailable(nombre: String): Boolean {
+        return proveedorRepo.existsByNombre(nombre)
+    }
+
     fun existsOtherWithNombre(nombre: String, id: Int): Boolean {
-        return proveedorService.repo.existsByNombre(nombre) && (proveedorService.repo.findByNombre(nombre).proveedorId != id)
+        return proveedorRepo.existsByNombre(nombre) && (proveedorRepo.findByNombre(nombre).proveedorId != id)
     }
 
-    fun isTelefonoAvailable(telefono: String): Boolean = proveedorService.repo.existsByTelefono(telefono)
+    fun isTelefonoAvailable(telefono: String): Boolean {
+        return proveedorRepo.existsByTelefono(telefono)
+    }
+
     fun existsOtherWithTelefono(telefono: String, id: Int): Boolean {
-        return proveedorService.repo.existsByTelefono(telefono) && (proveedorService.repo.findByTelefono(telefono).proveedorId != id)
+        return proveedorRepo.existsByTelefono(telefono) && (proveedorRepo.findByTelefono(telefono).proveedorId != id)
     }
 
-    fun isCorreoAvailable(correo: String): Boolean = proveedorService.repo.existsByCorreo(correo)
+    fun isCorreoAvailable(correo: String): Boolean {
+        return proveedorRepo.existsByCorreo(correo)
+    }
+
     fun existsOtherWithCorreo(correo: String, id: Int): Boolean {
-        return proveedorService.repo.existsByCorreo(correo) && (proveedorService.repo.findByCorreo(correo).proveedorId != id)
+        return proveedorRepo.existsByCorreo(correo) && (proveedorRepo.findByCorreo(correo).proveedorId != id)
     }
 
     override fun updateSnapshot() {
-        proveedores.setAll(
-            proveedorService.all().map {
-                Proveedor(
-                    it.proveedorId,
-                    it.nombre,
-                    it.telefono,
-                    it.direccion,
-                    it.correo
-                )
-            }
-        )
+        println("Triggered update snapshot for Proveedor once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
+        proveedores.setAll(proveedorRepo.findAll())
     }
 }

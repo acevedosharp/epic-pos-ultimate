@@ -1,37 +1,25 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.persistence_layer.repository_services.FamiliaService
 import xyz.acevedosharp.ui_models.Familia
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import javafx.scene.Parent
+import org.springframework.data.repository.findByIdOrNull
 import tornadofx.*
-import xyz.acevedosharp.persistence_layer.entities.FamiliaDB
-import xyz.acevedosharp.views.NoInternetConnectionErrorDialog
+import xyz.acevedosharp.persistence.entities.FamiliaDB
+import xyz.acevedosharp.persistence.repositories.FamiliaRepo
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class FamiliaController: Controller(), UpdateSnapshot {
-    private val familiaService =
-        find<CustomApplicationContextWrapper>().context.getBean(FamiliaService::class.java)
+    private val familiaRepo = find<CustomApplicationContextWrapper>().context.getBean(FamiliaRepo::class.java)
 
-    val familias: ObservableList<Familia> = FXCollections.observableArrayList()
+    val familias: ObservableList<FamiliaDB> = FXCollections.observableArrayList()
 
-    init {
-        updateSnapshot()
-    }
+    fun findById(id: Int) = familiaRepo.findByIdOrNull(id)
 
-    fun add(familia: Familia) {
-        familiaService.add(
-            FamiliaDB(
-                null,
-                familia.nombre
-            )
-        )
-        updateSnapshot()
-    }
-
-    fun edit(familia: Familia) {
-        familiaService.edit(
+    fun save(familia: Familia) {
+        familiaRepo.save(
             FamiliaDB(
                 familia.id,
                 familia.nombre
@@ -40,22 +28,15 @@ class FamiliaController: Controller(), UpdateSnapshot {
         updateSnapshot()
     }
 
-
     fun isNombreAvailable(nombre: String): Boolean {
-        return familiaService.repo.existsByNombre(nombre)
+        return familiaRepo.existsByNombre(nombre)
     }
     fun existsOtherWithNombre(nombre: String, id: Int): Boolean {
-        return familiaService.repo.existsByNombre(nombre) && (familiaService.repo.findByNombre(nombre).familiaId != id)
+        return familiaRepo.existsByNombre(nombre) && (familiaRepo.findByNombre(nombre).familiaId != id)
     }
 
     override fun updateSnapshot() {
-        familias.setAll(
-            familiaService.all().map {
-                Familia(
-                    it.familiaId,
-                    it.nombre
-                )
-            }
-        )
+        println("Triggered update snapshot for Familia once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
+        familias.setAll(familiaRepo.findAll())
     }
 }
