@@ -33,6 +33,9 @@ import javafx.scene.text.TextAlignment
 import javafx.util.Duration
 import tornadofx.*
 import xyz.acevedosharp.Joe
+import xyz.acevedosharp.persistence.entities.ClienteDB
+import xyz.acevedosharp.persistence.entities.EmpleadoDB
+import xyz.acevedosharp.persistence.entities.ProductoDB
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
@@ -53,7 +56,7 @@ class PuntoDeVentaView : View("Punto de venta") {
 
     private lateinit var currentCodigoTextField: TextField
 
-    init {
+    override fun onDock() {
         Joe.currentView = view
 
         valorTotal.onChange { valorTotalRoundedAndFormatted.value = NumberFormat.getIntegerInstance().format(it.roundToInt()) }
@@ -66,6 +69,10 @@ class PuntoDeVentaView : View("Punto de venta") {
         }
         uncommittedItems.setAll(uncommittedItemsAsViews.map { it.root })
 
+        super.onDock()
+    }
+
+    init {
         // Let's hope the scene doesn't take longer than this to load - probably not, 650ms is a lot of time
         runLater(Duration.millis(650.0)) {
             currentCodigoTextField.requestFocus()
@@ -154,11 +161,11 @@ class PuntoDeVentaView : View("Punto de venta") {
                             if (currentCodigo.value in uncommittedItemsAsViews.map { it.producto.codigo }) {
                                 val res = uncommittedItemsAsViews.find { it.producto.codigo == currentCodigo.value }!!
                                 res.cantidad.set(res.cantidad.value + 1)
-                            } else if (currentCodigo.value in productoController.productos.map { it.codigo }) {
+                            } else if (currentCodigo.value in productoController.getProductosWithUpdate().map { it.codigo }) {
                                 uncommittedItemsAsViews.add(
                                     ItemVentaComponent(
                                         UncommittedItemVenta(
-                                            productoController.findByCodigo(currentCodigo.value).toModel(),
+                                            productoController.findByCodigo(currentCodigo.value),
                                             1
                                         ),
                                         uncommittedItemsAsViews,
@@ -463,7 +470,7 @@ class CreateItemVentaManuallyForm : Fragment() {
         form {
             fieldset {
                 field("Producto") {
-                    combobox<Producto>(model.producto, productoController.productos.map { it.toModel() }).apply {
+                    combobox<ProductoDB>(model.producto, productoController.getProductosWithUpdate()).apply {
                         prefWidth = 400.0
                         makeAutocompletable(false)
                     }.validator {
@@ -499,7 +506,10 @@ class CreateItemVentaManuallyForm : Fragment() {
                             model.commit {
                                 uncommittedItemsAsViews.add(
                                     ItemVentaComponent(
-                                        UncommittedItemVenta(model.producto.value, model.cantidad.value.toInt()),
+                                        UncommittedItemVenta(
+                                            model.producto.value,
+                                            model.cantidad.value.toInt()
+                                        ),
                                         uncommittedItemsAsViews,
                                         uncommittedItemsAsViews.size
                                     )
@@ -529,6 +539,7 @@ class CommitVenta : Fragment() {
     private val empleadoController = find<EmpleadoController>()
     private val clienteController = find<ClienteController>()
     private val ventaController = find<VentaController>()
+    private val productoController = find<ProductoController>()
     private val model = VentaModel()
 
     @Suppress("UNCHECKED_CAST")
@@ -563,7 +574,7 @@ class CommitVenta : Fragment() {
         form {
             fieldset {
                 field("Empleado") {
-                    combobox<Empleado>(model.empleado, empleadoController.empleados.map { it.toModel() }).apply {
+                    combobox<EmpleadoDB>(model.empleado, empleadoController.getEmpleadosWithUpdate()).apply {
                         prefWidth = 400.0
                         makeAutocompletable(false)
                     }.validator {
@@ -574,7 +585,7 @@ class CommitVenta : Fragment() {
                     }
                 }
                 field("Cliente") {
-                    combobox<Cliente>(model.cliente, clienteController.clientes.map { it.toModel() }).apply {
+                    combobox<ClienteDB>(model.cliente, clienteController.getClientesWithUpdate()).apply {
                         prefWidth = 400.0
                         makeAutocompletable(false)
                     }.validator {

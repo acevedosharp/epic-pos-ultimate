@@ -27,6 +27,6 @@ class LoteDB(
         loteId,
         cantidad,
         precioCompra,
-        producto.toModel()
+        producto
     )
 }

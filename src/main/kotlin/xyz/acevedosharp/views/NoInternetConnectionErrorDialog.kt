@@ -12,7 +12,8 @@ class NoInternetConnectionErrorDialog : Fragment() {
             addClass(MainStylesheet.titleLabel)
             addClass(MainStylesheet.redLabel)
         }
-        label("Por favor cambie de red y vuelva a intentar. Si sí tiene internet comuníquese con 302 217 5285.").style {
+        text("Por favor cambie de red y vuelva a intentar. Si sí tiene internet comuníquese con 302 217 5285.").style {
+            wrapText = true
             padding = box(vertical = 30.px, horizontal = 5.px)
         }
         hbox(spacing = 80, alignment = Pos.CENTER) {

@@ -20,9 +20,7 @@ import javafx.scene.paint.Color
 import tornadofx.*
 import tornadofx.control.DateTimePicker
 import xyz.acevedosharp.Joe
-import xyz.acevedosharp.persistence.entities.LoteDB
-import xyz.acevedosharp.persistence.entities.PedidoDB
-import xyz.acevedosharp.persistence.entities.ProveedorDB
+import xyz.acevedosharp.persistence.entities.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -32,25 +30,27 @@ class PedidoView : View("Módulo de pedidos") {
     private val proveedorController = find<ProveedorController>()
 
     private val items: ObservableList<Node> = FXCollections.observableArrayList(
-        pedidoController.pedidos.sortedByDescending { it.fechaHora }.map { PedidoDisplay(it.toModel(), this).root }
+        pedidoController.getPedidosWithUpdate().sortedByDescending { it.fechaHora }.map { PedidoDisplay(it.toModel(), this).root }
     )
     private var provComboBox by singleAssign<ComboBox<ProveedorDB>>()
     private val searchByProveedor = SimpleObjectProperty<ProveedorDB>()
     private val view = this
 
-    init {
+    override fun onDock() {
         Joe.currentView = view
 
-        pedidoController.pedidos.onChange {
-            items.setAll(pedidoController.pedidos.sortedByDescending { it.fechaHora }.map { PedidoDisplay(it.toModel(), this).root })
+        pedidoController.getPedidosClean().onChange {
+            items.setAll(pedidoController.getPedidosClean().sortedByDescending { it.fechaHora }.map { PedidoDisplay(it.toModel(), this).root })
         }
         searchByProveedor.onChange { selectedItem ->
             if (selectedItem == null)
-                items.setAll(pedidoController.pedidos.sortedBy { it.fechaHora }.map { PedidoDisplay(it.toModel(), this).root })
+                items.setAll(pedidoController.getPedidosClean().sortedBy { it.fechaHora }.map { PedidoDisplay(it.toModel(), this).root })
             else
-                items.setAll(pedidoController.pedidos.filter { it.proveedor == selectedItem }.sortedBy { it.fechaHora }
+                items.setAll(pedidoController.getPedidosClean().filter { it.proveedor == selectedItem }.sortedBy { it.fechaHora }
                     .map { PedidoDisplay(it.toModel(), this).root })
         }
+
+        super.onDock()
     }
 
     override val root = hbox {
@@ -81,7 +81,7 @@ class PedidoView : View("Módulo de pedidos") {
                     hbox(spacing = 10, alignment = Pos.CENTER) {
                         vbox {
                             label("Buscar por proveedor").apply { addClass(MainStylesheet.searchLabel) }
-                            provComboBox = combobox(searchByProveedor, proveedorController.proveedores) {
+                            provComboBox = combobox(searchByProveedor, proveedorController.getProveedoresWithUpdate()) {
                                 prefWidth = 400.0
                                 makeAutocompletable(false)
                             }
@@ -155,7 +155,7 @@ class NewPedidoFormView : Fragment() {
                 }
                 field("Proveedor") {
                     hbox(spacing = 8) {
-                        combobox<Proveedor>(model.proveedor, proveedorController.proveedores.map { it.toModel() }).apply {
+                        combobox<ProveedorDB>(model.proveedor, proveedorController.getProveedoresClean()).apply {
                             prefWidth = 300.0
                             makeAutocompletable(false)
                         }.validator(trigger = ValidationTrigger.OnBlur) {
@@ -178,7 +178,7 @@ class NewPedidoFormView : Fragment() {
                 }
                 field("Empleado") {
                     hbox(spacing = 8) {
-                        combobox<Empleado>(model.empleado, empleadoController.empleados.map { it.toModel() }).apply {
+                        combobox<EmpleadoDB>(model.empleado, empleadoController.getEmpleadosWithUpdate()).apply {
                             prefWidth = 300.0
                             makeAutocompletable(false)
                         }.validator {
@@ -233,7 +233,12 @@ class NewPedidoFormView : Fragment() {
                         action {
                             model.commit {
                                 pedidoController.add(
-                                    model.item,
+                                    Pedido(
+                                        null,
+                                        model.fechaHora.value,
+                                        model.proveedor.value,
+                                        model.empleado.value
+                                    ),
                                     currentUncommittedLotes.lotes
                                 )
                                 currentUncommittedLotes.lotes.clear()
@@ -324,11 +329,11 @@ class AddLoteView : Fragment() {
 
     init {
         model.producto.onChange {
-            val currentProduct = productoController.findById(it!!.id!!)
+            val currentProduct = productoController.findById(it!!.productoId!!)
 
             if (currentProduct != null) {
                 val precioCompra = currentProduct.precioCompraEfectivo
-                if (precioCompra == null)
+                if (precioCompra == 0.0)
                     maxPriceDisplay.value = "No hay pedidos anteriores del producto"
                 else {
                     val res = precioCompra.toString()
@@ -406,7 +411,7 @@ class AddLoteView : Fragment() {
                 }
                 field("Producto") {
                     hbox(spacing = 8) {
-                        combobox<Producto>(model.producto, productoController.productos.map { it.toModel() }).apply {
+                        combobox<ProductoDB>(model.producto, productoController.getProductosWithUpdate()).apply {
                             prefWidth = 300.0
                             makeAutocompletable(false)
                         }.validator {
@@ -438,7 +443,14 @@ class AddLoteView : Fragment() {
                     )
                     action {
                         model.commit {
-                            currentUncommittedLotes.lotes.add(model.item)
+                            currentUncommittedLotes.lotes.add(
+                                Lote(
+                                    null,
+                                    model.cantidad.value,
+                                    model.precioCompra.value,
+                                    model.producto.value
+                                )
+                            )
                             close()
                         }
                     }

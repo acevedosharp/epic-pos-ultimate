@@ -3,14 +3,12 @@ package xyz.acevedosharp.views.screens
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
-import javafx.scene.control.TableView
 import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import tornadofx.*
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.controllers.ProductoController
 import xyz.acevedosharp.controllers.ReportesController
-import xyz.acevedosharp.ui_models.Cliente
 import xyz.acevedosharp.ui_models.Producto
 import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.helpers.CurrentModule.REPORTES
@@ -33,7 +31,7 @@ class ReporteScreen : View("Módulo de Reportes") {
     private val endDate = SimpleStringProperty("")
     private val endDates = FXCollections.observableArrayList<String>()
 
-    init {
+    override fun onDock() {
         Joe.currentView = view
 
         reportType.onChange { currentValue ->
@@ -43,6 +41,8 @@ class ReporteScreen : View("Módulo de Reportes") {
         startDate.onChange { currentValue ->
             endDates.setAll( reportesController.getEndDates(reportType.value, currentValue!!) )
         }
+
+        super.onDock()
     }
 
     override val root = hbox {
@@ -82,7 +82,7 @@ class ReporteScreen : View("Módulo de Reportes") {
                         label("Selecciona un producto").apply { addClass(MainStylesheet.searchLabel) }
                         combobox<Producto>(
                             property = selectedProduct,
-                            values = productoController.productos.map { it.toModel() }
+                            values = productoController.getProductosWithUpdate().map { it.toModel() }
                         ) {
                             prefWidth = 400.0
                             makeAutocompletable(true)

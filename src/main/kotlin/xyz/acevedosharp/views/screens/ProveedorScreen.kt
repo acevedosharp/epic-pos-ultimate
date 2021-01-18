@@ -28,20 +28,22 @@ class ProveedorView : View("Módulo de proveedores") {
     private var table: TableView<ProveedorDB> by singleAssign()
     private val view = this
 
-    init {
+    override fun onDock() {
         Joe.currentView = view
 
         searchByNombre.onChange {
-            table.items = proveedorController.proveedores.filter {
+            table.items = proveedorController.getProveedoresClean().filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
 
-        proveedorController.proveedores.onChange {
-            table.items = proveedorController.proveedores.filter {
+        proveedorController.getProveedoresClean().onChange {
+            table.items = proveedorController.getProveedoresClean().filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
+
+        super.onDock()
     }
 
     override val root = hbox {
@@ -96,7 +98,7 @@ class ProveedorView : View("Módulo de proveedores") {
 
             center {
                 hbox {
-                    table = tableview(proveedorController.proveedores) {
+                    table = tableview(proveedorController.getProveedoresWithUpdate()) {
                         column("Nombre", ProveedorDB::nombre)
                         column("Teléfono", ProveedorDB::telefono)
                         column("Correo", ProveedorDB::correo)
@@ -135,9 +137,9 @@ class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
         ProveedorModel()
     else
         ProveedorModel().apply {
-            val proveedor = proveedorController.findById(id!!)!!.toModel()
+            val proveedor = proveedorController.findById(id!!)!!
 
-            this.id.value = proveedor.id
+            this.id.value = proveedor.proveedorId
             this.nombre.value = proveedor.nombre
             this.telefono.value = proveedor.telefono
             this.direccion.value = proveedor.direccion
@@ -202,7 +204,15 @@ class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
                             model.commit {
-                                proveedorController.save(model.item)
+                                proveedorController.save(
+                                    Proveedor(
+                                        if (formType == CREATE) null else model.id.value,
+                                        model.nombre.value,
+                                        model.telefono.value,
+                                        model.direccion.value,
+                                        model.correo.value
+                                    )
+                                )
                                 close()
                             }
                         }

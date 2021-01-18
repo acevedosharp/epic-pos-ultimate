@@ -6,65 +6,69 @@ import xyz.acevedosharp.ui_models.Pedido
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.transaction.annotation.Transactional
 import tornadofx.Controller
 import xyz.acevedosharp.persistence.entities.LoteDB
 import xyz.acevedosharp.persistence.entities.PedidoDB
-import xyz.acevedosharp.persistence.entities.ProductoDB
 import xyz.acevedosharp.persistence.repositories.*
 import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class PedidoController : Controller(), UpdateSnapshot {
+open class PedidoController : Controller(), UpdateSnapshot {
 
     private val pedidoRepo = find<CustomApplicationContextWrapper>().context.getBean(PedidoRepo::class.java)
-    private val proveedorRepo = find<CustomApplicationContextWrapper>().context.getBean(ProveedorRepo::class.java)
-    private val empleadoRepo = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoRepo::class.java)
     private val loteRepo = find<CustomApplicationContextWrapper>().context.getBean(LoteRepo::class.java)
     private val productoRepo = find<CustomApplicationContextWrapper>().context.getBean(ProductoRepo::class.java)
 
-    val pedidos: ObservableList<PedidoDB> = FXCollections.observableArrayList()
-    get() {
+    private val pedidos: ObservableList<PedidoDB> = FXCollections.observableArrayList()
+
+    fun getPedidosWithUpdate(): ObservableList<PedidoDB> {
         updateSnapshot()
-        return field
+        return pedidos
+    }
+
+    fun getPedidosClean(): ObservableList<PedidoDB> {
+        return pedidos
     }
 
     fun findById(id: Int) = pedidoRepo.findByIdOrNull(id)
 
-    fun add(pedido: Pedido, lotes: List<Lote>) {
+    @Transactional
+    open fun add(pedido: Pedido, lotes: List<Lote>) {
         val preRes = pedidoRepo.save(
             PedidoDB(
                 null,
                 Timestamp.valueOf(pedido.fechaHora),
-                proveedorRepo.findByIdOrNull(pedido.proveedor.id)!!,
-                empleadoRepo.findByIdOrNull(pedido.empleado.id)!!,
+                pedido.proveedor,
+                pedido.empleado,
                 setOf()
             )
         )
 
         updateSnapshot()
 
-        val productosSnapshot = productoRepo.findAll()
-
         val lotesPersist = loteRepo.saveAll(lotes.map { lote ->
             LoteDB(
                 null,
                 lote.cantidad,
                 lote.precioCompra,
-                productosSnapshot.find { it.productoId == lote.producto.id }!!,
+                lote.producto,
                 preRes
             )
         })
 
+        // update prices and existencias of producto
         val productosWithNewPrice = lotesPersist.map { currentLote ->
-
             val producto = currentLote.producto
 
-            if (producto.precioCompraEfectivo == null || producto.precioCompraEfectivo!! < currentLote.precioCompra) {
+            producto.existencias += currentLote.cantidad
+
+            if (producto.precioCompraEfectivo == 0.0 || producto.precioCompraEfectivo < currentLote.precioCompra) {
                 producto.precioCompraEfectivo = currentLote.precioCompra
             }
 
-            val rawSellPrice = producto.precioCompraEfectivo!! / (1 - producto.margen)
+            val rawSellPrice = producto.precioCompraEfectivo / (1 - (producto.margen/100))
             val roundedSellPrice = rawSellPrice + (50 - (rawSellPrice % 50))
             producto.precioVenta = roundedSellPrice
 

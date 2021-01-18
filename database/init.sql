@@ -29,7 +29,7 @@ create table producto
     margen                 double               not null,
     existencias            int                  not null,
     activo                 tinyint(1) default 1 not null,
-    familia                int                  null,
+    familia                int                  not null,
     constraint producto_codigo_uindex
         unique (codigo),
     constraint producto_desc_corta_uindex
@@ -161,25 +161,3 @@ create table item_venta
             on update cascade
 );
 
-
-# ======================== parse lote and add existencias to producto ========================
-create trigger lote_existencias_producto_trg
-    after insert
-    on epic.lote
-    for each row
-begin
-    update producto
-    set existencias = existencias + new.cantidad
-    where producto_id = new.producto;
-end;
-
-# ======================== parse item_venta and subtract existencias to producto ========================
-create trigger item_venta_existencias_producto_trg
-    after insert
-    on epic.item_venta
-    for each row
-begin
-    update producto
-    set existencias = existencias - new.cantidad
-    where producto_id = new.producto;
-end;

@@ -15,9 +15,17 @@ import java.time.format.DateTimeFormatter
 class ProductoController : Controller(), UpdateSnapshot {
 
     private val productoRepo = find<CustomApplicationContextWrapper>().context.getBean(ProductoRepo::class.java)
-    private val familiaRepo = find<CustomApplicationContextWrapper>().context.getBean(FamiliaRepo::class.java)
 
-    val productos: ObservableList<ProductoDB> = FXCollections.observableArrayList()
+    private val productos: ObservableList<ProductoDB> = FXCollections.observableArrayList()
+
+    fun getProductosWithUpdate(): ObservableList<ProductoDB> {
+        updateSnapshot()
+        return productos
+    }
+
+    fun getProductosClean(): ObservableList<ProductoDB> {
+        return productos
+    }
 
     fun findById(id: Int) = productoRepo.findByIdOrNull(id)
     fun findByCodigo(barCode: String) = productoRepo.findByCodigo(barCode)
@@ -33,7 +41,7 @@ class ProductoController : Controller(), UpdateSnapshot {
                 producto.precioVenta,
                 producto.precioCompraEfectivo,
                 producto.margen,
-                if (producto.familia == null) null else familiaRepo.findByIdOrNull(producto.familia.id)
+                producto.familia
             )
         )
         updateSnapshot()

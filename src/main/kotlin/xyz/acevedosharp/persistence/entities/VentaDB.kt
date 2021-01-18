@@ -35,7 +35,7 @@ class VentaDB(
         fechaHora.toLocalDateTime(),
         precioTotal,
         pagoRecibido,
-        empleado.toModel(),
-        cliente.toModel()
+        empleado,
+        cliente
     )
 }

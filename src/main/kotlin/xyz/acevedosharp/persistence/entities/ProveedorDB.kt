@@ -30,4 +30,6 @@ class ProveedorDB(
         direccion,
         correo
     )
+
+    override fun toString() = nombre
 }

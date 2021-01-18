@@ -14,7 +14,16 @@ import java.time.format.DateTimeFormatter
 class FamiliaController: Controller(), UpdateSnapshot {
     private val familiaRepo = find<CustomApplicationContextWrapper>().context.getBean(FamiliaRepo::class.java)
 
-    val familias: ObservableList<FamiliaDB> = FXCollections.observableArrayList()
+    private val familias: ObservableList<FamiliaDB> = FXCollections.observableArrayList()
+
+    fun getFamiliasWithUpdate(): ObservableList<FamiliaDB> {
+        updateSnapshot()
+        return familias
+    }
+
+    fun getFamiliasClean(): ObservableList<FamiliaDB> {
+        return familias
+    }
 
     fun findById(id: Int) = familiaRepo.findByIdOrNull(id)
 

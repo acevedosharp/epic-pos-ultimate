@@ -14,10 +14,15 @@ import java.time.format.DateTimeFormatter
 class ProveedorController : Controller(), UpdateSnapshot {
     private val proveedorRepo = find<CustomApplicationContextWrapper>().context.getBean(ProveedorRepo::class.java)
 
-    val proveedores: ObservableList<ProveedorDB> = FXCollections.observableArrayList()
-    get() {
+    private val proveedores: ObservableList<ProveedorDB> = FXCollections.observableArrayList()
+
+    fun getProveedoresWithUpdate(): ObservableList<ProveedorDB> {
         updateSnapshot()
-        return field
+        return proveedores
+    }
+
+    fun getProveedoresClean(): ObservableList<ProveedorDB> {
+        return proveedores
     }
 
     fun findById(id: Int) = proveedorRepo.findByIdOrNull(id)

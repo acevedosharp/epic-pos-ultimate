@@ -32,7 +32,7 @@ class ItemVentaComponent(uncommittedItemVenta: UncommittedItemVenta, observableL
             stackpane {
                 alignment = Pos.CENTER_LEFT
                 rectangle(width = 720, height = 46) { fill = c(255, 255, 255, 0.0)}
-                label(producto.descLarga).style {
+                label(producto.descripcionLarga).style {
                     prefWidth = 715.px
                     fontSize = 26.px
                     fontWeight = FontWeight.BOLD
@@ -60,7 +60,7 @@ class ItemVentaComponent(uncommittedItemVenta: UncommittedItemVenta, observableL
             stackpane {
                 alignment = Pos.CENTER_LEFT
                 rectangle(width = 170, height = 64) { fill = c(255, 255, 255, 0.0)}
-                label(producto.precioVentaProperty).style {
+                label(producto.precioVenta.toString()).style {
                     prefWidth = 165.px
                     fontSize = 26.px
                     fontWeight = FontWeight.BOLD

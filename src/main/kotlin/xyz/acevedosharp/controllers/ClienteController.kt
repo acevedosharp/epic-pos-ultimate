@@ -14,10 +14,15 @@ import java.time.format.DateTimeFormatter
 class ClienteController : Controller(), UpdateSnapshot {
     private val clienteRepo = find<CustomApplicationContextWrapper>().context.getBean(ClienteRepo::class.java)
 
-    val clientes: ObservableList<ClienteDB> = FXCollections.observableArrayList()
-    get() {
+    private val clientes: ObservableList<ClienteDB> = FXCollections.observableArrayList()
+
+    fun getClientesWithUpdate(): ObservableList<ClienteDB> {
         updateSnapshot()
-        return field
+        return clientes
+    }
+
+    fun getClientesClean(): ObservableList<ClienteDB> {
+        return clientes
     }
 
     fun findById(id: Int) = clienteRepo.findByIdOrNull(id)

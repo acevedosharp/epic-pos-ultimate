@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package xyz.acevedosharp.controllers
 
 import javafx.beans.property.SimpleDoubleProperty

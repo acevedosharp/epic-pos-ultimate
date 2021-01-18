@@ -27,20 +27,22 @@ class ClienteView : View("Módulo de clientes") {
     private var table: TableView<ClienteDB> by singleAssign()
     private val view = this
 
-    init {
+    override fun onDock() {
         Joe.currentView = view
 
         searchByNombre.onChange {
-            table.items = clienteController.clientes.filter {
+            table.items = clienteController.getClientesClean().filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
 
-        clienteController.clientes.onChange {
-            table.items = clienteController.clientes.filter {
+        clienteController.getClientesWithUpdate().onChange {
+            table.items = clienteController.getClientesClean().filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
+
+        super.onDock()
     }
 
     override val root = hbox {
@@ -95,7 +97,7 @@ class ClienteView : View("Módulo de clientes") {
 
             center {
                 hbox {
-                    table = tableview(clienteController.clientes) {
+                    table = tableview(clienteController.getClientesWithUpdate()) {
                         column("Nombre", ClienteDB::nombre)
                         column("Teléfono", ClienteDB::telefono)
                         column("Dirección", ClienteDB::direccion).remainingWidth()
@@ -132,9 +134,9 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
         ClienteModel()
     else
         ClienteModel().apply {
-            val cliente = clienteController.findById(id!!)!!.toModel()
+            val cliente = clienteController.findById(id!!)!!
 
-            this.id.value = cliente.id
+            this.id.value = cliente.clienteId
             this.nombre.value = cliente.nombre
             this.telefono.value = cliente.telefono
             this.direccion.value = cliente.direccion

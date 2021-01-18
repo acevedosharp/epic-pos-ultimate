@@ -27,7 +27,7 @@ class PedidoDB(
     fun toModel() = Pedido(
         pedidoId,
         fechaHora.toLocalDateTime(),
-        proveedor.toModel(),
-        empleado.toModel()
+        proveedor,
+        empleado
     )
 }

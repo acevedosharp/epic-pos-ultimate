@@ -3,10 +3,12 @@ package xyz.acevedosharp.ui_models
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
 import tornadofx.*
+import xyz.acevedosharp.persistence.entities.ClienteDB
+import xyz.acevedosharp.persistence.entities.EmpleadoDB
 import java.time.LocalDateTime
 
-class Venta(var id: Int?, fechaHora: LocalDateTime, precioTotal: Int, pagoRecibido: Int, empleado: Empleado, cliente: Cliente) {
-    val fechaHoraProperty = SimpleObjectProperty<LocalDateTime>(this, "fechaHora", fechaHora)
+class Venta(var id: Int?, fechaHora: LocalDateTime, precioTotal: Int, pagoRecibido: Int, empleado: EmpleadoDB, cliente: ClienteDB) {
+    val fechaHoraProperty = SimpleObjectProperty(this, "fechaHora", fechaHora)
     var fechaHora by fechaHoraProperty
 
     val precioTotalProperty = SimpleIntegerProperty(this, "precioTotal", precioTotal)
@@ -15,10 +17,10 @@ class Venta(var id: Int?, fechaHora: LocalDateTime, precioTotal: Int, pagoRecibi
     val pagoRecibidoProperty = SimpleIntegerProperty(this, "pagoRecibido", pagoRecibido)
     var pagoRecibido by pagoRecibidoProperty
 
-    val empleadoProperty = SimpleObjectProperty<Empleado>(this, "empleado", empleado)
+    val empleadoProperty = SimpleObjectProperty(this, "empleado", empleado)
     var empleado by empleadoProperty
 
-    val clienteProperty = SimpleObjectProperty<Cliente>(this, "cliente", cliente)
+    val clienteProperty = SimpleObjectProperty(this, "cliente", cliente)
     var cliente by clienteProperty
 }
 

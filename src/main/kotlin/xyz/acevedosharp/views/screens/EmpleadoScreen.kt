@@ -29,20 +29,22 @@ class EmpleadoView : View("Módulo de empleados") {
     private var table: TableView<EmpleadoDB> by singleAssign()
     private val view = this
 
-    init {
+    override fun onDock() {
         Joe.currentView = view
 
         searchByNombre.onChange {
-            table.items = empleadoController.empleados.filter {
+            table.items = empleadoController.getEmpleadosClean().filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
 
-        empleadoController.empleados.onChange {
-            table.items = empleadoController.empleados.filter {
+        empleadoController.getEmpleadosClean().onChange {
+            table.items = empleadoController.getEmpleadosClean().filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
+
+        super.onDock()
     }
 
     override val root = hbox {
@@ -97,7 +99,7 @@ class EmpleadoView : View("Módulo de empleados") {
 
             center {
                 hbox {
-                    table = tableview(empleadoController.empleados) {
+                    table = tableview(empleadoController.getEmpleadosWithUpdate()) {
                         column("Nombre", EmpleadoDB::nombre)
                         column("Teléfono", EmpleadoDB::telefono)
 
@@ -133,9 +135,9 @@ class BaseEmpleadoFormView(formType: FormType, id: Int?) : Fragment() {
         EmpleadoModel()
     else
         EmpleadoModel().apply {
-            val empleado = empleadoController.findById(id!!)!!.toModel()
+            val empleado = empleadoController.findById(id!!)!!
 
-            this.id.value = empleado.id
+            this.id.value = empleado.empleadoId
             this.nombre.value = empleado.nombre
             this.telefono.value = empleado.telefono
         }
@@ -179,7 +181,13 @@ class BaseEmpleadoFormView(formType: FormType, id: Int?) : Fragment() {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
                             model.commit {
-                                empleadoController.save(model.item)
+                                empleadoController.save(
+                                    Empleado(
+                                        if (formType == CREATE) null else model.id.value,
+                                        model.nombre.value,
+                                        model.telefono.value
+                                    )
+                                )
                                 close()
                             }
                         }

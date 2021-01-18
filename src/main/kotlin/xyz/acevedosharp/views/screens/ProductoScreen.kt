@@ -1,5 +1,6 @@
 package xyz.acevedosharp.views.screens
 
+import javafx.beans.property.*
 import xyz.acevedosharp.controllers.FamiliaController
 import xyz.acevedosharp.controllers.ProductoController
 import xyz.acevedosharp.ui_models.Familia
@@ -11,53 +12,61 @@ import xyz.acevedosharp.views.helpers.CurrentModule.PRODUCTOS
 import xyz.acevedosharp.views.helpers.FormType
 import xyz.acevedosharp.views.helpers.FormType.CREATE
 import xyz.acevedosharp.views.helpers.FormType.EDIT
-import javafx.beans.property.Property
-import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.TableView
+import javafx.scene.control.TextField
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*
 import xyz.acevedosharp.Joe
+import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
 
 class ProductoView : View("Módulo de productos") {
 
     private val productoController = find<ProductoController>()
+    private val familiaController = find<FamiliaController>()
+
     private val selectedId = SimpleIntegerProperty()
     private val existsSelection = SimpleBooleanProperty(false)
+    private var table: TableView<ProductoDB> by singleAssign()
     private val searchByCodigo = SimpleStringProperty("")
     private val searchByDescripcion = SimpleStringProperty("")
-    private var table: TableView<ProductoDB> by singleAssign()
+    private val searchByFamilia = SimpleObjectProperty<FamiliaDB>()
     private val view = this
 
     init {
         Joe.currentView = view
 
-        productoController.updateSnapshot()
-
-        searchByCodigo.onChange {
-            searchByDescripcion.value = ""
-            table.items = productoController.productos.filter {
-                it.codigo.toLowerCase().contains(searchByCodigo.value.toLowerCase())
-            }.asObservable()
+        productoController.getProductosClean().onChange {
+            println("rdtrethjkdhvfbskdjncfbxksnadjgcrfnlxdkzjfnk,dzhfngkvsdfx")
         }
 
-        searchByDescripcion.onChange {
-            searchByCodigo.value = ""
-            table.items = productoController.productos.filter {
-                it.descripcionLarga.toLowerCase().contains(searchByDescripcion.value.toLowerCase()) ||
-                        it.descripcionCorta.toLowerCase().contains(searchByDescripcion.value.toLowerCase())
-            }.asObservable()
+        searchByCodigo.onChange { searchString ->
+            if (searchString != null) {
+                table.items = productoController.getProductosClean().filter {
+                    it.codigo.toLowerCase().contains(searchString.toLowerCase())
+                }.asObservable()
+            }
         }
 
-        productoController.productos.onChange {
-            searchByDescripcion.value = ""
-            table.items = productoController.productos.filter {
-                it.codigo.toLowerCase().contains(searchByCodigo.value.toLowerCase())
-            }.asObservable()
+        searchByDescripcion.onChange { searchString ->
+            if (searchString != null) {
+                table.items = productoController.getProductosClean().filter {
+                    it.descripcionLarga.toLowerCase().contains(searchString.toLowerCase()) ||
+                            it.descripcionCorta.toLowerCase().contains(searchString.toLowerCase())
+                }.asObservable()
+            }
+        }
+
+        searchByFamilia.onChange { searchFamilia ->
+            if (searchFamilia != null) {
+                table.items = productoController.getProductosClean().filter {
+                    it.familia.familiaId == searchFamilia.familiaId
+                }.toObservable()
+            } else {
+                table.items = productoController.getProductosClean()
+            }
         }
     }
 
@@ -113,14 +122,27 @@ class ProductoView : View("Módulo de productos") {
 
                             prefWidth = 250.0
                         }
+
+                        vbox {
+                            label("Buscar por familia").apply { addClass(MainStylesheet.searchLabel) }
+                            combobox<FamiliaDB>(searchByFamilia, familiaController.getFamiliasWithUpdate()).apply {
+                                prefWidth = 300.0
+                                makeAutocompletable(false)
+                            }
+
+                            prefWidth = 250.0
+                        }
+                        button("Quitar filtro") {
+                            addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton)
+                            action { searchByFamilia.value = null }
+                        }
                     }
                 }
-
             }
 
             center {
                 hbox {
-                    table = tableview(productoController.productos) {
+                    table = tableview(productoController.getProductosWithUpdate()) {
                         column("Código", ProductoDB::codigo).pctWidth(10)
                         column("Desc. Larga", ProductoDB::descripcionLarga).remainingWidth()
                         column("Desc. Corta", ProductoDB::descripcionCorta).pctWidth(20)
@@ -160,25 +182,21 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
     private val productoController = find<ProductoController>()
     private val familiaController = find<FamiliaController>()
 
-    init {
-        familiaController.updateSnapshot()
-    }
-
     private val model = if (formType == CREATE)
         ProductoModel()
     else
         ProductoModel().apply {
-            val producto = productoController.findById(id!!)!!.toModel()
+            val producto = productoController.findById(id!!)!!
 
-            this.id.value = producto.id
+            this.id.value = producto.productoId
             this.codigo.value = producto.codigo
-            this.descLarga.value = producto.descLarga
+            this.descLarga.value = producto.descripcionLarga
+            this.descCorta.value = producto.descripcionCorta
             this.precioVenta.value = producto.precioVenta
             this.precioCompraEfectivo.value = producto.precioCompraEfectivo
             this.existencias.value = producto.existencias
             this.margen.value = producto.margen
             this.familia.value = producto.familia
-
         }
 
     override val root = vbox(spacing = 0) {
@@ -249,22 +267,29 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                         editable = true
                     )
                 }
-                field("Margen (%) (0.0 significa que prefieres poner el precio a mano)") {
-                    if (formType == CREATE) model.margen.value = 0.0
-                    spinner(
-                        property = model.margen as Property<Double>,
-                        initialValue = 0.0,
-                        min = 0.0,
-                        max = 100.0,
-                        amountToStepBy = 0.1,
-                        editable = true
-                    )
+                field("Margen (%)") {
+                    hbox(10, Pos.CENTER_LEFT) {
+                        spinner(
+                            property = model.margen as Property<Double>,
+                            initialValue = 0.0,
+                            min = 0.0,
+                            max = 100.0,
+                            amountToStepBy = 0.1,
+                            editable = true
+                        )
+                       label("0 para ajustar precio de venta a mano.")
+                    }
                 }
                 field("Familia") {
                     hbox(10, Pos.CENTER_LEFT) {
-                        combobox<Familia>(model.familia, familiaController.familias.map { it.toModel() }).apply {
+                        combobox<FamiliaDB>(model.familia, familiaController.getFamiliasWithUpdate()).apply {
                             prefWidth = 300.0
                             makeAutocompletable(false)
+
+                            validator {
+                                if (it == null) error("Selecciona una familia")
+                                else null
+                            }
                         }
                         button("+") {
                             addClass(MainStylesheet.addButton, MainStylesheet.greenButton)

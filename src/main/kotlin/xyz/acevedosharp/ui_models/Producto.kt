@@ -2,8 +2,9 @@ package xyz.acevedosharp.ui_models
 
 import tornadofx.*
 import javafx.beans.property.*
+import xyz.acevedosharp.persistence.entities.FamiliaDB
 
-class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Double, precioCompraEfectivo: Double, existencias: Int, margen: Double, familia: Familia?) {
+class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Double, precioCompraEfectivo: Double, existencias: Int, margen: Double, familia: FamiliaDB) {
     val codigoProperty = SimpleStringProperty(this, "codigo", codigo)
     var codigo by codigoProperty
 
@@ -25,7 +26,7 @@ class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: Strin
     val margenProperty = SimpleDoubleProperty(this, "margen", margen)
     var margen by margenProperty
 
-    val familiaProperty = SimpleObjectProperty<Familia>(this, "familia", familia)
+    val familiaProperty = SimpleObjectProperty(this, "familia", familia)
     var familia by familiaProperty
 
     override fun toString(): String = descCorta

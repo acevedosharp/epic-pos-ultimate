@@ -2,16 +2,18 @@ package xyz.acevedosharp.ui_models
 
 import javafx.beans.property.SimpleObjectProperty
 import tornadofx.*
+import xyz.acevedosharp.persistence.entities.EmpleadoDB
+import xyz.acevedosharp.persistence.entities.ProveedorDB
 import java.time.LocalDateTime
 
-class Pedido(var id: Int?, fechaHora: LocalDateTime, proveedor: Proveedor, empleado: Empleado) {
-    val fechaHoraProperty = SimpleObjectProperty<LocalDateTime>(this, "fechaHora", fechaHora)
+class Pedido(var id: Int?, fechaHora: LocalDateTime, proveedor: ProveedorDB, empleado: EmpleadoDB) {
+    val fechaHoraProperty = SimpleObjectProperty(this, "fechaHora", fechaHora)
     var fechaHora by fechaHoraProperty
 
-    val proveedorProperty = SimpleObjectProperty<Proveedor>(this, "proveedor", proveedor)
+    val proveedorProperty = SimpleObjectProperty(this, "proveedor", proveedor)
     var proveedor by proveedorProperty
 
-    val empleadoProperty = SimpleObjectProperty<Empleado>(this, "empleado", empleado)
+    val empleadoProperty = SimpleObjectProperty(this, "empleado", empleado)
     var empleado by empleadoProperty
 }
 

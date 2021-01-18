@@ -21,4 +21,6 @@ class EmpleadoDB (
         nombre,
         telefono
     )
+
+    override fun toString() = nombre
 }

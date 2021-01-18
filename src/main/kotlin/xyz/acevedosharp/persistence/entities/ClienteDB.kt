@@ -26,4 +26,6 @@ class ClienteDB(
         telefono,
         direccion
     )
+
+    override fun toString() = nombre
 }

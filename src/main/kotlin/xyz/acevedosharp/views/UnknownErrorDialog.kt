@@ -13,7 +13,8 @@ class UnknownErrorDialog(message: String): Fragment() {
             addClass(MainStylesheet.titleLabel)
             addClass(MainStylesheet.redLabel)
         }
-        label("Mensaje: $message").style {
+        text("Mensaje: $message").style {
+            wrapText = true
             padding = box(vertical = 30.px, horizontal = 5.px)
         }
         hbox(spacing = 80, alignment = Pos.CENTER) {

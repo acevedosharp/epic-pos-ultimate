@@ -2,7 +2,6 @@ package xyz.acevedosharp.controllers
 
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import org.springframework.data.repository.findByIdOrNull
 import xyz.acevedosharp.CustomApplicationContextWrapper
 import xyz.acevedosharp.ui_models.UncommittedItemVenta
 import xyz.acevedosharp.ui_models.Venta
@@ -11,19 +10,23 @@ import xyz.acevedosharp.persistence.entities.ItemVentaDB
 import xyz.acevedosharp.persistence.entities.VentaDB
 import xyz.acevedosharp.persistence.repositories.*
 import java.sql.Timestamp
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class VentaController: Controller(), UpdateSnapshot {
-    private val empleadoRepo = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoRepo::class.java)
-    private val clienteRepo = find<CustomApplicationContextWrapper>().context.getBean(ClienteRepo::class.java)
     private val ventaRepo = find<CustomApplicationContextWrapper>().context.getBean(VentaRepo::class.java)
-    private val productoRepo = find<CustomApplicationContextWrapper>().context.getBean(ProductoRepo::class.java)
     private val itemVentaRepo = find<CustomApplicationContextWrapper>().context.getBean(ItemVentaRepo::class.java)
 
-    val ventas: ObservableList<VentaDB> = FXCollections.observableArrayList()
+    private val ventas: ObservableList<VentaDB> = FXCollections.observableArrayList()
 
-    //init {
-    //    updateSnapshot()
-    //}
+    fun getVentasWithUpdate(): ObservableList<VentaDB> {
+        updateSnapshot()
+        return ventas
+    }
+
+    fun getVentasClean(): ObservableList<VentaDB> {
+        return ventas
+    }
 
     fun add(venta: Venta, items: List<UncommittedItemVenta>){
         val preRes = ventaRepo.save(
@@ -32,15 +35,13 @@ class VentaController: Controller(), UpdateSnapshot {
                 Timestamp.valueOf(venta.fechaHora),
                 venta.precioTotal,
                 venta.pagoRecibido,
-                empleadoRepo.findByIdOrNull(venta.empleado.id)!!,
-                clienteRepo.findByIdOrNull(venta.cliente.id)!!,
+                venta.empleado,
+                venta.cliente,
                 setOf()
             )
         )
 
         updateSnapshot()
-
-        val productosSnapshot = productoRepo.findAll()
 
         itemVentaRepo.saveAll(items.map { uncommittedItemVenta ->
             ItemVentaDB(
@@ -48,13 +49,14 @@ class VentaController: Controller(), UpdateSnapshot {
                 Timestamp.valueOf(venta.fechaHora),
                 uncommittedItemVenta.cantidad,
                 uncommittedItemVenta.producto.precioVenta,
-                productosSnapshot.find { it.productoId == uncommittedItemVenta.producto.id }!!,
+                uncommittedItemVenta.producto,
                 preRes
             )
         })
     }
 
     override fun updateSnapshot() {
+        println("Triggered update snapshot for Venta once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
         ventas.setAll(ventaRepo.findAll())
     }
 }

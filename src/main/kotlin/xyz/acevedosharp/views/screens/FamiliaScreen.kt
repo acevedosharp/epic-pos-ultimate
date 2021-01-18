@@ -28,20 +28,22 @@ class FamiliaView : View("Módulo de familias") {
     private var table: TableView<FamiliaDB> by singleAssign()
     private val view = this
 
-    init {
+    override fun onDock() {
         Joe.currentView = view
 
         searchByNombre.onChange {
-            table.items = familiaController.familias.filter {
+            table.items = familiaController.getFamiliasClean().filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
 
-        familiaController.familias.onChange {
-            table.items = familiaController.familias.filter {
+        familiaController.getFamiliasClean().onChange {
+            table.items = familiaController.getFamiliasClean().filter {
                 it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
             }.asObservable()
         }
+
+        super.onDock()
     }
 
     override val root = hbox {
@@ -97,7 +99,7 @@ class FamiliaView : View("Módulo de familias") {
 
             center {
                 hbox {
-                    table = tableview(familiaController.familias) {
+                    table = tableview(familiaController.getFamiliasWithUpdate()) {
                         column("Nombre", FamiliaDB::nombre)
 
                         smartResize()
@@ -132,9 +134,9 @@ class BaseFamiliaFormView(formType: FormType, id: Int?) : Fragment() {
         FamiliaModel()
     else
         FamiliaModel().apply {
-            val familia = familiaController.findById(id!!)!!.toModel()
+            val familia = familiaController.findById(id!!)!!
 
-            this.id.value = familia.id
+            this.id.value = familia.familiaId
             this.nombre.value = familia.nombre
         }
 
@@ -165,7 +167,12 @@ class BaseFamiliaFormView(formType: FormType, id: Int?) : Fragment() {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
                             model.commit {
-                                familiaController.save(model.item)
+                                familiaController.save(
+                                    Familia(
+                                        if (formType == CREATE) null else model.id.value,
+                                        model.nombre.value
+                                    )
+                                )
                                 close()
                             }
                         }

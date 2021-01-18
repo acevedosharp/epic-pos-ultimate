@@ -14,10 +14,15 @@ import java.time.format.DateTimeFormatter
 class EmpleadoController : Controller(), UpdateSnapshot {
     private val empleadoRepo = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoRepo::class.java)
 
-    val empleados: ObservableList<EmpleadoDB> = FXCollections.observableArrayList()
-    get() {
+    private val empleados: ObservableList<EmpleadoDB> = FXCollections.observableArrayList()
+
+    fun getEmpleadosWithUpdate(): ObservableList<EmpleadoDB> {
         updateSnapshot()
-        return field
+        return empleados
+    }
+
+    fun getEmpleadosClean(): ObservableList<EmpleadoDB> {
+        return empleados
     }
 
     fun findById(id: Int) = empleadoRepo.findByIdOrNull(id)
@@ -51,7 +56,6 @@ class EmpleadoController : Controller(), UpdateSnapshot {
 
     override fun updateSnapshot() {
         println("Triggered update snapshot for Empleado once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
-
         empleados.setAll(empleadoRepo.findAll())
     }
 }
