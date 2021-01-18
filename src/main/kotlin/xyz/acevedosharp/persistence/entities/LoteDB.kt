@@ -23,6 +23,8 @@ class LoteDB(
     @ManyToOne @JoinColumn(name = "pedido")
     var pedido: PedidoDB
 ) {
+
+
     fun toModel() = Lote(
         loteId,
         cantidad,

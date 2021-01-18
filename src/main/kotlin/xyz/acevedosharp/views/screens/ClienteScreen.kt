@@ -16,33 +16,29 @@ import javafx.scene.paint.Color
 import tornadofx.*
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.ClienteDB
+import xyz.acevedosharp.ui_models.Cliente
 import xyz.acevedosharp.ui_models.ClienteModel
 
 class ClienteView : View("Módulo de clientes") {
 
     private val clienteController = find<ClienteController>()
+
     private val selectedId = SimpleIntegerProperty()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty("")
     private var table: TableView<ClienteDB> by singleAssign()
     private val view = this
 
-    override fun onDock() {
+    init {
         Joe.currentView = view
 
-        searchByNombre.onChange {
-            table.items = clienteController.getClientesClean().filter {
-                it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
-            }.asObservable()
+        searchByNombre.onChange { searchString ->
+            if (searchString != null) {
+                table.items = clienteController.getClientesClean().filter {
+                    it.nombre.toLowerCase().contains(searchString.toLowerCase())
+                }.asObservable()
+            }
         }
-
-        clienteController.getClientesWithUpdate().onChange {
-            table.items = clienteController.getClientesClean().filter {
-                it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
-            }.asObservable()
-        }
-
-        super.onDock()
     }
 
     override val root = hbox {
@@ -101,8 +97,14 @@ class ClienteView : View("Módulo de clientes") {
                         column("Nombre", ClienteDB::nombre)
                         column("Teléfono", ClienteDB::telefono)
                         column("Dirección", ClienteDB::direccion).remainingWidth()
-
                         smartResize()
+
+                        clienteController.getClientesClean().onChange {
+                            if (searchByNombre.value == "")
+                                table.items = clienteController.getClientesClean().asObservable()
+                            else
+                                searchByNombre.value = ""
+                        }
 
                         selectionModel.selectedItemProperty().onChange {
                             existsSelection.value = it != null
@@ -189,7 +191,14 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                         action {
                             model.commit {
-                                clienteController.save(model.item)
+                                clienteController.save(
+                                    Cliente(
+                                        if (formType == CREATE) null else model.id.value,
+                                        model.nombre.value,
+                                        model.telefono.value,
+                                        model.direccion.value
+                                    )
+                                )
                                 close()
                             }
                         }

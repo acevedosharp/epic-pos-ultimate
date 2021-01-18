@@ -8,7 +8,6 @@ import xyz.acevedosharp.views.helpers.FormType.*
 import xyz.acevedosharp.views.helpers.CurrentModule.*
 import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.shared_components.SideNavigation
-import xyz.acevedosharp.views.UnknownErrorDialog
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
@@ -23,28 +22,23 @@ import xyz.acevedosharp.persistence.entities.EmpleadoDB
 class EmpleadoView : View("Módulo de empleados") {
 
     private val empleadoController = find<EmpleadoController>()
+
     private val selectedId = SimpleIntegerProperty()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty("")
     private var table: TableView<EmpleadoDB> by singleAssign()
     private val view = this
 
-    override fun onDock() {
+    init {
         Joe.currentView = view
 
-        searchByNombre.onChange {
-            table.items = empleadoController.getEmpleadosClean().filter {
-                it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
-            }.asObservable()
+        searchByNombre.onChange { searchString ->
+            if (searchString != null) {
+                table.items = empleadoController.getEmpleadosClean().filter {
+                    it.nombre.toLowerCase().contains(searchString.toLowerCase())
+                }.asObservable()
+            }
         }
-
-        empleadoController.getEmpleadosClean().onChange {
-            table.items = empleadoController.getEmpleadosClean().filter {
-                it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
-            }.asObservable()
-        }
-
-        super.onDock()
     }
 
     override val root = hbox {
@@ -102,8 +96,14 @@ class EmpleadoView : View("Módulo de empleados") {
                     table = tableview(empleadoController.getEmpleadosWithUpdate()) {
                         column("Nombre", EmpleadoDB::nombre)
                         column("Teléfono", EmpleadoDB::telefono)
-
                         smartResize()
+
+                        empleadoController.getEmpleadosClean().onChange {
+                            if (searchByNombre.value == "")
+                                table.items = empleadoController.getEmpleadosClean().asObservable()
+                            else
+                                searchByNombre.value = ""
+                        }
 
                         selectionModel.selectedItemProperty().onChange {
                             existsSelection.value = it != null

@@ -36,21 +36,28 @@ class PedidoView : View("Módulo de pedidos") {
     private val searchByProveedor = SimpleObjectProperty<ProveedorDB>()
     private val view = this
 
-    override fun onDock() {
+    init {
         Joe.currentView = view
 
         pedidoController.getPedidosClean().onChange {
-            items.setAll(pedidoController.getPedidosClean().sortedByDescending { it.fechaHora }.map { PedidoDisplay(it.toModel(), this).root })
-        }
-        searchByProveedor.onChange { selectedItem ->
-            if (selectedItem == null)
-                items.setAll(pedidoController.getPedidosClean().sortedBy { it.fechaHora }.map { PedidoDisplay(it.toModel(), this).root })
-            else
-                items.setAll(pedidoController.getPedidosClean().filter { it.proveedor == selectedItem }.sortedBy { it.fechaHora }
-                    .map { PedidoDisplay(it.toModel(), this).root })
+            searchByProveedor.value = null
+
+            items.setAll(pedidoController.getPedidosClean()
+                .sortedByDescending { it.fechaHora }
+                .map { PedidoDisplay(it.toModel(), this).root })
         }
 
-        super.onDock()
+        searchByProveedor.onChange { selectedProveedor ->
+            if (selectedProveedor == null)
+                items.setAll(pedidoController.getPedidosClean()
+                    .sortedByDescending { it.fechaHora }
+                    .map { PedidoDisplay(it.toModel(), this).root })
+            else
+                items.setAll(pedidoController.getPedidosClean()
+                    .filter { it.proveedor.proveedorId == selectedProveedor.proveedorId }
+                    .sortedByDescending { it.fechaHora }
+                    .map { PedidoDisplay(it.toModel(), this).root })
+        }
     }
 
     override val root = hbox {
@@ -158,7 +165,7 @@ class NewPedidoFormView : Fragment() {
                         combobox<ProveedorDB>(model.proveedor, proveedorController.getProveedoresClean()).apply {
                             prefWidth = 300.0
                             makeAutocompletable(false)
-                        }.validator(trigger = ValidationTrigger.OnBlur) {
+                        }.validator {
                             when (it) {
                                 null -> error("Proveedor requerido")
                                 else -> null

@@ -21,6 +21,7 @@ import tornadofx.*
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
+import java.time.LocalDateTime
 
 class ProductoView : View("Módulo de productos") {
 
@@ -36,10 +37,13 @@ class ProductoView : View("Módulo de productos") {
     private val view = this
 
     init {
+        println("module initialization")
         Joe.currentView = view
 
         productoController.getProductosClean().onChange {
-            println("rdtrethjkdhvfbskdjncfbxksnadjgcrfnlxdkzjfnk,dzhfngkvsdfx")
+            searchByCodigo.value = ""
+            searchByDescripcion.value = ""
+            searchByFamilia.value = null
         }
 
         searchByCodigo.onChange { searchString ->
@@ -234,14 +238,25 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                     }
                 }
                 field("Descripción corta") {
-                    textfield(model.descCorta).validator(trigger = ValidationTrigger.OnBlur) {
-                        when {
-                            if (formType == CREATE) productoController.isDescCortaAvailable(it.toString())
-                            else productoController.existsOtherWithDescCorta(it.toString(), model.id.value)
-                            -> error("Descripción corta no disponible")
-                            it.isNullOrBlank() -> error("Descripción corta requerida")
-                            it.length > 25 -> error("Máximo 25 caracteres (${it.length})")
-                            else -> null
+                    hbox(10, Pos.CENTER_LEFT) {
+                        textfield(model.descCorta) {
+                            prefWidth = 400.0
+                            validator(trigger = ValidationTrigger.OnBlur) {
+                            when {
+                                if (formType == CREATE) productoController.isDescCortaAvailable(it.toString())
+                                else productoController.existsOtherWithDescCorta(it.toString(), model.id.value)
+                                -> error("Descripción corta no disponible")
+                                it.isNullOrBlank() -> error("Descripción corta requerida")
+                                it.length > 25 -> error("Máximo 25 caracteres (${it.length})")
+                                else -> null
+                            }
+                        }
+                        }
+                        button("Repetir") {
+                            addClass(MainStylesheet.coolBaseButton, MainStylesheet.grayButton)
+                            action {
+                                model.descCorta.value = model.descLarga.value
+                            }
                         }
                     }
                 }

@@ -7,7 +7,6 @@ import javafx.collections.ObservableList
 import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
 import xyz.acevedosharp.persistence.entities.ProductoDB
-import xyz.acevedosharp.persistence.repositories.FamiliaRepo
 import xyz.acevedosharp.persistence.repositories.ProductoRepo
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

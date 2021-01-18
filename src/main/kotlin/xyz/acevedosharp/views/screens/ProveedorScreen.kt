@@ -22,28 +22,23 @@ import xyz.acevedosharp.persistence.entities.ProveedorDB
 class ProveedorView : View("Módulo de proveedores") {
 
     private val proveedorController = find<ProveedorController>()
+
     private val selectedId = SimpleIntegerProperty()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty("")
     private var table: TableView<ProveedorDB> by singleAssign()
     private val view = this
 
-    override fun onDock() {
+    init {
         Joe.currentView = view
 
-        searchByNombre.onChange {
-            table.items = proveedorController.getProveedoresClean().filter {
-                it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
-            }.asObservable()
+        searchByNombre.onChange { searchString ->
+            if (searchString != null) {
+                table.items = proveedorController.getProveedoresClean().filter {
+                    it.nombre.toLowerCase().contains(searchString.toLowerCase())
+                }.asObservable()
+            }
         }
-
-        proveedorController.getProveedoresClean().onChange {
-            table.items = proveedorController.getProveedoresClean().filter {
-                it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
-            }.asObservable()
-        }
-
-        super.onDock()
     }
 
     override val root = hbox {
@@ -103,12 +98,17 @@ class ProveedorView : View("Módulo de proveedores") {
                         column("Teléfono", ProveedorDB::telefono)
                         column("Correo", ProveedorDB::correo)
                         column("Dirección", ProveedorDB::direccion).remainingWidth()
-
                         smartResize()
+
+                        proveedorController.getProveedoresClean().onChange {
+                            if (searchByNombre.value == "")
+                                table.items = proveedorController.getProveedoresClean().asObservable()
+                            else
+                                searchByNombre.value = ""
+                        }
 
                         selectionModel.selectedItemProperty().onChange {
                             existsSelection.value = it != null
-
                             if (it != null) {
                                 selectedId.set(it.proveedorId!!)
                             }

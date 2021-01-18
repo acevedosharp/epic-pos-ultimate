@@ -22,28 +22,23 @@ import xyz.acevedosharp.persistence.entities.FamiliaDB
 class FamiliaView : View("Módulo de familias") {
 
     private val familiaController = find<FamiliaController>()
+
     private val selectedId = SimpleIntegerProperty()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty("")
     private var table: TableView<FamiliaDB> by singleAssign()
     private val view = this
 
-    override fun onDock() {
+    init {
         Joe.currentView = view
 
-        searchByNombre.onChange {
-            table.items = familiaController.getFamiliasClean().filter {
-                it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
-            }.asObservable()
+        searchByNombre.onChange { searchString ->
+            if (searchString != null) {
+                table.items = familiaController.getFamiliasClean().filter {
+                    it.nombre.toLowerCase().contains(searchString.toLowerCase())
+                }.asObservable()
+            }
         }
-
-        familiaController.getFamiliasClean().onChange {
-            table.items = familiaController.getFamiliasClean().filter {
-                it.nombre.toLowerCase().contains(searchByNombre.value.toLowerCase())
-            }.asObservable()
-        }
-
-        super.onDock()
     }
 
     override val root = hbox {
@@ -101,8 +96,14 @@ class FamiliaView : View("Módulo de familias") {
                 hbox {
                     table = tableview(familiaController.getFamiliasWithUpdate()) {
                         column("Nombre", FamiliaDB::nombre)
-
                         smartResize()
+
+                        familiaController.getFamiliasClean().onChange {
+                            if (searchByNombre.value == "")
+                                items = familiaController.getFamiliasClean().toObservable()
+                            else
+                                searchByNombre.value = ""
+                        }
 
                         selectionModel.selectedItemProperty().onChange {
                             existsSelection.value = it != null
