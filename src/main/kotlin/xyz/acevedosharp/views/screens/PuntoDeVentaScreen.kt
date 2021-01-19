@@ -37,6 +37,7 @@ import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.ClienteDB
 import xyz.acevedosharp.persistence.entities.EmpleadoDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
+import xyz.acevedosharp.views.GenericApplicationException
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import kotlin.math.ceil
@@ -59,7 +60,7 @@ class PuntoDeVentaView : View("Punto de venta") {
 
     private lateinit var currentCodigoTextField: TextField
 
-    override fun onDock() {
+    init {
         Joe.currentView = view
 
         valorTotal.onChange { valorTotalRoundedAndFormatted.value = NumberFormat.getIntegerInstance().format(it.roundToInt()) }
@@ -72,11 +73,6 @@ class PuntoDeVentaView : View("Punto de venta") {
         }
         uncommittedItems.setAll(uncommittedItemsAsViews.map { it.root })
 
-        super.onDock()
-    }
-
-    init {
-        println("PUNTO DE VENTA MODULE")
         // Let's hope the scene doesn't take longer than this to load - probably not, 650ms is a lot of time
         runLater(Duration.millis(650.0)) {
             currentCodigoTextField.requestFocus()
@@ -445,6 +441,8 @@ class PuntoDeVentaView : View("Punto de venta") {
                                         )
                                     )
                                     removeAlwaysFocusListener()
+                                } else if (dineroEntregado.value < valorTotal.value) {
+                                    throw GenericApplicationException("El dinero entregado no es suficiente.")
                                 }
                             }
                         }
@@ -741,18 +739,25 @@ class CommitVenta : Fragment() {
                                     }
                                 )
 
-                                // Print recipe
+                                //Print recipe
                                 //if (imprimirFactura.value == "Sí")
                                 //    printingService.printRecipe(res, impresora.value)
-
-                                uncommittedItemsAsViews.clear()
-
                                 uncommittedItemsAsViews.clear()
                                 owner.addAlwaysFocusListener()
                                 valorTotal.set(0.0)
                                 dineroEntregado.set(0)
                                 close()
                             }
+                        }
+                    }
+                    button("Cancelar") {
+                        addClass(
+                            MainStylesheet.coolBaseButton,
+                            MainStylesheet.redButton,
+                            MainStylesheet.expandedButton
+                        )
+                        action {
+                            close()
                         }
                     }
                 }
