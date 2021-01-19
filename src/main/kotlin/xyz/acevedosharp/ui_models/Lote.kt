@@ -10,13 +10,13 @@ import xyz.acevedosharp.persistence.entities.ProductoDB
 
 class Lote(var id: Int?, cantidad: Int, precioCompra: Double, producto: ProductoDB) {
     val cantidadProperty = SimpleIntegerProperty(this, "cantidad", cantidad)
-    var cantidad by cantidadProperty
+    var cantidad: Int by cantidadProperty
 
     val precioCompraProperty = SimpleDoubleProperty(this, "precioCompra", precioCompra)
-    var precioCompra by precioCompraProperty
+    var precioCompra: Double by precioCompraProperty
 
     val productoProperty = SimpleObjectProperty(this, "producto", producto)
-    var producto by productoProperty
+    var producto: ProductoDB by productoProperty
 
     fun productoDescCorta(): String = producto.descripcionCorta
 }

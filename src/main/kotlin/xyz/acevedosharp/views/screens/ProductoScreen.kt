@@ -1,9 +1,10 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package xyz.acevedosharp.views.screens
 
 import javafx.beans.property.*
 import xyz.acevedosharp.controllers.FamiliaController
 import xyz.acevedosharp.controllers.ProductoController
-import xyz.acevedosharp.ui_models.Familia
 import xyz.acevedosharp.ui_models.Producto
 import xyz.acevedosharp.ui_models.ProductoModel
 import xyz.acevedosharp.views.MainStylesheet
@@ -14,14 +15,12 @@ import xyz.acevedosharp.views.helpers.FormType.CREATE
 import xyz.acevedosharp.views.helpers.FormType.EDIT
 import javafx.geometry.Pos
 import javafx.scene.control.TableView
-import javafx.scene.control.TextField
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import tornadofx.*
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
-import java.time.LocalDateTime
 
 class ProductoView : View("Módulo de productos") {
 

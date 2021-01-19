@@ -24,7 +24,7 @@ class ClientApplication : App(PuntoDeVentaView::class, MainStylesheet::class) {
         stage.isFullScreen = true
         stage.icons.add(Image("images/store_logo_icon.png"))
 
-        Thread.setDefaultUncaughtExceptionHandler { t: Thread, e: Throwable ->
+        Thread.setDefaultUncaughtExceptionHandler { _: Thread, e: Throwable ->
             if (Joe.currentView != null) {
                 if (e is DataAccessResourceFailureException || e is JDBCConnectionException) {
                     Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog())

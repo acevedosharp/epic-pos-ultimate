@@ -1,17 +1,12 @@
 package xyz.acevedosharp
 
 import javafx.application.Application
-import javafx.application.Platform
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import java.io.IOException
-
 import java.net.MalformedURLException
 import java.net.URL
 import java.net.URLConnection
-import kotlinx.coroutines.*
 import tornadofx.*
-import xyz.acevedosharp.views.NoInternetConnectionErrorDialog
-
 
 @SpringBootApplication
 class LocalSpringBootApplication

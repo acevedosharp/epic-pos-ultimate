@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package xyz.acevedosharp.views.screens
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
@@ -37,6 +39,8 @@ import xyz.acevedosharp.persistence.entities.EmpleadoDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
 import java.text.NumberFormat
 import java.time.LocalDateTime
+import kotlin.math.ceil
+import kotlin.math.floor
 import kotlin.math.roundToInt
 
 class PuntoDeVentaView : View("Punto de venta") {
@@ -724,7 +728,7 @@ class CommitVenta : Fragment() {
                                     Venta(
                                         null,
                                         LocalDateTime.now(),
-                                        (if (valorTotal.value % 50 < 25) Math.floor(valorTotal.value / 50) * 50 else Math.ceil(valorTotal.value / 50) * 50).toInt(),
+                                        (if (valorTotal.value % 50 < 25) floor(valorTotal.value / 50) * 50 else ceil(valorTotal.value / 50) * 50).toInt(),
                                         dineroEntregado.value,
                                         model.empleado.value,
                                         model.cliente.value

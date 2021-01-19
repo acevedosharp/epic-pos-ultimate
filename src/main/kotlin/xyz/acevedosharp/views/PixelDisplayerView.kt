@@ -5,7 +5,6 @@ import javafx.beans.property.SimpleDoubleProperty
 import javafx.geometry.Pos
 import javafx.scene.control.Label
 import tornadofx.*
-import xyz.acevedosharp.Joe
 
 class SizeDisplayer {
     var width = SimpleDoubleProperty()

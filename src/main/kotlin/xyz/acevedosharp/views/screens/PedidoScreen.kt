@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package xyz.acevedosharp.views.screens
 
 import xyz.acevedosharp.controllers.*

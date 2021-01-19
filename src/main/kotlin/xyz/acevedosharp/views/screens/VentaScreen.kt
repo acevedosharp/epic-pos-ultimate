@@ -216,11 +216,6 @@ class VentaHistory : Fragment() {
 
     private var table: TableView<VentaDB> by singleAssign()
 
-    init {
-        println(inicio)
-        println(fin)
-    }
-
     override val root = vbox(spacing = 0) {
         useMaxSize = true
         prefWidth = 1100.0

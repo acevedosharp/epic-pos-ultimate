@@ -2,7 +2,6 @@ package xyz.acevedosharp.views
 
 import javafx.geometry.Pos
 import tornadofx.*
-import xyz.acevedosharp.Joe
 
 class NoInternetConnectionErrorDialog : Fragment() {
     override val root = vbox(spacing = 0) {

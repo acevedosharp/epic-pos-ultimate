@@ -8,13 +8,13 @@ import java.time.LocalDateTime
 
 class Pedido(var id: Int?, fechaHora: LocalDateTime, proveedor: ProveedorDB, empleado: EmpleadoDB) {
     val fechaHoraProperty = SimpleObjectProperty(this, "fechaHora", fechaHora)
-    var fechaHora by fechaHoraProperty
+    var fechaHora: LocalDateTime by fechaHoraProperty
 
     val proveedorProperty = SimpleObjectProperty(this, "proveedor", proveedor)
-    var proveedor by proveedorProperty
+    var proveedor: ProveedorDB by proveedorProperty
 
     val empleadoProperty = SimpleObjectProperty(this, "empleado", empleado)
-    var empleado by empleadoProperty
+    var empleado: EmpleadoDB by empleadoProperty
 }
 
 class PedidoModel: ItemViewModel<Pedido>() {

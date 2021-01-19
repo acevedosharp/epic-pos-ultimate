@@ -6,28 +6,28 @@ import xyz.acevedosharp.persistence.entities.FamiliaDB
 
 class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Double, precioCompraEfectivo: Double, existencias: Int, margen: Double, familia: FamiliaDB) {
     val codigoProperty = SimpleStringProperty(this, "codigo", codigo)
-    var codigo by codigoProperty
+    var codigo: String by codigoProperty
 
     val descLargaProperty = SimpleStringProperty(this, "descLarga", descLarga)
-    var descLarga by descLargaProperty
+    var descLarga: String by descLargaProperty
 
     val descCortaProperty = SimpleStringProperty(this, "descCorta", descCorta)
-    var descCorta by descCortaProperty
+    var descCorta: String by descCortaProperty
 
     val precioVentaProperty = SimpleDoubleProperty(this, "precioVenta", precioVenta)
-    var precioVenta by precioVentaProperty
+    var precioVenta: Double by precioVentaProperty
 
     val precioCompraEfectivoProperty = SimpleDoubleProperty(this, "precioCompraEfectivo", precioCompraEfectivo)
-    var precioCompraEfectivo by precioCompraEfectivoProperty
+    var precioCompraEfectivo: Double by precioCompraEfectivoProperty
 
     val existenciasProperty = SimpleIntegerProperty(this, "existencias", existencias)
-    var existencias by existenciasProperty
+    var existencias: Int by existenciasProperty
 
     val margenProperty = SimpleDoubleProperty(this, "margen", margen)
-    var margen by margenProperty
+    var margen: Double by margenProperty
 
     val familiaProperty = SimpleObjectProperty(this, "familia", familia)
-    var familia by familiaProperty
+    var familia: FamiliaDB by familiaProperty
 
     override fun toString(): String = descCorta
 }

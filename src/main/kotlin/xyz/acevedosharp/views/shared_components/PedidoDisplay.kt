@@ -2,7 +2,6 @@ package xyz.acevedosharp.views.shared_components
 
 import xyz.acevedosharp.ui_models.Pedido
 import xyz.acevedosharp.views.screens.PedidoSummaryView
-import xyz.acevedosharp.views.screens.PedidoView
 import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import javafx.scene.paint.LinearGradient

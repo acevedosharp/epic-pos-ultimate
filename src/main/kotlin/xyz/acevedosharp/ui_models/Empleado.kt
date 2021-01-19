@@ -7,10 +7,10 @@ import tornadofx.setValue
 
 class Empleado(var id: Int?, nombre: String, telefono: String) {
     val nombreProperty = SimpleStringProperty(this, "nombre", nombre)
-    var nombre by nombreProperty
+    var nombre: String by nombreProperty
 
     val telefonoProperty = SimpleStringProperty(this, "telefono", telefono)
-    var telefono by telefonoProperty
+    var telefono: String by telefonoProperty
 
     override fun toString(): String = nombre
 }

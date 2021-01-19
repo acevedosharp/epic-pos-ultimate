@@ -7,10 +7,10 @@ import xyz.acevedosharp.persistence.entities.ProductoDB
 
 class UncommittedItemVenta(producto: ProductoDB, cantidad: Int) {
     val productoProperty = SimpleObjectProperty(this, "producto", producto)
-    var producto by productoProperty
+    var producto: ProductoDB by productoProperty
 
     val cantidadProperty = SimpleIntegerProperty(this, "cantidad", cantidad)
-    var cantidad by cantidadProperty
+    var cantidad: Int by cantidadProperty
 }
 
 class UncommittedIVModel: ItemViewModel<UncommittedItemVenta>() {

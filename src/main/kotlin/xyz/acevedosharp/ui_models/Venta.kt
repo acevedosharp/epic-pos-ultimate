@@ -9,19 +9,19 @@ import java.time.LocalDateTime
 
 class Venta(var id: Int?, fechaHora: LocalDateTime, precioTotal: Int, pagoRecibido: Int, empleado: EmpleadoDB, cliente: ClienteDB) {
     val fechaHoraProperty = SimpleObjectProperty(this, "fechaHora", fechaHora)
-    var fechaHora by fechaHoraProperty
+    var fechaHora: LocalDateTime by fechaHoraProperty
 
     val precioTotalProperty = SimpleIntegerProperty(this, "precioTotal", precioTotal)
-    var precioTotal by precioTotalProperty
+    var precioTotal: Int by precioTotalProperty
 
     val pagoRecibidoProperty = SimpleIntegerProperty(this, "pagoRecibido", pagoRecibido)
-    var pagoRecibido by pagoRecibidoProperty
+    var pagoRecibido: Int by pagoRecibidoProperty
 
     val empleadoProperty = SimpleObjectProperty(this, "empleado", empleado)
-    var empleado by empleadoProperty
+    var empleado: EmpleadoDB by empleadoProperty
 
     val clienteProperty = SimpleObjectProperty(this, "cliente", cliente)
-    var cliente by clienteProperty
+    var cliente: ClienteDB by clienteProperty
 }
 
 class VentaModel: ItemViewModel<Venta>() {
