@@ -3,11 +3,11 @@ package xyz.acevedosharp.views
 import javafx.geometry.Pos
 import tornadofx.*
 
-class UnknownErrorDialog(message: String): Fragment() {
+class GenericErrorDialog(message: String): Fragment() {
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        label("Ocurrió un error inesperado") {
+        label("Ha ocurrido un error") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
             addClass(MainStylesheet.redLabel)
@@ -28,3 +28,5 @@ class UnknownErrorDialog(message: String): Fragment() {
         }
     }
 }
+
+class GenericApplicationException(message: String): RuntimeException(message)

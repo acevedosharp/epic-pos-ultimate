@@ -291,8 +291,10 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                             max = 100.0,
                             amountToStepBy = 0.1,
                             editable = true
-                        )
-                       label("0 para ajustar precio de venta a mano.")
+                        ).validator {
+                            if (it == 0.0) error("El margen de ganancia no puede ser 0.")
+                            else null
+                        }
                     }
                 }
                 field("Familia") {

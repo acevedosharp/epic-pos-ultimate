@@ -1,6 +1,5 @@
 package xyz.acevedosharp.views.screens
 
-import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.scene.layout.HBox
@@ -9,7 +8,6 @@ import tornadofx.*
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.controllers.ProductoController
 import xyz.acevedosharp.controllers.ReportesController
-import xyz.acevedosharp.ui_models.Producto
 import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.helpers.CurrentModule.REPORTES
 import xyz.acevedosharp.views.shared_components.SideNavigation
@@ -21,9 +19,6 @@ class ReporteScreen : View("Módulo de Reportes") {
 
     private var contentContainer: HBox by singleAssign()
     private val view = this
-    private val reportType = SimpleStringProperty("")
-    private val productQuantity = SimpleStringProperty("")
-    private val selectedProduct = SimpleObjectProperty<Producto>()
 
     private val startDate = SimpleStringProperty("")
     private val startDates = FXCollections.observableArrayList<String>()
@@ -31,18 +26,14 @@ class ReporteScreen : View("Módulo de Reportes") {
     private val endDate = SimpleStringProperty("")
     private val endDates = FXCollections.observableArrayList<String>()
 
-    override fun onDock() {
+    init {
         Joe.currentView = view
 
-        reportType.onChange { currentValue ->
-            startDates.setAll( reportesController.getStartDates(currentValue!!) )
-        }
+        startDates.setAll(reportesController.getStartDates())
 
-        startDate.onChange { currentValue ->
-            endDates.setAll( reportesController.getEndDates(reportType.value, currentValue!!) )
+        startDate.onChange { currentStartDate ->
+            endDates.setAll(reportesController.getEndDates(currentStartDate!!))
         }
-
-        super.onDock()
     }
 
     override val root = hbox {
@@ -56,48 +47,9 @@ class ReporteScreen : View("Módulo de Reportes") {
                     paddingBottom = 4
                     useMaxWidth = true
 
-                    vbox {
-                        label("Tipo de reporte").apply { addClass(MainStylesheet.searchLabel) }
-                        combobox(
-                            property = reportType,
-                            values = listOf("Ventas", "Pedidos")
-                        ) {
-                            prefWidth = 200.0
-                        }
-                    }
-
-                    vbox {
-                        hiddenWhen { reportType.isEqualTo("") }
-                        label("Cantidad de productos").apply { addClass(MainStylesheet.searchLabel) }
-                        combobox(
-                            property = productQuantity,
-                            values = listOf("Todos los productos", "Un producto")
-                        ) {
-                            prefWidth = 300.0
-                        }
-                    }
-
-                    vbox {
-                        hiddenWhen { productQuantity.isNotEqualTo("Un producto") }
-                        label("Selecciona un producto").apply { addClass(MainStylesheet.searchLabel) }
-                        combobox<Producto>(
-                            property = selectedProduct,
-                            values = productoController.getProductosWithUpdate().map { it.toModel() }
-                        ) {
-                            prefWidth = 400.0
-                            makeAutocompletable(true)
-                        }
-                    }
 
                     vbox {
                         label("Inicio").apply { addClass(MainStylesheet.searchLabel) }
-                        hiddenWhen {
-                            // true if valid
-                            val caseSingleProductValid = productQuantity.isEqualTo("Un producto").and(selectedProduct.isNotEqualTo(""))
-                            val caseAllProductsValid = productQuantity.isEqualTo("Todos los productos")
-
-                            return@hiddenWhen caseSingleProductValid.or(caseAllProductsValid).not()
-                        }
                         combobox(
                             property = startDate,
                             values = startDates
@@ -113,7 +65,7 @@ class ReporteScreen : View("Módulo de Reportes") {
                         )
                     }
 
-                    rectangle(width = 64, height = 0)
+                    rectangle(width = 32, height = 0)
 
                     button("Generar Reporte") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
@@ -123,9 +75,6 @@ class ReporteScreen : View("Módulo de Reportes") {
                         action {
                             contentContainer.children.setAll(
                                 reportesController.generateReport(
-                                    reportType.value,
-                                    productQuantity.value,
-                                    if (selectedProduct.isNull.value) selectedProduct.value else null,
                                     startDate.value,
                                     endDate.value
                                 )
@@ -136,9 +85,7 @@ class ReporteScreen : View("Módulo de Reportes") {
             }
 
             center {
-                contentContainer = hbox {
-
-                }
+                contentContainer = hbox()
             }
 
             style {

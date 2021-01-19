@@ -8,10 +8,10 @@ import java.sql.Timestamp
 @Repository
 interface VentaRepo: JpaRepository<VentaDB, Int> {
     // oldest venta
-    fun findFirstByOrderByVentaIdAsc(): VentaDB
+    fun findFirstByOrderByVentaIdAsc(): VentaDB?
 
     // newest venta
-    fun findFirstByOrderByVentaIdDesc(): VentaDB
+    fun findFirstByOrderByVentaIdDesc(): VentaDB?
 
     fun findAllByFechaHoraBetween(start: Timestamp, end: Timestamp): List<VentaDB>
 }

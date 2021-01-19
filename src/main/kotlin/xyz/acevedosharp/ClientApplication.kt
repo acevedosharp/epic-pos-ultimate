@@ -1,6 +1,5 @@
 package xyz.acevedosharp
 
-import xyz.acevedosharp.views.MainStylesheet
 import javafx.scene.image.Image
 import javafx.stage.Stage
 import org.hibernate.exception.JDBCConnectionException
@@ -8,8 +7,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.dao.DataAccessResourceFailureException
 import tornadofx.*
-import xyz.acevedosharp.views.NoInternetConnectionErrorDialog
-import xyz.acevedosharp.views.UnknownErrorDialog
+import xyz.acevedosharp.views.*
 import xyz.acevedosharp.views.screens.PuntoDeVentaView
 
 
@@ -32,7 +30,10 @@ class ClientApplication : App(PuntoDeVentaView::class, MainStylesheet::class) {
                     Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog())
                 } else if (!InternetConnection.isAvailable()) {
                     Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog()) // show this mf again just to make sure
-                } else {
+                } else if (e is GenericApplicationException) {
+                    Joe.currentView!!.openInternalWindow(GenericErrorDialog(e.message!!))
+                }
+                else {
                     Joe.currentView!!.openInternalWindow(UnknownErrorDialog(e.message!!))
                     e.printStackTrace()
                 }
