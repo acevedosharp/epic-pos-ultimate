@@ -74,6 +74,7 @@ class ReportesController : Controller() {
 
 
         val data = arrayListOf<RankingReportDisplay>()
+        var bagQuantity = 0
 
         val products = productoRepo.findAll()
 
@@ -85,27 +86,33 @@ class ReportesController : Controller() {
                     endDateTimestamp
                 )
 
-            var amountSold = 0
-            var soldQuantity = 0
+            if (producto.codigo != "bolsa") {
+                var amountSold = 0
+                var soldQuantity = 0
 
-            matchingSoldItems.forEach {
-                amountSold += it.cantidad * it.precioVenta.toInt()
-                soldQuantity += it.cantidad
-            }
+                matchingSoldItems.forEach {
+                    amountSold += it.cantidad * it.precioVenta.toInt()
+                    soldQuantity += it.cantidad
+                }
 
-            data.add(
-                RankingReportDisplay(
-                    producto.descripcionLarga,
-                    producto.precioVenta,
-                    amountSold,
-                    producto.margen,
-                    0.0,
-                    soldQuantity,
-                    amountSold * (1 - (producto.margen / 100)),
-                    0.0,
-                    producto
+                data.add(
+                    RankingReportDisplay(
+                        producto.descripcionLarga,
+                        producto.precioVenta,
+                        amountSold,
+                        producto.margen,
+                        0.0,
+                        soldQuantity,
+                        amountSold * (1 - (producto.margen / 100)),
+                        0.0,
+                        producto
+                    )
                 )
-            )
+            } else {
+                matchingSoldItems.forEach {
+                    bagQuantity += it.cantidad
+                }
+            }
         }
 
         var totalAmountSold = 0.0
@@ -159,23 +166,31 @@ class ReportesController : Controller() {
 
                 borderpane {
                     left {
-                        vbox(spacing = 12, alignment = Pos.CENTER_LEFT) {
+                        vbox(spacing = 6, alignment = Pos.CENTER_LEFT) {
                             prefHeight = 150.0
 
                             hbox {
-                                label("Ventas totales: ").style { fontSize = 28.px }
+                                label("Ventas totales: ").style { fontSize = 24.px }
                                 label("$${NumberFormat.getIntegerInstance().format(totalAmountSold)}").style {
                                     textFill = Color.GREEN
-                                    fontSize = 28.px
+                                    fontSize = 24.px
                                     fontWeight = FontWeight.BOLD
                                 }
                             }
 
                             hbox {
-                                label("Ganancias totales: ").style { fontSize = 28.px }
+                                label("Ganancias totales: ").style { fontSize = 24.px }
                                 label("$${NumberFormat.getIntegerInstance().format(totalAmountEarned)}").style {
                                     textFill = Color.GREEN
-                                    fontSize = 28.px
+                                    fontSize = 24.px
+                                    fontWeight = FontWeight.BOLD
+                                }
+                            }
+                            hbox {
+                                label("Número de bolsas: ").style { fontSize = 24.px }
+                                label(bagQuantity.toString()).style {
+                                    textFill = Color.GREEN
+                                    fontSize = 24.px
                                     fontWeight = FontWeight.BOLD
                                 }
                             }

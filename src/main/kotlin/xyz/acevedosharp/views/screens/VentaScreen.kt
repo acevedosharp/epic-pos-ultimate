@@ -7,7 +7,6 @@ import javafx.geometry.Pos
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import tornadofx.*
-import tornadofx.control.DateTimePicker
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.controllers.VentaController
 import xyz.acevedosharp.persistence.entities.ItemVentaDB
@@ -21,19 +20,19 @@ import java.util.*
 class ChooseHistoryRange : Fragment() {
     private val startYear = SimpleIntegerProperty(LocalDateTime.now().year)
     private val startMonth = SimpleObjectProperty<NumberToMonth>()
-    private val startDay = SimpleIntegerProperty()
+    private val startDay = SimpleIntegerProperty(1)
     private val startHour = SimpleIntegerProperty()
     private val startMinute = SimpleIntegerProperty()
     private val startDays = FXCollections.observableArrayList<Int>()
 
     private val endYear = SimpleIntegerProperty(LocalDateTime.now().year)
     private val endMonth = SimpleObjectProperty<NumberToMonth>()
-    private val endDay = SimpleIntegerProperty()
+    private val endDay = SimpleIntegerProperty(1)
     private val endHour = SimpleIntegerProperty()
     private val endMinute = SimpleIntegerProperty()
     private val endDays = FXCollections.observableArrayList<Int>()
 
-    class NumberToMonth(val n: Int, val month: String) {
+    class NumberToMonth(val n: Int, private val month: String) {
         override fun toString() = month
     }
 
@@ -204,7 +203,7 @@ class ChooseHistoryRange : Fragment() {
     }
 
     override fun onUndock() {
-        Joe.currentView = params["papi"] as UIComponent
+        Joe.currentView = params["owner"] as UIComponent
         super.onUndock()
     }
 }

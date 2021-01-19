@@ -161,3 +161,7 @@ create table item_venta
             on update cascade
 );
 
+# ------------------------ add bolsa ------------------------
+insert into familia(nombre) VALUE ('Bolsas');
+insert into producto(codigo, desc_larga, desc_corta, precio_venta, precio_compra_efectivo, margen, existencias, activo, familia)
+    value ('bolsa', 'Bolsa', 'Bolsa', 50, 0, 0.1, 0, 1, 1);

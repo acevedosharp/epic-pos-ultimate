@@ -8,7 +8,6 @@ import xyz.acevedosharp.controllers.VentaController
 import xyz.acevedosharp.ui_models.*
 import xyz.acevedosharp.views.CodigoNotRecognizedDialog
 import xyz.acevedosharp.views.MainStylesheet
-import xyz.acevedosharp.views.UnknownErrorDialog
 import xyz.acevedosharp.views.helpers.CurrentModule
 import xyz.acevedosharp.views.helpers.RecipePrintingService
 import xyz.acevedosharp.views.shared_components.ItemVentaComponent
@@ -73,6 +72,7 @@ class PuntoDeVentaView : View("Punto de venta") {
     }
 
     init {
+        println("PUNTO DE VENTA MODULE")
         // Let's hope the scene doesn't take longer than this to load - probably not, 650ms is a lot of time
         runLater(Duration.millis(650.0)) {
             currentCodigoTextField.requestFocus()
@@ -194,8 +194,8 @@ class PuntoDeVentaView : View("Punto de venta") {
                         action {
                             openInternalWindow<CreateItemVentaManuallyForm>(
                                 closeButton = false,
-                                modal = true, params =
-                                mapOf(
+                                modal = true,
+                                params = mapOf(
                                     "observableList" to uncommittedItemsAsViews,
                                     "papi" to view
                                 )
@@ -398,10 +398,31 @@ class PuntoDeVentaView : View("Punto de venta") {
                     }
                     rectangle(width = 0.0, height = 10.0)
                     hbox(spacing = 5) {
-                        button("Realizar venta") {
+                        button {
+                            prefWidth = 80.0
+                            prefHeight = 130.0
+
+                            graphic = imageview("images/bag.png") {
+                                fitWidth = 72.0
+                                fitHeight = 72.0
+                            }
+                            addClass(MainStylesheet.blueButton)
+                            action {
+                                openInternalWindow<BolsasSelect>(
+                                    closeButton = false,
+                                    modal = true,
+                                    params = mapOf(
+                                        "observableList" to uncommittedItemsAsViews,
+                                        "owner" to view
+                                    )
+                                )
+                                removeAlwaysFocusListener()
+                            }
+                        }
+                        button("Vender") {
                             addClass(MainStylesheet.greenButton)
-                            prefWidth = 340.0
-                            prefHeight = 80.0
+                            prefWidth = 260.0
+                            prefHeight = 130.0
                             style {
                                 fontSize = 40.px
                                 fontWeight = FontWeight.BOLD
@@ -414,7 +435,7 @@ class PuntoDeVentaView : View("Punto de venta") {
                                         modal = true,
                                         params = mapOf(
                                             "observableList" to uncommittedItemsAsViews,
-                                            "papi" to view,
+                                            "owner" to view,
                                             "dineroEntregado" to dineroEntregado,
                                             "valorTotal" to valorTotal
                                         )
@@ -424,20 +445,20 @@ class PuntoDeVentaView : View("Punto de venta") {
                             }
                         }
                         button {
-                            prefHeight = 80.0
                             prefWidth = 80.0
+                            prefHeight = 130.0
 
                             graphic = imageview("images/history.png") {
                                 fitWidth = 72.0
                                 fitHeight = 72.0
                             }
-                            addClass(MainStylesheet.greenButton)
+                            addClass(MainStylesheet.grayButton)
                             action {
                                 openInternalWindow<ChooseHistoryRange>(
                                     closeButton = false,
                                     modal = true,
                                     params = mapOf(
-                                        "papi" to view
+                                        "owner" to view
                                     )
                                 )
                                 removeAlwaysFocusListener()
@@ -555,6 +576,62 @@ class CreateItemVentaManuallyForm : Fragment() {
     }
 }
 
+class BolsasSelect : Fragment() {
+    private val productoController = find<ProductoController>()
+
+    private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> = params["observableList"] as ObservableList<ItemVentaComponent>
+    private val owner = params["owner"] as UIComponent
+    private val numeroBolsas = SimpleIntegerProperty(1)
+
+    override val root = vbox(spacing = 0, alignment = Pos.CENTER) {
+        useMaxSize = true
+        prefWidth = 600.0
+        label("Bolsas") {
+            useMaxWidth = true
+            addClass(MainStylesheet.titleLabel, MainStylesheet.grayLabel)
+        }
+        combobox(numeroBolsas, IntRange(1, 8).map { it }.toObservable()) {
+            prefWidth = 400.0
+            makeAutocompletable(false)
+            style { fontSize = 28.px }
+        }
+        hbox(spacing = 80, alignment = Pos.CENTER) {
+            button("Añadir") {
+                addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
+                action {
+                    uncommittedItemsAsViews.add(
+                        ItemVentaComponent(
+                            UncommittedItemVenta(
+                                productoController.findByCodigo("bolsa"),
+                                numeroBolsas.value
+                            ),
+                            uncommittedItemsAsViews,
+                            uncommittedItemsAsViews.size
+                        )
+                    )
+                    close()
+                }
+            }
+            button("Cancelar") {
+                addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
+                action { close() }
+            }
+        }
+
+    }
+
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
+}
+
 class CommitVenta : Fragment() {
 
     private val printingService = find<CustomApplicationContextWrapper>().context.getBean(RecipePrintingService::class.java)
@@ -562,12 +639,11 @@ class CommitVenta : Fragment() {
     private val empleadoController = find<EmpleadoController>()
     private val clienteController = find<ClienteController>()
     private val ventaController = find<VentaController>()
-    private val productoController = find<ProductoController>()
     private val model = VentaModel()
 
     @Suppress("UNCHECKED_CAST")
     private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> = params["observableList"] as ObservableList<ItemVentaComponent>
-    private val papi: PuntoDeVentaView = params["papi"] as PuntoDeVentaView
+    private val owner: PuntoDeVentaView = params["owner"] as PuntoDeVentaView
     private val dineroEntregado = params["dineroEntregado"] as SimpleIntegerProperty
     private val valorTotal = params["valorTotal"] as SimpleDoubleProperty
     //private val impresora = SimpleStringProperty(printingService.getPrinters()[0])
@@ -580,7 +656,7 @@ class CommitVenta : Fragment() {
     }
 
     override fun onUndock() {
-        Joe.currentView = params["papi"] as UIComponent
+        Joe.currentView = params["owner"] as UIComponent
         super.onUndock()
     }
 
@@ -597,9 +673,10 @@ class CommitVenta : Fragment() {
         form {
             fieldset {
                 field("Empleado") {
-                    combobox<EmpleadoDB>(model.empleado, empleadoController.getEmpleadosWithUpdate()).apply {
+                    combobox<EmpleadoDB>(model.empleado, empleadoController.getEmpleadosWithUpdate()) {
                         prefWidth = 400.0
                         makeAutocompletable(false)
+                        style { fontSize = 28.px }
                     }.validator {
                         when (it) {
                             null -> error("Empleado requerido")
@@ -608,9 +685,10 @@ class CommitVenta : Fragment() {
                     }
                 }
                 field("Cliente") {
-                    combobox<ClienteDB>(model.cliente, clienteController.getClientesWithUpdate()).apply {
+                    combobox<ClienteDB>(model.cliente, clienteController.getClientesWithUpdate()) {
                         prefWidth = 400.0
                         makeAutocompletable(false)
+                        style { fontSize = 28.px }
                     }.validator {
                         when (it) {
                             null -> error("Cliente requerido")
@@ -619,9 +697,10 @@ class CommitVenta : Fragment() {
                     }
                 }
                 field("¿Imprimir factura?") {
-                    combobox<String>(imprimirFactura, listOf("Sí", "No")).apply {
+                    combobox<String>(imprimirFactura, listOf("Sí", "No")) {
                         prefWidth = 400.0
                         makeAutocompletable(false)
+                        style { fontSize = 28.px }
                     }
                 }
                 //field("Impresora seleccionada") {
@@ -665,7 +744,7 @@ class CommitVenta : Fragment() {
                                 uncommittedItemsAsViews.clear()
 
                                 uncommittedItemsAsViews.clear()
-                                papi.addAlwaysFocusListener()
+                                owner.addAlwaysFocusListener()
                                 valorTotal.set(0.0)
                                 dineroEntregado.set(0)
                                 close()

@@ -37,7 +37,7 @@ class ProductoView : View("Módulo de productos") {
     private val view = this
 
     init {
-        println("module initialization")
+        println("PRODUCTOS MODULE")
         Joe.currentView = view
 
         productoController.getProductosClean().onChange {
