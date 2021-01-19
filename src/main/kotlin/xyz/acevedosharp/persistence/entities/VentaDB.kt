@@ -30,6 +30,8 @@ class VentaDB(
     @OneToMany(mappedBy = "venta", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     val items: Set<ItemVentaDB>
 ) {
+    val cambio: Int
+    get() = pagoRecibido - precioTotal
     fun toModel() = Venta(
         ventaId,
         fechaHora.toLocalDateTime(),

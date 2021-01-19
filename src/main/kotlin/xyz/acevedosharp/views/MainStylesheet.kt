@@ -28,6 +28,7 @@ class MainStylesheet: Stylesheet() {
 
         // Labels
         val titleLabel  by cssclass()
+        val grayLabel  by cssclass()
         val greenLabel  by cssclass()
         val blueLabel   by cssclass()
         val redLabel    by cssclass()
@@ -247,6 +248,7 @@ class MainStylesheet: Stylesheet() {
             alignment = Pos.CENTER
 
         }
+        grayLabel { backgroundColor += c("#404040") }
         greenLabel { backgroundColor += c("#75C759") }
         blueLabel { backgroundColor += c("#70A7C7")}
         redLabel { backgroundColor += c("#CF484A") }

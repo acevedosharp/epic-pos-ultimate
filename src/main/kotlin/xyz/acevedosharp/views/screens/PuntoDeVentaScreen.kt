@@ -397,24 +397,47 @@ class PuntoDeVentaView : View("Punto de venta") {
                         }
                     }
                     rectangle(width = 0.0, height = 10.0)
-                    button("Realizar venta") {
-                        addClass(MainStylesheet.greenButton)
-                        prefWidth = 440.0
-                        style {
-                            fontSize = 40.px
-                            fontWeight = FontWeight.BOLD
-                            textFill = Color.WHITE
+                    hbox(spacing = 5) {
+                        button("Realizar venta") {
+                            addClass(MainStylesheet.greenButton)
+                            prefWidth = 340.0
+                            prefHeight = 80.0
+                            style {
+                                fontSize = 40.px
+                                fontWeight = FontWeight.BOLD
+                                textFill = Color.WHITE
+                            }
+                            action {
+                                if (uncommittedItems.size > 0 && dineroEntregado.value >= valorTotal.value) {
+                                    openInternalWindow<CommitVenta>(
+                                        closeButton = false,
+                                        modal = true,
+                                        params = mapOf(
+                                            "observableList" to uncommittedItemsAsViews,
+                                            "papi" to view,
+                                            "dineroEntregado" to dineroEntregado,
+                                            "valorTotal" to valorTotal
+                                        )
+                                    )
+                                    removeAlwaysFocusListener()
+                                }
+                            }
                         }
-                        action {
-                            if (uncommittedItems.size > 0 && dineroEntregado.value >= valorTotal.value) {
-                                openInternalWindow<CommitVenta>(
+                        button {
+                            prefHeight = 80.0
+                            prefWidth = 80.0
+
+                            graphic = imageview("images/history.png") {
+                                fitWidth = 72.0
+                                fitHeight = 72.0
+                            }
+                            addClass(MainStylesheet.greenButton)
+                            action {
+                                openInternalWindow<ChooseHistoryRange>(
                                     closeButton = false,
                                     modal = true,
                                     params = mapOf(
-                                        "observableList" to uncommittedItemsAsViews,
-                                        "papi" to view,
-                                        "dineroEntregado" to dineroEntregado,
-                                        "valorTotal" to valorTotal
+                                        "papi" to view
                                     )
                                 )
                                 removeAlwaysFocusListener()

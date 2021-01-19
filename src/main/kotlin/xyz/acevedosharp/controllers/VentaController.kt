@@ -19,6 +19,8 @@ class VentaController: Controller(), UpdateSnapshot {
 
     private val ventas: ObservableList<VentaDB> = FXCollections.observableArrayList()
 
+    fun getVentasFromTo(start: Timestamp, end: Timestamp) = ventaRepo.findAllByFechaHoraBetween(start, end)
+
     fun getVentasWithUpdate(): ObservableList<VentaDB> {
         updateSnapshot()
         return ventas
