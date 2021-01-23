@@ -2,6 +2,7 @@ package xyz.acevedosharp.controllers
 
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import org.springframework.transaction.annotation.Transactional
 import xyz.acevedosharp.CustomApplicationContextWrapper
 import xyz.acevedosharp.ui_models.UncommittedItemVenta
 import xyz.acevedosharp.ui_models.Venta
@@ -13,9 +14,10 @@ import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class VentaController: Controller(), UpdateSnapshot {
+open class VentaController: Controller(), UpdateSnapshot {
     private val ventaRepo = find<CustomApplicationContextWrapper>().context.getBean(VentaRepo::class.java)
     private val itemVentaRepo = find<CustomApplicationContextWrapper>().context.getBean(ItemVentaRepo::class.java)
+    private val productoRepo = find<CustomApplicationContextWrapper>().context.getBean(ProductoRepo::class.java)
 
     private val ventas: ObservableList<VentaDB> = FXCollections.observableArrayList()
 
@@ -30,7 +32,8 @@ class VentaController: Controller(), UpdateSnapshot {
         return ventas
     }
 
-    fun add(venta: Venta, items: List<UncommittedItemVenta>){
+    @Transactional
+    open fun add(venta: Venta, items: List<UncommittedItemVenta>){
         val preRes = ventaRepo.save(
             VentaDB(
                 null,
@@ -45,7 +48,7 @@ class VentaController: Controller(), UpdateSnapshot {
 
         updateSnapshot()
 
-        itemVentaRepo.saveAll(items.map { uncommittedItemVenta ->
+        val itemsVenta = itemVentaRepo.saveAll(items.map { uncommittedItemVenta ->
             ItemVentaDB(
                 null,
                 Timestamp.valueOf(venta.fechaHora),
@@ -55,6 +58,16 @@ class VentaController: Controller(), UpdateSnapshot {
                 preRes
             )
         })
+
+        val productosWithNewExistencias = itemsVenta.map { currentItemVenta ->
+            val producto = currentItemVenta.producto
+
+            producto.existencias -= currentItemVenta.cantidad
+
+            return@map producto
+        }
+
+        productoRepo.saveAll(productosWithNewExistencias)
     }
 
     override fun updateSnapshot() {

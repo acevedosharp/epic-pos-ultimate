@@ -75,6 +75,7 @@ class ReportesController : Controller() {
 
         val data = arrayListOf<RankingReportDisplay>()
         var bagQuantity = 0
+        var totalSales = 0
 
         val products = productoRepo.findAll()
 
@@ -85,6 +86,8 @@ class ReportesController : Controller() {
                     startDateTimestamp,
                     endDateTimestamp
                 )
+
+            totalSales = matchingSoldItems.groupBy { it.venta }.size
 
             if (producto.codigo != "bolsa") {
                 var amountSold = 0
@@ -103,7 +106,7 @@ class ReportesController : Controller() {
                         producto.margen,
                         0.0,
                         soldQuantity,
-                        amountSold * (1 - (producto.margen / 100)),
+                        amountSold * (producto.margen / 100),
                         0.0,
                         producto
                     )
@@ -180,7 +183,7 @@ class ReportesController : Controller() {
 
                             hbox {
                                 label("Ganancias totales: ").style { fontSize = 24.px }
-                                label("$${NumberFormat.getIntegerInstance().format(totalAmountEarned)}").style {
+                                label("$${NumberFormat.getIntegerInstance().format(totalAmountEarned)} (${(totalAmountEarned/totalAmountSold)*100}%)").style {
                                     textFill = Color.GREEN
                                     fontSize = 24.px
                                     fontWeight = FontWeight.BOLD
@@ -194,51 +197,62 @@ class ReportesController : Controller() {
                                     fontWeight = FontWeight.BOLD
                                 }
                             }
+                            hbox {
+                                label("Número de ventas: ").style { fontSize = 24.px }
+                                label("$totalSales (promedio de $${NumberFormat.getIntegerInstance().format(totalAmountSold / totalSales)} por venta)").style {
+                                    textFill = Color.GREEN
+                                    fontSize = 24.px
+                                    fontWeight = FontWeight.BOLD
+                                }
+                            }
                         }
                     }
 
                     center {
-                        hbox(spacing = 20, alignment = Pos.CENTER) {
-                            vbox {
-                                label("Filtrar por descripción").style { fontSize = 18.px }
-                                textfield {
+                        vbox(spacing = 10, alignment = Pos.CENTER) {
+                            hbox(spacing = 20, alignment = Pos.CENTER) {
+                                vbox {
+                                    label("Filtrar por descripción").style { fontSize = 18.px }
+                                    textfield {
 
-                                    textProperty().onChange { searchString ->
-                                        table.items = data.filter {
-                                            it.producto.descripcionLarga.toLowerCase().contains(searchString!!.toLowerCase()) ||
-                                                    it.producto.descripcionCorta.toLowerCase().contains(searchString.toLowerCase())
-                                        }.toObservable()
-                                    }
-                                    style { fontSize = 24.px }
-                                }
-
-                                minWidth = 400.0
-                                maxWidth = 400.0
-                                prefWidth = 400.0
-                            }
-
-                            vbox {
-                                label("Buscar por familia").style { fontSize = 18.px }
-                                combobox<FamiliaDB>(searchByFamilia, familiaController.getFamiliasWithUpdate()).apply {
-                                    prefWidth = 300.0
-                                    makeAutocompletable(false)
-
-                                    valueProperty().onChange { searchFamilia ->
-                                        if (searchFamilia != null) {
+                                        textProperty().onChange { searchString ->
                                             table.items = data.filter {
-                                                it.producto.familia.familiaId == searchFamilia.familiaId
+                                                it.producto.descripcionLarga.toLowerCase().contains(searchString!!.toLowerCase()) ||
+                                                        it.producto.descripcionCorta.toLowerCase().contains(searchString.toLowerCase())
                                             }.toObservable()
-                                        } else {
-                                            table.items = data.toObservable()
                                         }
+                                        style { fontSize = 24.px }
                                     }
+
+                                    minWidth = 400.0
+                                    maxWidth = 400.0
+                                    prefWidth = 400.0
                                 }
 
-                                prefWidth = 250.0
-                            }
-                            button("Quitar filtro") {
-                                addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton)
-                                action { searchByFamilia.value = null }
+                                hbox(spacing = 10, alignment = Pos.CENTER) {
+                                    vbox {
+                                        label("Buscar por familia").style { fontSize = 18.px }
+                                        combobox<FamiliaDB>(searchByFamilia, familiaController.getFamiliasWithUpdate()).apply {
+                                            prefWidth = 300.0
+                                            makeAutocompletable(false)
+
+                                            valueProperty().onChange { searchFamilia ->
+                                                if (searchFamilia != null) {
+                                                    table.items = data.filter {
+                                                        it.producto.familia.familiaId == searchFamilia.familiaId
+                                                    }.toObservable()
+                                                } else {
+                                                    table.items = data.toObservable()
+                                                }
+                                            }
+                                        }
+                                        prefWidth = 250.0
+                                    }
+                                    button("Quitar filtro") {
+                                        addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton)
+                                        action { searchByFamilia.value = null }
+                                    }
+                                }
                             }
                         }
                     }

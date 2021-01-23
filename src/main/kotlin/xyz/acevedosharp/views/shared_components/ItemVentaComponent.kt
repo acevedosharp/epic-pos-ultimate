@@ -2,18 +2,25 @@ package xyz.acevedosharp.views.shared_components
 
 import xyz.acevedosharp.ui_models.UncommittedItemVenta
 import xyz.acevedosharp.views.MainStylesheet
-import javafx.beans.property.SimpleIntegerProperty
-import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
 import tornadofx.*
+import xyz.acevedosharp.controllers.CurrentUncommittedIVS
 
-class ItemVentaComponent(uncommittedItemVenta: UncommittedItemVenta, observableList: ObservableList<ItemVentaComponent>, index: Int) : Fragment() {
+class ItemVentaComponent(uncommittedItemVenta: UncommittedItemVenta, currentUncommittedIVS: CurrentUncommittedIVS) : Fragment() {
+
+    val currentUncommittedIVS = find<CurrentUncommittedIVS>()
+
     val producto = uncommittedItemVenta.producto // Not observable
     val cantidad = uncommittedItemVenta.cantidadProperty // Observable
-    val indexProperty = SimpleIntegerProperty(index)
+
+    init {
+        cantidad.onChange {
+            currentUncommittedIVS.recalculateTotal()
+        }
+    }
 
     override val root = region {
         setPrefSize(1186.0, 80.0)
@@ -79,7 +86,7 @@ class ItemVentaComponent(uncommittedItemVenta: UncommittedItemVenta, observableL
                     textFill = Color.WHITE
                 }
                 action {
-                    observableList.removeAt(indexProperty.value)
+                    currentUncommittedIVS.removeByCodigo(producto.codigo)
                 }
             }
         }

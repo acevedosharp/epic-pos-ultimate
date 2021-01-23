@@ -3,7 +3,7 @@ package xyz.acevedosharp.views
 import javafx.geometry.Pos
 import tornadofx.*
 
-class UnknownErrorDialog(message: String): Fragment() {
+class UnexpectedErrorDialog(message: String): Fragment() {
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true

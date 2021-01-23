@@ -34,7 +34,7 @@ class ClientApplication : App(PuntoDeVentaView::class, MainStylesheet::class) {
                     Joe.currentView!!.openInternalWindow(GenericErrorDialog(e.message!!))
                 }
                 else {
-                    Joe.currentView!!.openInternalWindow(UnknownErrorDialog(e.message!!))
+                    Joe.currentView!!.openInternalWindow(UnexpectedErrorDialog(e.message!!))
                     e.printStackTrace()
                 }
             } else {

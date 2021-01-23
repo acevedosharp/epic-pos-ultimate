@@ -3,10 +3,6 @@
 package xyz.acevedosharp.views.screens
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.controllers.ClienteController
-import xyz.acevedosharp.controllers.EmpleadoController
-import xyz.acevedosharp.controllers.ProductoController
-import xyz.acevedosharp.controllers.VentaController
 import xyz.acevedosharp.ui_models.*
 import xyz.acevedosharp.views.CodigoNotRecognizedDialog
 import xyz.acevedosharp.views.MainStylesheet
@@ -15,7 +11,6 @@ import xyz.acevedosharp.views.helpers.RecipePrintingService
 import xyz.acevedosharp.views.shared_components.ItemVentaComponent
 import xyz.acevedosharp.views.shared_components.SideNavigation
 import javafx.beans.binding.Bindings
-import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.value.ChangeListener
@@ -34,28 +29,28 @@ import javafx.scene.text.TextAlignment
 import javafx.util.Duration
 import tornadofx.*
 import xyz.acevedosharp.Joe
+import xyz.acevedosharp.controllers.*
 import xyz.acevedosharp.persistence.entities.ClienteDB
 import xyz.acevedosharp.persistence.entities.EmpleadoDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
 import xyz.acevedosharp.views.GenericApplicationException
+import xyz.acevedosharp.views.UnexpectedErrorDialog
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import kotlin.math.ceil
 import kotlin.math.floor
-import kotlin.math.roundToInt
 
 class PuntoDeVentaView : View("Punto de venta") {
 
     private val productoController = find<ProductoController>()
+    private val currentUncommittedIVS = find<CurrentUncommittedIVS>()
+
     private val view = this
     private lateinit var scene: Scene
     private lateinit var listener: ChangeListener<Node>
 
-    private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> = FXCollections.observableArrayList()
     private val uncommittedItems: ObservableList<Node> = FXCollections.observableArrayList()
     private val dineroEntregado = SimpleIntegerProperty()
-    private val valorTotal = SimpleDoubleProperty(0.0)
-    private val valorTotalRoundedAndFormatted = SimpleStringProperty("0")
     private val currentCodigo = SimpleStringProperty()
 
     private lateinit var currentCodigoTextField: TextField
@@ -63,16 +58,9 @@ class PuntoDeVentaView : View("Punto de venta") {
     init {
         Joe.currentView = view
 
-        valorTotal.onChange { valorTotalRoundedAndFormatted.value = NumberFormat.getIntegerInstance().format(it.roundToInt()) }
-        uncommittedItemsAsViews.onChange {
-            uncommittedItemsAsViews.forEachIndexed { index, node: ItemVentaComponent ->
-                node.indexProperty.set(index)
-            }
-            uncommittedItems.setAll(uncommittedItemsAsViews.map { it.root })
-            recalculateTotal()
+        currentUncommittedIVS.ivs.onChange {
+            uncommittedItems.setAll(currentUncommittedIVS.ivs.map { it.root })
         }
-        uncommittedItems.setAll(uncommittedItemsAsViews.map { it.root })
-
         // Let's hope the scene doesn't take longer than this to load - probably not, 650ms is a lot of time
         runLater(Duration.millis(650.0)) {
             currentCodigoTextField.requestFocus()
@@ -158,18 +146,17 @@ class PuntoDeVentaView : View("Punto de venta") {
                         currentCodigoTextField = this
                         prefWidth = 500.0
                         setOnAction {
-                            if (currentCodigo.value in uncommittedItemsAsViews.map { it.producto.codigo }) {
-                                val res = uncommittedItemsAsViews.find { it.producto.codigo == currentCodigo.value }!!
+                            if (currentCodigo.value in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
+                                val res = currentUncommittedIVS.ivs.find { it.producto.codigo == currentCodigo.value }!!
                                 res.cantidad.set(res.cantidad.value + 1)
                             } else if (currentCodigo.value in productoController.getProductosWithUpdate().map { it.codigo }) {
-                                uncommittedItemsAsViews.add(
+                                currentUncommittedIVS.ivs.add(
                                     ItemVentaComponent(
                                         UncommittedItemVenta(
                                             productoController.findByCodigo(currentCodigo.value),
                                             1
                                         ),
-                                        uncommittedItemsAsViews,
-                                        uncommittedItemsAsViews.size
+                                        currentUncommittedIVS
                                     )
                                 )
                             } else {
@@ -180,7 +167,6 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 )
                             }
                             currentCodigo.set("")
-                            recalculateTotal()
                         }
                     }.style {
                         fontSize = 32.px
@@ -196,7 +182,6 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 closeButton = false,
                                 modal = true,
                                 params = mapOf(
-                                    "observableList" to uncommittedItemsAsViews,
                                     "papi" to view
                                 )
                             )
@@ -232,9 +217,9 @@ class PuntoDeVentaView : View("Punto de venta") {
                     paddingAll = 8.0
                     prefWidth = 474.0
                     hgrow = Priority.ALWAYS
-                    text(Bindings.concat("Total: $", valorTotalRoundedAndFormatted)).style {
+                    text(Bindings.concat("Total: $", currentUncommittedIVS.totalDisplay)).style {
                         fontSize = 54.px
-                    } // Dollar sign goes before the value?
+                    }
 
                     textfield(dineroEntregado) {
                         prefWidth = 440.0; maxWidth = 440.0
@@ -412,7 +397,6 @@ class PuntoDeVentaView : View("Punto de venta") {
                                     closeButton = false,
                                     modal = true,
                                     params = mapOf(
-                                        "observableList" to uncommittedItemsAsViews,
                                         "owner" to view
                                     )
                                 )
@@ -429,19 +413,18 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 textFill = Color.WHITE
                             }
                             action {
-                                if (uncommittedItems.size > 0 && dineroEntregado.value >= valorTotal.value) {
+                                if (uncommittedItems.size > 0 && dineroEntregado.value >= currentUncommittedIVS.total.value) {
                                     openInternalWindow<CommitVenta>(
                                         closeButton = false,
                                         modal = true,
                                         params = mapOf(
-                                            "observableList" to uncommittedItemsAsViews,
                                             "owner" to view,
                                             "dineroEntregado" to dineroEntregado,
-                                            "valorTotal" to valorTotal
+                                            "valorTotal" to currentUncommittedIVS.total.value.toDouble()
                                         )
                                     )
                                     removeAlwaysFocusListener()
-                                } else if (dineroEntregado.value < valorTotal.value) {
+                                } else if (dineroEntregado.value < currentUncommittedIVS.total.value) {
                                     throw GenericApplicationException("El dinero entregado no es suficiente.")
                                 }
                             }
@@ -472,10 +455,6 @@ class PuntoDeVentaView : View("Punto de venta") {
         }
     }
 
-    private fun recalculateTotal() {
-        valorTotal.set(uncommittedItemsAsViews.sumByDouble { (it.cantidad.value.toDouble() * it.producto.precioVenta) })
-    }
-
     fun addAlwaysFocusListener() {
         currentCodigoTextField.requestFocus()
         scene.focusOwnerProperty().addListener(listener)
@@ -489,11 +468,9 @@ class PuntoDeVentaView : View("Punto de venta") {
 class CreateItemVentaManuallyForm : Fragment() {
 
     private val productoController = find<ProductoController>()
+    private val currentUncommittedIVS = find<CurrentUncommittedIVS>()
     private val model = UncommittedIVModel()
 
-    @Suppress("UNCHECKED_CAST")
-    private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> =
-        params["observableList"] as ObservableList<ItemVentaComponent>
     private val papi: PuntoDeVentaView = params["papi"] as PuntoDeVentaView
 
     override fun onDock() {
@@ -550,16 +527,30 @@ class CreateItemVentaManuallyForm : Fragment() {
                         )
                         action {
                             model.commit {
-                                uncommittedItemsAsViews.add(
-                                    ItemVentaComponent(
-                                        UncommittedItemVenta(
-                                            model.producto.value,
-                                            model.cantidad.value.toInt()
-                                        ),
-                                        uncommittedItemsAsViews,
-                                        uncommittedItemsAsViews.size
+                                val producto = model.producto.value
+                                val cantidad = model.cantidad.value
+
+                                if (producto.codigo in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
+                                    val res = currentUncommittedIVS.ivs.find { it.producto.codigo == producto.codigo }!!
+                                    res.cantidad.set(res.cantidad.value + cantidad)
+                                } else if (productoController.getProductosWithUpdate().find { it.codigo == producto.codigo } != null) {
+                                    currentUncommittedIVS.ivs.add(
+                                        ItemVentaComponent(
+                                            UncommittedItemVenta(
+                                                producto,
+                                                cantidad
+                                            ),
+                                            currentUncommittedIVS
+                                        )
                                     )
-                                )
+                                } else {
+                                    openInternalWindow<CodigoNotRecognizedDialog>(
+                                        params = mapOf(
+                                            "owner" to this@CreateItemVentaManuallyForm
+                                        )
+                                    )
+                                }
+
                                 papi.addAlwaysFocusListener()
                                 close()
                             }
@@ -579,9 +570,10 @@ class CreateItemVentaManuallyForm : Fragment() {
 }
 
 class BolsasSelect : Fragment() {
-    private val productoController = find<ProductoController>()
 
-    private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> = params["observableList"] as ObservableList<ItemVentaComponent>
+    private val productoController = find<ProductoController>()
+    private val currentUncommittedIVS = find<CurrentUncommittedIVS>()
+
     private val owner = params["owner"] as UIComponent
     private val numeroBolsas = SimpleIntegerProperty(1)
 
@@ -601,16 +593,25 @@ class BolsasSelect : Fragment() {
             button("Añadir") {
                 addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                 action {
-                    uncommittedItemsAsViews.add(
-                        ItemVentaComponent(
-                            UncommittedItemVenta(
-                                productoController.findByCodigo("bolsa"),
-                                numeroBolsas.value
-                            ),
-                            uncommittedItemsAsViews,
-                            uncommittedItemsAsViews.size
+                    val producto = productoController.findByCodigo("bolsa")
+                    val cantidad = numeroBolsas.value
+
+                    if (producto.codigo in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
+                        val res = currentUncommittedIVS.ivs.find { it.producto.codigo == producto.codigo }!!
+                        res.cantidad.set(res.cantidad.value + cantidad)
+                    } else if (productoController.getProductosWithUpdate().find { it.codigo == producto.codigo } != null) {
+                        currentUncommittedIVS.ivs.add(
+                            ItemVentaComponent(
+                                UncommittedItemVenta(
+                                    producto,
+                                    cantidad
+                                ),
+                                currentUncommittedIVS
+                            )
                         )
-                    )
+                    } else {
+                        this@BolsasSelect.openInternalWindow(UnexpectedErrorDialog("Debe existir un producto con el código: 'bolsa'"))
+                    }
                     close()
                 }
             }
@@ -641,13 +642,13 @@ class CommitVenta : Fragment() {
     private val empleadoController = find<EmpleadoController>()
     private val clienteController = find<ClienteController>()
     private val ventaController = find<VentaController>()
+    private val currentUncommittedIVS = find<CurrentUncommittedIVS>()
     private val model = VentaModel()
 
     @Suppress("UNCHECKED_CAST")
-    private val uncommittedItemsAsViews: ObservableList<ItemVentaComponent> = params["observableList"] as ObservableList<ItemVentaComponent>
     private val owner: PuntoDeVentaView = params["owner"] as PuntoDeVentaView
     private val dineroEntregado = params["dineroEntregado"] as SimpleIntegerProperty
-    private val valorTotal = params["valorTotal"] as SimpleDoubleProperty
+    private val valorTotal = params["valorTotal"] as Double
     //private val impresora = SimpleStringProperty(printingService.getPrinters()[0])
 
     private val imprimirFactura = SimpleStringProperty("Sí")
@@ -669,7 +670,7 @@ class CommitVenta : Fragment() {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
         }
-        label("Cambio: $${NumberFormat.getIntegerInstance().format(dineroEntregado.value - valorTotal.value)}").style {
+        label("Cambio: $${NumberFormat.getIntegerInstance().format(dineroEntregado.value - valorTotal)}").style {
             fontSize = 64.px
         }
         form {
@@ -726,12 +727,12 @@ class CommitVenta : Fragment() {
                                     Venta(
                                         null,
                                         LocalDateTime.now(),
-                                        (if (valorTotal.value % 50 < 25) floor(valorTotal.value / 50) * 50 else ceil(valorTotal.value / 50) * 50).toInt(),
+                                        (if (valorTotal % 50 < 25) floor(valorTotal / 50) * 50 else ceil(valorTotal / 50) * 50).toInt(),
                                         dineroEntregado.value,
                                         model.empleado.value,
                                         model.cliente.value
                                     ),
-                                    uncommittedItemsAsViews.map {
+                                    currentUncommittedIVS.ivs.map {
                                         UncommittedItemVenta(
                                             it.producto,
                                             it.cantidad.value
@@ -742,9 +743,8 @@ class CommitVenta : Fragment() {
                                 //Print recipe
                                 //if (imprimirFactura.value == "Sí")
                                 //    printingService.printRecipe(res, impresora.value)
-                                uncommittedItemsAsViews.clear()
+                                currentUncommittedIVS.flush()
                                 owner.addAlwaysFocusListener()
-                                valorTotal.set(0.0)
                                 dineroEntregado.set(0)
                                 close()
                             }
