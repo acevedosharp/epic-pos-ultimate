@@ -28,7 +28,7 @@ class VentaDB(
     var cliente: ClienteDB,
 
     @OneToMany(mappedBy = "venta", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    val items: Set<ItemVentaDB>
+    var items: Set<ItemVentaDB>
 ) {
     val cambio: Int
     get() = pagoRecibido - precioTotal

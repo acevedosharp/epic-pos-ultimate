@@ -33,7 +33,7 @@ open class VentaController: Controller(), UpdateSnapshot {
     }
 
     @Transactional
-    open fun add(venta: Venta, items: List<UncommittedItemVenta>){
+    open fun add(venta: Venta, items: List<UncommittedItemVenta>): VentaDB {
         val preRes = ventaRepo.save(
             VentaDB(
                 null,
@@ -68,6 +68,11 @@ open class VentaController: Controller(), UpdateSnapshot {
         }
 
         productoRepo.saveAll(productosWithNewExistencias)
+
+        // return saved VentaDB for printing
+        return preRes.apply {
+            this.items = itemsVenta.toSet()
+        }
     }
 
     override fun updateSnapshot() {

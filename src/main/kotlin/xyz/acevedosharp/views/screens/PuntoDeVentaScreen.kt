@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "ClassName")
 
 package xyz.acevedosharp.views.screens
 
@@ -42,25 +42,84 @@ import kotlin.math.floor
 
 class PuntoDeVentaView : View("Punto de venta") {
 
+    class CurrentUncommittedIVS {
+        val ivs: ObservableList<ItemVentaComponent> = FXCollections.observableArrayList()
+
+        val total = SimpleIntegerProperty(0)
+
+        val totalDisplay = SimpleStringProperty("0")
+
+        init {
+            ivs.onChange {
+                recalculateTotal()
+            }
+        }
+
+        fun removeByCodigo(barCode: String) {
+            println("About to remove: $barCode from ivs of size: ${ivs.size}")
+            var index = -1
+            ivs.forEachIndexed { i, it ->
+                if (it.producto.codigo == barCode) {
+                    index = i
+                    return@forEachIndexed
+                }
+            }
+            ivs.removeAt(index)
+        }
+
+        fun flush() {
+            ivs.clear()
+        }
+
+        fun recalculateTotal() {
+            if (ivs.size != 0) {
+                total.value = ivs.sumBy { it.producto.precioVenta.toInt() * it.cantidad.value }
+
+                totalDisplay.value = NumberFormat.getIntegerInstance().format(total.value)
+            } else {
+                total.value = 0
+                totalDisplay.value = "0"
+            }
+        }
+
+        private fun printStatus(s: String) {
+            println("$s, length: ${ivs.size}")
+            ivs.forEach {
+                println("\t${it.producto} (${it.cantidad.value})")
+            }
+        }
+    }
+
     private val productoController = find<ProductoController>()
-    private val currentUncommittedIVS = find<CurrentUncommittedIVS>()
 
     private val view = this
     private lateinit var scene: Scene
     private lateinit var listener: ChangeListener<Node>
+    private lateinit var keepItemSync: ChangeListener<Node>
 
     private val uncommittedItems: ObservableList<Node> = FXCollections.observableArrayList()
     private val dineroEntregado = SimpleIntegerProperty()
     private val currentCodigo = SimpleStringProperty()
+
+    private val currentUncommittedIVS = CurrentUncommittedIVS()
 
     private lateinit var currentCodigoTextField: TextField
 
     init {
         Joe.currentView = view
 
+        currentUncommittedIVS.flush()
+
         currentUncommittedIVS.ivs.onChange {
-            uncommittedItems.setAll(currentUncommittedIVS.ivs.map { it.root })
+            println("<-- Reached ivs change listener over at pdv screen -->")
+            println("Current ivs' state:")
+            currentUncommittedIVS.ivs.forEach {
+                println("\t${it.producto} (${it.cantidad.value})")
+            }
+            uncommittedItems.clear()
+            uncommittedItems.addAll(currentUncommittedIVS.ivs.map { it.root })
         }
+
         // Let's hope the scene doesn't take longer than this to load - probably not, 650ms is a lot of time
         runLater(Duration.millis(650.0)) {
             currentCodigoTextField.requestFocus()
@@ -71,6 +130,10 @@ class PuntoDeVentaView : View("Punto de venta") {
             }
             addAlwaysFocusListener()
         }
+    }
+
+    override fun onUndock() {
+        println("mffffff")
     }
 
     override val root = hbox {
@@ -148,7 +211,7 @@ class PuntoDeVentaView : View("Punto de venta") {
                         setOnAction {
                             if (currentCodigo.value in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
                                 val res = currentUncommittedIVS.ivs.find { it.producto.codigo == currentCodigo.value }!!
-                                res.cantidad.set(res.cantidad.value + 1)
+                                res.cantidad.value = res.cantidad.value + 1
                             } else if (currentCodigo.value in productoController.getProductosWithUpdate().map { it.codigo }) {
                                 currentUncommittedIVS.ivs.add(
                                     ItemVentaComponent(
@@ -182,6 +245,7 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 closeButton = false,
                                 modal = true,
                                 params = mapOf(
+                                    "cuivs" to currentUncommittedIVS,
                                     "papi" to view
                                 )
                             )
@@ -397,6 +461,7 @@ class PuntoDeVentaView : View("Punto de venta") {
                                     closeButton = false,
                                     modal = true,
                                     params = mapOf(
+                                        "cuivs" to currentUncommittedIVS,
                                         "owner" to view
                                     )
                                 )
@@ -418,6 +483,7 @@ class PuntoDeVentaView : View("Punto de venta") {
                                         closeButton = false,
                                         modal = true,
                                         params = mapOf(
+                                            "cuivs" to currentUncommittedIVS,
                                             "owner" to view,
                                             "dineroEntregado" to dineroEntregado,
                                             "valorTotal" to currentUncommittedIVS.total.value.toDouble()
@@ -468,9 +534,9 @@ class PuntoDeVentaView : View("Punto de venta") {
 class CreateItemVentaManuallyForm : Fragment() {
 
     private val productoController = find<ProductoController>()
-    private val currentUncommittedIVS = find<CurrentUncommittedIVS>()
     private val model = UncommittedIVModel()
 
+    private val currentUncommittedIVS = params["cuivs"] as PuntoDeVentaView.CurrentUncommittedIVS
     private val papi: PuntoDeVentaView = params["papi"] as PuntoDeVentaView
 
     override fun onDock() {
@@ -533,7 +599,7 @@ class CreateItemVentaManuallyForm : Fragment() {
                                 if (producto.codigo in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
                                     val res = currentUncommittedIVS.ivs.find { it.producto.codigo == producto.codigo }!!
                                     res.cantidad.set(res.cantidad.value + cantidad)
-                                } else if (productoController.getProductosWithUpdate().find { it.codigo == producto.codigo } != null) {
+                                } else if (productoController.getProductosClean().find { it.codigo == producto.codigo } != null) {
                                     currentUncommittedIVS.ivs.add(
                                         ItemVentaComponent(
                                             UncommittedItemVenta(
@@ -550,7 +616,6 @@ class CreateItemVentaManuallyForm : Fragment() {
                                         )
                                     )
                                 }
-
                                 papi.addAlwaysFocusListener()
                                 close()
                             }
@@ -572,10 +637,11 @@ class CreateItemVentaManuallyForm : Fragment() {
 class BolsasSelect : Fragment() {
 
     private val productoController = find<ProductoController>()
-    private val currentUncommittedIVS = find<CurrentUncommittedIVS>()
 
-    private val owner = params["owner"] as UIComponent
     private val numeroBolsas = SimpleIntegerProperty(1)
+
+    private val currentUncommittedIVS = params["cuivs"] as PuntoDeVentaView.CurrentUncommittedIVS
+    private val owner = params["owner"] as UIComponent
 
     override val root = vbox(spacing = 0, alignment = Pos.CENTER) {
         useMaxSize = true
@@ -642,16 +708,16 @@ class CommitVenta : Fragment() {
     private val empleadoController = find<EmpleadoController>()
     private val clienteController = find<ClienteController>()
     private val ventaController = find<VentaController>()
-    private val currentUncommittedIVS = find<CurrentUncommittedIVS>()
     private val model = VentaModel()
 
-    @Suppress("UNCHECKED_CAST")
+    private val currentUncommittedIVS = params["cuivs"] as PuntoDeVentaView.CurrentUncommittedIVS
     private val owner: PuntoDeVentaView = params["owner"] as PuntoDeVentaView
     private val dineroEntregado = params["dineroEntregado"] as SimpleIntegerProperty
     private val valorTotal = params["valorTotal"] as Double
-    //private val impresora = SimpleStringProperty(printingService.getPrinters()[0])
+    private val impresora = SimpleStringProperty(printingService.getPrinters()[0])
+    private val impresoras = FXCollections.observableArrayList<String>()
 
-    private val imprimirFactura = SimpleStringProperty("Sí")
+    private val imprimirFactura = SimpleStringProperty("")
 
     override fun onDock() {
         Joe.currentView = this
@@ -706,12 +772,19 @@ class CommitVenta : Fragment() {
                         style { fontSize = 28.px }
                     }
                 }
-                //field("Impresora seleccionada") {
-                //    combobox(impresora, printingService.getPrinters()).apply {
-                //        prefWidth = 400.0
-                //        makeAutocompletable(false)
-                //    }
-                //}
+                field("Impresora seleccionada") {
+                    hiddenWhen { imprimirFactura.isNotEqualTo("Sí") }
+                    combobox(impresora, impresoras).apply {
+                        imprimirFactura.onChange {
+                            if (it == "Sí")
+                                impresoras.setAll(printingService.getPrinters())
+                        }
+
+                        prefWidth = 400.0
+                        makeAutocompletable(false)
+                        style { fontSize = 28.px }
+                    }
+                }
 
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
@@ -723,7 +796,7 @@ class CommitVenta : Fragment() {
                         action {
                             model.commit {
                                 // Persistence logic
-                                ventaController.add(
+                                val res = ventaController.add(
                                     Venta(
                                         null,
                                         LocalDateTime.now(),
@@ -741,8 +814,8 @@ class CommitVenta : Fragment() {
                                 )
 
                                 //Print recipe
-                                //if (imprimirFactura.value == "Sí")
-                                //    printingService.printRecipe(res, impresora.value)
+                                if (imprimirFactura.value == "Sí")
+                                    printingService.printRecipe(res, impresora.value)
                                 currentUncommittedIVS.flush()
                                 owner.addAlwaysFocusListener()
                                 dineroEntregado.set(0)

@@ -7,11 +7,9 @@ import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
 import tornadofx.*
-import xyz.acevedosharp.controllers.CurrentUncommittedIVS
+import xyz.acevedosharp.views.screens.PuntoDeVentaView
 
-class ItemVentaComponent(uncommittedItemVenta: UncommittedItemVenta, currentUncommittedIVS: CurrentUncommittedIVS) : Fragment() {
-
-    val currentUncommittedIVS = find<CurrentUncommittedIVS>()
+class ItemVentaComponent(uncommittedItemVenta: UncommittedItemVenta, val currentUncommittedIVS: PuntoDeVentaView.CurrentUncommittedIVS) : Fragment() {
 
     val producto = uncommittedItemVenta.producto // Not observable
     val cantidad = uncommittedItemVenta.cantidadProperty // Observable

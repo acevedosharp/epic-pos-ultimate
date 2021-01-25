@@ -9,7 +9,7 @@ import xyz.acevedosharp.views.helpers.CurrentModule.*
 import xyz.acevedosharp.views.screens.*
 import tornadofx.*
 
-class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
+class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment() {
     override val root = vbox(alignment = Pos.TOP_CENTER) {
         rectangle(width = 0, height = 40)
         imageview("images/epic_logo.png") {
@@ -38,7 +38,7 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
                 paddingVertical = 32
             }
             action {
-                root.replaceWith(PuntoDeVentaView())
+                currentView.replaceWith(PuntoDeVentaView())
             }
         }
         line(startX = 0, endX = 175).style {
@@ -52,7 +52,7 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
                 fitHeight = 50.0
             }
             action {
-                root.replaceWith(ProductoView())
+                currentView.replaceWith(ProductoView())
             }
         }
         button("Pedidos") {
@@ -63,7 +63,7 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
                 fitHeight = 50.0
             }
             action {
-                root.replaceWith(PedidoView())
+                currentView.replaceWith(PedidoView())
             }
         }
         button("Reportes") {
@@ -74,7 +74,7 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
                 fitHeight = 50.0
             }
             action {
-                root.replaceWith(ReporteScreen())
+                currentView.replaceWith(ReporteScreen())
             }
         }
         line(startX = 0, endX = 175).style {
@@ -88,7 +88,7 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
                 fitHeight = 50.0
             }
             action {
-                root.replaceWith(FamiliaView())
+                currentView.replaceWith(FamiliaView())
             }
         }
         button("Proveedores") {
@@ -99,7 +99,7 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
                 fitHeight = 50.0
             }
             action {
-                root.replaceWith(ProveedorView())
+                currentView.replaceWith(ProveedorView())
             }
         }
         button("Empleados") {
@@ -110,7 +110,7 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
                 fitHeight = 50.0
             }
             action {
-                root.replaceWith(EmpleadoView())
+                currentView.replaceWith(EmpleadoView())
             }
         }
         button("Clientes") {
@@ -121,7 +121,7 @@ class SideNavigation(currentModule: CurrentModule, root: View): Fragment() {
                 fitHeight = 50.0
             }
             action {
-                root.replaceWith(ClienteView())
+                currentView.replaceWith(ClienteView())
             }
         }
 
