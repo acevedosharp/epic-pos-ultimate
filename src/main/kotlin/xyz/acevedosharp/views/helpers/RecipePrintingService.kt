@@ -36,7 +36,7 @@ class RecipePrintingService {
 
         sb.append("*==============================================*\n")
         sb.append("||          Autoservicio Mercamás             ||\n")
-        sb.append("||      Tel: 6000607 - Dir: Cra36 #34-57      ||\n")
+        sb.append("||    Tel: 6000607 - Dir: Calle 35 #34-168    ||\n")
         sb.append("*==============================================*\n")
         //sb.append("Atendido por: ${venta.empleado.nombre}\n"          )
         //sb.append("Cliente: ${venta.cliente.nombre} \n"               )

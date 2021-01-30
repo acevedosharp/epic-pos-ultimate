@@ -15,6 +15,7 @@ import javafx.geometry.Pos
 import javafx.scene.control.*
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
+import javafx.util.Duration
 import tornadofx.*
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.ProveedorDB
@@ -133,6 +134,9 @@ class ProveedorView : View("Módulo de proveedores") {
 class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
 
     private val proveedorController = find<ProveedorController>()
+
+    private var firstTextField: TextField by singleAssign()
+
     private val model = if (formType == CREATE)
         ProveedorModel()
     else
@@ -146,6 +150,12 @@ class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
             this.correo.value = proveedor.correo
         }
 
+    init {
+        runLater(Duration.millis(200.0)) {
+            firstTextField.requestFocus()
+        }
+    }
+
     override val root = vbox(spacing = 0) {
         useMaxSize = true
         prefWidth = 800.0
@@ -157,14 +167,16 @@ class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
         form {
             fieldset {
                 field("Nombre") {
-                    textfield(model.nombre).validator(trigger = ValidationTrigger.OnBlur) {
-                        when {
-                            if (formType == CREATE) proveedorController.isNombreAvailable(it.toString())
-                            else proveedorController.existsOtherWithNombre(it.toString(), model.id.value)
-                            -> error("Nombre no disponible")
-                            it.isNullOrBlank() -> error("Nombre requerido")
-                            it.length > 50 -> error("Máximo 50 caracteres (${it.length})")
-                            else -> null
+                    firstTextField = textfield(model.nombre) {
+                        validator(trigger = ValidationTrigger.OnBlur) {
+                            when {
+                                if (formType == CREATE) proveedorController.isNombreAvailable(it.toString())
+                                else proveedorController.existsOtherWithNombre(it.toString(), model.id.value)
+                                -> error("Nombre no disponible")
+                                it.isNullOrBlank() -> error("Nombre requerido")
+                                it.length > 50 -> error("Máximo 50 caracteres (${it.length})")
+                                else -> null
+                            }
                         }
                     }
                 }

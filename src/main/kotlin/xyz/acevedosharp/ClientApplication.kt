@@ -28,12 +28,11 @@ class ClientApplication : App(PuntoDeVentaView::class, MainStylesheet::class) {
             if (Joe.currentView != null) {
                 if (e is DataAccessResourceFailureException || e is JDBCConnectionException) {
                     Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog())
-                } else if (!InternetConnection.isAvailable()) {
-                    Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog()) // show this mf again just to make sure
                 } else if (e is GenericApplicationException) {
                     Joe.currentView!!.openInternalWindow(GenericErrorDialog(e.message!!))
-                }
-                else {
+                } else if (!InternetConnection.isAvailable()) {
+                    Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog()) // show this mf again just to make sure
+                } else {
                     Joe.currentView!!.openInternalWindow(UnexpectedErrorDialog(e.message!!))
                     e.printStackTrace()
                 }

@@ -206,7 +206,7 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
         }
 
     init {
-        runLater(Duration.millis(300.0)) {
+        runLater(Duration.millis(200.0)) {
             firstTextField.requestFocus()
         }
     }

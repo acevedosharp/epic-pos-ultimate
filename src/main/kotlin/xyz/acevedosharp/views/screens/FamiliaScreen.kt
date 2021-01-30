@@ -15,6 +15,7 @@ import javafx.geometry.Pos
 import javafx.scene.control.*
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
+import javafx.util.Duration
 import tornadofx.*
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.FamiliaDB
@@ -131,6 +132,9 @@ class FamiliaView : View("Módulo de familias") {
 class BaseFamiliaFormView(formType: FormType, id: Int?) : Fragment() {
 
     private val familiaController = find<FamiliaController>()
+
+    private var firstTextField: TextField by singleAssign()
+
     private val model = if (formType == CREATE)
         FamiliaModel()
     else
@@ -140,6 +144,12 @@ class BaseFamiliaFormView(formType: FormType, id: Int?) : Fragment() {
             this.id.value = familia.familiaId
             this.nombre.value = familia.nombre
         }
+
+    init {
+        runLater(Duration.millis(200.0)) {
+            firstTextField.requestFocus()
+        }
+    }
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
@@ -152,14 +162,16 @@ class BaseFamiliaFormView(formType: FormType, id: Int?) : Fragment() {
         form {
             fieldset {
                 field("Nombre") {
-                    textfield(model.nombre).validator(trigger = ValidationTrigger.OnBlur) {
-                        when {
-                            if (formType == CREATE) familiaController.isNombreAvailable(it.toString())
-                            else familiaController.existsOtherWithNombre(it.toString(), model.id.value)
-                            -> error("Nombre no disponible")
-                            it.isNullOrBlank() -> error("Nombre requerido")
-                            it.length > 30 -> error("Máximo 30 caracteres (${it.length})")
-                            else -> null
+                    firstTextField = textfield(model.nombre) {
+                        validator(trigger = ValidationTrigger.OnBlur) {
+                            when {
+                                if (formType == CREATE) familiaController.isNombreAvailable(it.toString())
+                                else familiaController.existsOtherWithNombre(it.toString(), model.id.value)
+                                -> error("Nombre no disponible")
+                                it.isNullOrBlank() -> error("Nombre requerido")
+                                it.length > 30 -> error("Máximo 30 caracteres (${it.length})")
+                                else -> null
+                            }
                         }
                     }
                 }

@@ -15,6 +15,7 @@ import javafx.geometry.Pos
 import javafx.scene.control.*
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
+import javafx.util.Duration
 import tornadofx.*
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.EmpleadoDB
@@ -131,6 +132,9 @@ class EmpleadoView : View("Módulo de empleados") {
 class BaseEmpleadoFormView(formType: FormType, id: Int?) : Fragment() {
 
     private val empleadoController = find<EmpleadoController>()
+
+    private var firstTextField: TextField by singleAssign()
+
     private val model = if (formType == CREATE)
         EmpleadoModel()
     else
@@ -141,6 +145,12 @@ class BaseEmpleadoFormView(formType: FormType, id: Int?) : Fragment() {
             this.nombre.value = empleado.nombre
             this.telefono.value = empleado.telefono
         }
+
+    init {
+        runLater(Duration.millis(200.0)) {
+            firstTextField.requestFocus()
+        }
+    }
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
@@ -153,14 +163,16 @@ class BaseEmpleadoFormView(formType: FormType, id: Int?) : Fragment() {
         form {
             fieldset {
                 field("Nombre") {
-                    textfield(model.nombre).validator(trigger = ValidationTrigger.OnBlur) {
-                        when {
-                            if (formType == CREATE) empleadoController.isNombreAvailable(it.toString())
-                            else empleadoController.existsOtherWithNombre(it.toString(), model.id.value)
-                            -> error("Nombre no disponible")
-                            it.isNullOrBlank() -> error("Nombre requerido")
-                            it.length > 50 -> error("Máximo 50 caracteres (${it.length})")
-                            else -> null
+                    firstTextField = textfield(model.nombre) {
+                        validator(trigger = ValidationTrigger.OnBlur) {
+                            when {
+                                if (formType == CREATE) empleadoController.isNombreAvailable(it.toString())
+                                else empleadoController.existsOtherWithNombre(it.toString(), model.id.value)
+                                -> error("Nombre no disponible")
+                                it.isNullOrBlank() -> error("Nombre requerido")
+                                it.length > 50 -> error("Máximo 50 caracteres (${it.length})")
+                                else -> null
+                            }
                         }
                     }
                 }
