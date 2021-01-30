@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "SENSELESS_COMPARISON")
 
 package xyz.acevedosharp.views.screens
 
@@ -136,7 +136,7 @@ class NewPedidoFormView : Fragment() {
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        prefWidth = 1000.0
+        prefWidth = 1600.0
         label("Nuevo Pedido") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
@@ -338,6 +338,7 @@ class AddLoteView : Fragment() {
 
     init {
         model.producto.onChange {
+            println("model's producto value: ${model.producto}")
             val currentProduct = productoController.findById(it!!.productoId!!)
 
             if (currentProduct != null) {
@@ -377,7 +378,7 @@ class AddLoteView : Fragment() {
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        prefWidth = 1000.0
+        prefWidth = 1600.0
         label("Añadir Lote") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
@@ -420,23 +421,25 @@ class AddLoteView : Fragment() {
                 }
                 field("Producto") {
                     hbox(spacing = 8) {
-                        combobox<ProductoDB>(model.producto, productoController.getProductosWithUpdate()).apply {
-                            prefWidth = 300.0
-                            makeAutocompletable(false)
-                        }.validator {
-                            when (it) {
-                                null -> error("Producto requerido")
-                                else -> null
-                            }
-                        }
-                        button("Nuevo Producto") {
-                            addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
-                            action {
-                                openInternalWindow<NewProductoFormView>(
+                        button {
+                            text = "Selecciona un producto"
+                            addClass(MainStylesheet.coolBaseButton, MainStylesheet.grayLabel)
+                            setOnMouseClicked {
+                                openInternalWindow<SelectProductoDialog>(
                                     closeButton = false,
                                     modal = true,
-                                    params = mapOf("owner" to this@AddLoteView)
+                                    params = mapOf(
+                                        "owner" to this@AddLoteView,
+                                        "productoProperty" to model.producto
+                                    )
                                 )
+                            }
+
+                            model.producto.onChange {
+                                if (model.producto != null)
+                                    text = model.producto.value.descripcionLarga
+                                else
+                                    text = "Selecciona un producto"
                             }
                         }
                     }

@@ -15,8 +15,10 @@ import xyz.acevedosharp.views.helpers.FormType.CREATE
 import xyz.acevedosharp.views.helpers.FormType.EDIT
 import javafx.geometry.Pos
 import javafx.scene.control.TableView
+import javafx.scene.control.TextField
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
+import javafx.util.Duration
 import tornadofx.*
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.FamiliaDB
@@ -184,6 +186,8 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
     private val productoController = find<ProductoController>()
     private val familiaController = find<FamiliaController>()
 
+    private var firstTextField: TextField by singleAssign()
+
     private val model = if (formType == CREATE)
         ProductoModel()
     else
@@ -201,6 +205,12 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
             this.familia.value = producto.familia
         }
 
+    init {
+        runLater(Duration.millis(300.0)) {
+            firstTextField.requestFocus()
+        }
+    }
+
     override val root = vbox(spacing = 0) {
         useMaxSize = true
         prefWidth = 800.0
@@ -212,14 +222,17 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
         form {
             fieldset {
                 field("Código") {
-                    textfield(model.codigo).validator(trigger = ValidationTrigger.OnBlur) {
-                        when {
-                            if (formType == CREATE) productoController.isCodigoAvailable(it.toString())
-                            else productoController.existsOtherWithCodigo(it.toString(), model.id.value)
-                            -> error("Código no disponible")
-                            it.isNullOrBlank() -> error("Código requerido")
-                            it.length > 20 -> error("Máximo 20 caracteres (${it.length})")
-                            else -> null
+                    firstTextField = textfield(model.codigo) {
+                        validator(trigger = ValidationTrigger.OnBlur) {
+                            when {
+                                if (formType == CREATE) productoController.isCodigoAvailable(it.toString())
+                                else productoController.existsOtherWithCodigo(it.toString(), model.id.value)
+                                -> error("Código no disponible")
+                                it.isNullOrBlank() -> error("Código requerido")
+                                it.length > 20 -> error("Máximo 20 caracteres (${it.length})")
+                                else -> null
+                            }
+
                         }
                     }
                 }
@@ -240,15 +253,15 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                         textfield(model.descCorta) {
                             prefWidth = 400.0
                             validator(trigger = ValidationTrigger.OnBlur) {
-                            when {
-                                if (formType == CREATE) productoController.isDescCortaAvailable(it.toString())
-                                else productoController.existsOtherWithDescCorta(it.toString(), model.id.value)
-                                -> error("Descripción corta no disponible")
-                                it.isNullOrBlank() -> error("Descripción corta requerida")
-                                it.length > 25 -> error("Máximo 25 caracteres (${it.length})")
-                                else -> null
+                                when {
+                                    if (formType == CREATE) productoController.isDescCortaAvailable(it.toString())
+                                    else productoController.existsOtherWithDescCorta(it.toString(), model.id.value)
+                                    -> error("Descripción corta no disponible")
+                                    it.isNullOrBlank() -> error("Descripción corta requerida")
+                                    it.length > 25 -> error("Máximo 25 caracteres (${it.length})")
+                                    else -> null
+                                }
                             }
-                        }
                         }
                         button("Repetir") {
                             addClass(MainStylesheet.coolBaseButton, MainStylesheet.grayButton)
@@ -274,7 +287,7 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                     spinner(
                         property = model.existencias,
                         initialValue = 0,
-                        min = 0,
+                        min = Int.MIN_VALUE,
                         max = Int.MAX_VALUE,
                         amountToStepBy = 1,
                         editable = true
@@ -379,3 +392,195 @@ class EditProductoFormView : Fragment() {
         super.onUndock()
     }
 }
+
+class SelectProductoDialog : Fragment() {
+
+    private val productoController = find<ProductoController>()
+    private val familiaController = find<FamiliaController>()
+
+    private val selectedId = SimpleIntegerProperty()
+    private val existsSelection = SimpleBooleanProperty(false)
+    private var table: TableView<ProductoDB> by singleAssign()
+    private val searchByCodigo = SimpleStringProperty("")
+    private val searchByDescripcion = SimpleStringProperty("")
+    private val searchByFamilia = SimpleObjectProperty<FamiliaDB>()
+
+    private val parentProductoProperty = params["productoProperty"] as Property<ProductoDB>
+
+    init {
+        Joe.currentView = this
+
+        productoController.getProductosClean().onChange {
+            searchByCodigo.value = ""
+            searchByDescripcion.value = ""
+            searchByFamilia.value = null
+        }
+
+        searchByCodigo.onChange { searchString ->
+            if (searchString != null) {
+                table.items = productoController.getProductosClean().filter {
+                    it.codigo.toLowerCase().contains(searchString.toLowerCase())
+                }.asObservable()
+            }
+        }
+
+        searchByDescripcion.onChange { searchString ->
+            if (searchString != null) {
+                table.items = productoController.getProductosClean().filter {
+                    it.descripcionLarga.toLowerCase().contains(searchString.toLowerCase()) ||
+                            it.descripcionCorta.toLowerCase().contains(searchString.toLowerCase())
+                }.asObservable()
+            }
+        }
+
+        searchByFamilia.onChange { searchFamilia ->
+            if (searchFamilia != null) {
+                table.items = productoController.getProductosClean().filter {
+                    it.familia.familiaId == searchFamilia.familiaId
+                }.toObservable()
+            } else {
+                table.items = productoController.getProductosClean()
+            }
+        }
+    }
+
+    override val root = vbox(spacing = 0) {
+        useMaxSize = true
+        prefWidth = 1600.0
+        label("Seleccionar Producto") {
+            useMaxWidth = true
+            addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
+        }
+        form {
+            borderpane {
+                setPrefSize(1600.0, 800.0)
+                top {
+                    hbox {
+                        addClass(MainStylesheet.topBar)
+                        paddingBottom = 4
+                        useMaxWidth = true
+                        button("Nuevo Producto") {
+                            addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton)
+                            action {
+                                openInternalWindow<NewProductoFormView>(
+                                    closeButton = false,
+                                    modal = true,
+                                    params = mapOf("owner" to this@SelectProductoDialog)
+                                )
+                            }
+                        }
+                        button("Editar selección") {
+                            enableWhen(existsSelection)
+                            addClass(MainStylesheet.coolBaseButton, MainStylesheet.blueButton)
+                            action {
+                                openInternalWindow<EditProductoFormView>(
+                                    closeButton = false,
+                                    modal = true,
+                                    params = mapOf(
+                                        "id" to selectedId.value,
+                                        "owner" to this@SelectProductoDialog
+                                    )
+                                )
+                            }
+                        }
+                        rectangle(width = 10, height = 0)
+                        line(0, 0, 0, 35).style {
+                            stroke = c(255, 255, 255, 0.25)
+                        }
+                        rectangle(width = 10, height = 0)
+                        hbox(spacing = 10, alignment = Pos.CENTER) {
+                            vbox {
+                                label("Buscar por código").apply { addClass(MainStylesheet.searchLabel) }
+                                textfield(searchByCodigo)
+
+                                prefWidth = 250.0
+                            }
+                            vbox {
+                                label("Buscar por descripción").apply { addClass(MainStylesheet.searchLabel) }
+                                textfield(searchByDescripcion)
+
+                                prefWidth = 250.0
+                            }
+
+                            vbox {
+                                label("Buscar por familia").apply { addClass(MainStylesheet.searchLabel) }
+                                combobox<FamiliaDB>(searchByFamilia, familiaController.getFamiliasWithUpdate()).apply {
+                                    prefWidth = 300.0
+                                    makeAutocompletable(false)
+                                }
+
+                                prefWidth = 250.0
+                            }
+                            button("Quitar filtro") {
+                                addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton)
+                                action { searchByFamilia.value = null }
+                            }
+                        }
+                    }
+                }
+
+                center {
+                    hbox {
+                        table = tableview(productoController.getProductosWithUpdate()) {
+                            column("Código", ProductoDB::codigo).pctWidth(10)
+                            column("Desc. Larga", ProductoDB::descripcionLarga).remainingWidth()
+                            column("Desc. Corta", ProductoDB::descripcionCorta).pctWidth(20)
+                            column("P. Venta", ProductoDB::precioVenta)
+                            column("P. Compra", ProductoDB::precioCompraEfectivo)
+                            column("Margen", ProductoDB::margen)
+                            column("Existencias", ProductoDB::existencias)
+                            column("Familia", ProductoDB::familia)
+
+                            smartResize()
+
+                            selectionModel.selectedItemProperty().onChange {
+                                existsSelection.value = it != null
+                                if (it != null) {
+                                    selectedId.set(it.productoId!!)
+                                }
+                            }
+
+                            hgrow = Priority.ALWAYS
+                        }
+                        paddingAll = 6
+                        style {
+                            backgroundColor += Color.WHITE
+                        }
+                    }
+                }
+
+                style {
+                    backgroundColor += Color.WHITE
+                }
+            }
+            hbox(spacing = 80, alignment = Pos.CENTER) {
+                button("Aceptar") {
+                    addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
+                    action {
+                        if (selectedId.value != 0) {
+                            parentProductoProperty.value = productoController.findById(selectedId.value)
+                            close()
+                        }
+                    }
+                }
+                button("Cancelar") {
+                    addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
+                    action {
+                        close()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onDock() {
+        Joe.currentView = this
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView = params["owner"] as UIComponent
+        super.onUndock()
+    }
+}
+

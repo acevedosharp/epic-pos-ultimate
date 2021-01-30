@@ -121,7 +121,7 @@ class PuntoDeVentaView : View("Punto de venta") {
         }
 
         // Let's hope the scene doesn't take longer than this to load - probably not, 650ms is a lot of time
-        runLater(Duration.millis(650.0)) {
+        runLater(Duration.millis(600.0)) {
             currentCodigoTextField.requestFocus()
             scene = this.currentStage!!.scene
             listener = ChangeListener<Node> { _, _, _ ->

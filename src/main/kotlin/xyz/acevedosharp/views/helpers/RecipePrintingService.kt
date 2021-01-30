@@ -38,9 +38,9 @@ class RecipePrintingService {
         sb.append("||          Autoservicio Mercamás             ||\n")
         sb.append("||      Tel: 6000607 - Dir: Cra36 #34-57      ||\n")
         sb.append("*==============================================*\n")
-        sb.append("Atendido por: ${venta.empleado.nombre}\n"          )
-        sb.append("Cliente: ${venta.cliente.nombre} \n"               )
-        sb.append("------------------------------------------------\n")
+        //sb.append("Atendido por: ${venta.empleado.nombre}\n"          )
+        //sb.append("Cliente: ${venta.cliente.nombre} \n"               )
+        //sb.append("------------------------------------------------\n")
         venta.items.forEach {
             sb.append(formatItem(it))
             sb.append("\n")
@@ -54,6 +54,7 @@ class RecipePrintingService {
         sb.append("Gracias por su compra el ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
         sb.append(lowerPadding)
 
+        println(sb.toString())
         printString(impName, sb.toString())
         printBytes(impName, byteArrayOf(0x1d, 'V'.toByte(), 1))
     }
