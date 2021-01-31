@@ -65,7 +65,6 @@ class ProveedorController : Controller(), UpdateSnapshot {
     }
 
     override fun updateSnapshot() {
-        println("Triggered update snapshot for Proveedor once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
         proveedores.setAll(proveedorRepo.findAll())
     }
 }

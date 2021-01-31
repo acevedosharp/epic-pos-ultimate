@@ -76,7 +76,6 @@ open class VentaController: Controller(), UpdateSnapshot {
     }
 
     override fun updateSnapshot() {
-        println("Triggered update snapshot for Venta once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
         ventas.setAll(ventaRepo.findAll())
     }
 }

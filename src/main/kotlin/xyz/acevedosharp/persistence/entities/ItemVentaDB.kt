@@ -18,7 +18,7 @@ class ItemVentaDB(
     var cantidad: Int,
 
     @Column(name = "precio_venta")
-    var precioVenta: Double,
+    var precioVenta: Int,
 
     @ManyToOne @JoinColumn(name = "producto")
     var producto: ProductoDB,

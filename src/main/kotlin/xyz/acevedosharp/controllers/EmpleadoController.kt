@@ -55,7 +55,6 @@ class EmpleadoController : Controller(), UpdateSnapshot {
     }
 
     override fun updateSnapshot() {
-        println("Triggered update snapshot for Empleado once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
         empleados.setAll(empleadoRepo.findAll())
     }
 }

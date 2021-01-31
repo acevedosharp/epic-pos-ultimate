@@ -56,7 +56,6 @@ class PuntoDeVentaView : View("Punto de venta") {
         }
 
         fun removeByCodigo(barCode: String) {
-            println("About to remove: $barCode from ivs of size: ${ivs.size}")
             var index = -1
             ivs.forEachIndexed { i, it ->
                 if (it.producto.codigo == barCode) {
@@ -73,19 +72,12 @@ class PuntoDeVentaView : View("Punto de venta") {
 
         fun recalculateTotal() {
             if (ivs.size != 0) {
-                total.value = ivs.sumBy { it.producto.precioVenta.toInt() * it.cantidad.value }
+                total.value = ivs.sumBy { it.producto.precioVenta * it.cantidad.value }
 
                 totalDisplay.value = NumberFormat.getIntegerInstance().format(total.value)
             } else {
                 total.value = 0
                 totalDisplay.value = "0"
-            }
-        }
-
-        private fun printStatus(s: String) {
-            println("$s, length: ${ivs.size}")
-            ivs.forEach {
-                println("\t${it.producto} (${it.cantidad.value})")
             }
         }
     }
@@ -111,11 +103,6 @@ class PuntoDeVentaView : View("Punto de venta") {
         currentUncommittedIVS.flush()
 
         currentUncommittedIVS.ivs.onChange {
-            println("<-- Reached ivs change listener over at pdv screen -->")
-            println("Current ivs' state:")
-            currentUncommittedIVS.ivs.forEach {
-                println("\t${it.producto} (${it.cantidad.value})")
-            }
             uncommittedItems.clear()
             uncommittedItems.addAll(currentUncommittedIVS.ivs.map { it.root })
         }
@@ -130,10 +117,6 @@ class PuntoDeVentaView : View("Punto de venta") {
             }
             addAlwaysFocusListener()
         }
-    }
-
-    override fun onUndock() {
-        println("mffffff")
     }
 
     override val root = hbox {
@@ -583,7 +566,7 @@ class CreateItemVentaManuallyForm : Fragment() {
                         prefWidth = 400.0
                     }
                 }
-
+                rectangle(width = 0, height = 24)
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
                         addClass(
@@ -634,14 +617,14 @@ class CreateItemVentaManuallyForm : Fragment() {
     }
 }
 
-class BolsasSelect : Fragment() {
+class  BolsasSelect : Fragment() {
 
     private val productoController = find<ProductoController>()
 
     private val numeroBolsas = SimpleIntegerProperty(1)
 
     private val currentUncommittedIVS = params["cuivs"] as PuntoDeVentaView.CurrentUncommittedIVS
-    private val owner = params["owner"] as UIComponent
+    private val owner = params["owner"] as PuntoDeVentaView
 
     override val root = vbox(spacing = 0, alignment = Pos.CENTER) {
         useMaxSize = true
@@ -650,11 +633,12 @@ class BolsasSelect : Fragment() {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.grayLabel)
         }
-        combobox(numeroBolsas, IntRange(1, 8).map { it }.toObservable()) {
+        rectangle(width = 0, height = 24)
+        combobox(numeroBolsas, IntRange(1, 7).map { it }.toObservable()) {
             prefWidth = 400.0
-            makeAutocompletable(false)
-            style { fontSize = 28.px }
+            style { fontSize = 32.px }
         }
+        rectangle(width = 0, height = 24)
         hbox(spacing = 80, alignment = Pos.CENTER) {
             button("Añadir") {
                 addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
@@ -678,12 +662,16 @@ class BolsasSelect : Fragment() {
                     } else {
                         this@BolsasSelect.openInternalWindow(UnexpectedErrorDialog("Debe existir un producto con el código: 'bolsa'"))
                     }
+                    owner.addAlwaysFocusListener()
                     close()
                 }
             }
             button("Cancelar") {
                 addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
-                action { close() }
+                action {
+                    owner.addAlwaysFocusListener()
+                    close()
+                }
             }
         }
 
@@ -785,7 +773,7 @@ class CommitVenta : Fragment() {
                         style { fontSize = 28.px }
                     }
                 }
-
+                rectangle(width = 0, height = 24)
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
                         addClass(
@@ -818,7 +806,6 @@ class CommitVenta : Fragment() {
                                     printingService.printRecipe(res, impresora.value)
                                 currentUncommittedIVS.flush()
                                 owner.addAlwaysFocusListener()
-                                dineroEntregado.set(0)
                                 close()
                             }
                         }
@@ -830,6 +817,7 @@ class CommitVenta : Fragment() {
                             MainStylesheet.expandedButton
                         )
                         action {
+                            owner.addAlwaysFocusListener()
                             close()
                         }
                     }

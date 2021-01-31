@@ -64,13 +64,14 @@ open class PedidoController : Controller(), UpdateSnapshot {
 
             producto.existencias += currentLote.cantidad
 
-            if (producto.precioCompraEfectivo == 0.0 || producto.precioCompraEfectivo < currentLote.precioCompra) {
+            if (producto.precioCompraEfectivo == 0 || producto.precioCompraEfectivo < currentLote.precioCompra) {
                 producto.precioCompraEfectivo = currentLote.precioCompra
             }
 
+            // update sell price
             val rawSellPrice = producto.precioCompraEfectivo / (1 - (producto.margen/100))
-            val roundedSellPrice = rawSellPrice + (50 - (rawSellPrice % 50))
-            producto.precioVenta = roundedSellPrice
+            val roundedSellPrice = (rawSellPrice - 1) + (50 - ((rawSellPrice - 1) % 50)) // we subtract 1 so that we don't round from eg. 4000 -> 4050.
+            producto.precioVenta = roundedSellPrice.toInt()
 
             return@map producto
         }
@@ -79,7 +80,6 @@ open class PedidoController : Controller(), UpdateSnapshot {
     }
 
     override fun updateSnapshot() {
-        println("Triggered update snapshot for Pedido once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
         pedidos.setAll(pedidoRepo.findAll())
     }
 }

@@ -8,7 +8,6 @@ import javax.print.*
 import javax.print.attribute.HashPrintRequestAttributeSet
 import javax.print.attribute.PrintRequestAttributeSet
 import kotlin.math.max
-import kotlin.math.roundToInt
 
 @Service
 class RecipePrintingService {
@@ -19,13 +18,13 @@ class RecipePrintingService {
 
             res.append(item.producto.descripcionCorta)
             res.append(" ".repeat(max(26 - item.producto.descripcionCorta.length, 0)))
-            val s1 = "$${item.producto.precioVenta.roundToInt()}"
+            val s1 = "$${item.producto.precioVenta}"
             res.append(s1)
             res.append(" ".repeat(max(7 - s1.length, 0)))
             val s2 = "x${item.cantidad}"
             res.append(s2)
             res.append(" ".repeat(max(6 - s2.length, 0)))
-            res.append("= $${(item.producto.precioVenta * item.cantidad).roundToInt()}")
+            res.append("= $${item.producto.precioVenta * item.cantidad}")
 
             return res.toString()
         }
@@ -54,7 +53,6 @@ class RecipePrintingService {
         sb.append("Gracias por su compra el ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
         sb.append(lowerPadding)
 
-        println(sb.toString())
         printString(impName, sb.toString())
         printBytes(impName, byteArrayOf(0x1d, 'V'.toByte(), 1))
     }
@@ -79,10 +77,8 @@ class RecipePrintingService {
         val service = findPrintService(printerName, printService)
         val job = service!!.createPrintJob()
         try {
-            val bytes: ByteArray
-
-            // important for umlaut chars
-            bytes = text.toByteArray(charset("CP437"))
+            // use a charset that can use many characters
+            val bytes: ByteArray = text.toByteArray(charset("CP437"))
             val doc: Doc = SimpleDoc(bytes, flavor, null)
             job.print(doc, null)
         } catch (e: Exception) {

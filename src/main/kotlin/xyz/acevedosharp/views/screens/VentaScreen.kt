@@ -32,6 +32,8 @@ class ChooseHistoryRange : Fragment() {
     private val endMinute = SimpleIntegerProperty()
     private val endDays = FXCollections.observableArrayList<Int>()
 
+    private val owner = params["owner"] as PuntoDeVentaView
+
     class NumberToMonth(val n: Int, private val month: String) {
         override fun toString() = month
     }
@@ -155,9 +157,9 @@ class ChooseHistoryRange : Fragment() {
                             }
                         }
                     }
-
+                    rectangle(width = 0, height = 24)
                     hbox(spacing = 80, alignment = Pos.CENTER) {
-                        button("Aceptar") {
+                        button("Consultar") {
                             addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                             action {
                                 openInternalWindow<VentaHistory>(
@@ -187,9 +189,12 @@ class ChooseHistoryRange : Fragment() {
                                 )
                             }
                         }
-                        button("Cancelar") {
+                        button("Cerrar") {
                             addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
-                            action { close() }
+                            action {
+                                owner.addAlwaysFocusListener()
+                                close()
+                            }
                         }
                     }
                 }

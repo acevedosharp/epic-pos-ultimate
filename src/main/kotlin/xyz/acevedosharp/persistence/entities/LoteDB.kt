@@ -15,7 +15,7 @@ class LoteDB(
     var cantidad: Int,
 
     @Column(name = "precio_compra")
-    var precioCompra: Double,
+    var precioCompra: Int,
 
     @ManyToOne @JoinColumn(name = "producto")
     var producto: ProductoDB,

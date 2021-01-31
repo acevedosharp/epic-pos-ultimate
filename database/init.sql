@@ -24,8 +24,8 @@ create table producto
     codigo                 varchar(20)          not null,
     desc_larga             varchar(50)          not null,
     desc_corta             varchar(25)          not null,
-    precio_venta           double               not null,
-    precio_compra_efectivo double               not null,
+    precio_venta           int                  not null,
+    precio_compra_efectivo int                  not null,
     margen                 double               not null,
     existencias            int                  not null,
     activo                 tinyint(1) default 1 not null,
@@ -111,10 +111,10 @@ create table lote
 (
     lote_id       int auto_increment
         primary key,
-    cantidad      int    not null,
-    precio_compra double not null,
-    producto      int    not null,
-    pedido        int    not null,
+    cantidad      int not null,
+    precio_compra int not null,
+    producto      int not null,
+    pedido        int not null,
     constraint lote_pedido_pedido_id_fk
         foreign key (pedido) references pedido (pedido_id)
             on update cascade,
@@ -150,7 +150,7 @@ create table item_venta
         primary key,
     fecha_hora    datetime not null,
     cantidad      int      not null,
-    precio_venta  double   not null,
+    precio_venta  int      not null,
     producto      int      not null,
     venta         int      not null,
     constraint item_venta_producto_producto_id_fk

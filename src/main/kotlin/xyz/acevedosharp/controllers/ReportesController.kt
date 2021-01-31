@@ -94,7 +94,7 @@ class ReportesController : Controller() {
                 var soldQuantity = 0
 
                 matchingSoldItems.forEach {
-                    amountSold += it.cantidad * it.precioVenta.toInt()
+                    amountSold += it.cantidad * it.precioVenta
                     soldQuantity += it.cantidad
                 }
 
@@ -322,7 +322,7 @@ class ReportesController : Controller() {
 
     class RankingReportDisplay(
         val longDesc: String,
-        val sellPrice: Double,
+        val sellPrice: Int,
         val amountSold: Int,
         val margen: Double,
         var percentageSold: Double,

@@ -24,10 +24,10 @@ class ProductoDB(
     var existencias: Int,
 
     @Column(name = "precio_venta")
-    var precioVenta: Double,
+    var precioVenta: Int,
 
     @Column(name = "precio_compra_efectivo")
-    var precioCompraEfectivo: Double,
+    var precioCompraEfectivo: Int,
 
     @Column(name = "margen")
     var margen: Double,

@@ -4,7 +4,7 @@ import tornadofx.*
 import javafx.beans.property.*
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 
-class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Double, precioCompraEfectivo: Double, existencias: Int, margen: Double, familia: FamiliaDB) {
+class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Int, precioCompraEfectivo: Int, existencias: Int, margen: Double, familia: FamiliaDB) {
     val codigoProperty = SimpleStringProperty(this, "codigo", codigo)
     var codigo: String by codigoProperty
 
@@ -14,11 +14,11 @@ class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: Strin
     val descCortaProperty = SimpleStringProperty(this, "descCorta", descCorta)
     var descCorta: String by descCortaProperty
 
-    val precioVentaProperty = SimpleDoubleProperty(this, "precioVenta", precioVenta)
-    var precioVenta: Double by precioVentaProperty
+    val precioVentaProperty = SimpleIntegerProperty(this, "precioVenta", precioVenta)
+    var precioVenta: Int by precioVentaProperty
 
-    val precioCompraEfectivoProperty = SimpleDoubleProperty(this, "precioCompraEfectivo", precioCompraEfectivo)
-    var precioCompraEfectivo: Double by precioCompraEfectivoProperty
+    val precioCompraEfectivoProperty = SimpleIntegerProperty(this, "precioCompraEfectivo", precioCompraEfectivo)
+    var precioCompraEfectivo: Int by precioCompraEfectivoProperty
 
     val existenciasProperty = SimpleIntegerProperty(this, "existencias", existencias)
     var existencias: Int by existenciasProperty

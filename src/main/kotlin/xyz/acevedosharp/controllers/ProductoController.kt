@@ -30,6 +30,13 @@ class ProductoController : Controller(), UpdateSnapshot {
     fun findByCodigo(barCode: String) = productoRepo.findByCodigo(barCode)
 
     fun save(producto: Producto) {
+        // update sell price if producto has already been bought
+        if (producto.precioCompraEfectivo != 0) {
+            val rawSellPrice = producto.precioCompraEfectivo / (1 - (producto.margen/100))
+            val roundedSellPrice = (rawSellPrice - 1) + (50 - ((rawSellPrice - 1) % 50)) // we subtract 1 so that we don't round from eg. 4000 -> 4050.
+            producto.precioVenta = roundedSellPrice.toInt()
+        }
+
         productoRepo.save(
             ProductoDB(
                 producto.id,
@@ -71,7 +78,6 @@ class ProductoController : Controller(), UpdateSnapshot {
     }
 
     override fun updateSnapshot() {
-        println("Triggered update snapshot for Producto once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
         productos.setAll(productoRepo.findAll())
     }
 }

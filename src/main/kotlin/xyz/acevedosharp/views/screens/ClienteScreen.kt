@@ -198,6 +198,7 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
                         }
                     }
                 }
+                rectangle(width = 0, height = 24)
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
                         addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)

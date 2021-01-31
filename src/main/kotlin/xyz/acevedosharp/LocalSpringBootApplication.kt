@@ -26,7 +26,6 @@ object InternetConnection {
         } catch (e: MalformedURLException) {
             throw RuntimeException(e)
         } catch (e: IOException) {
-            println("IOException while testing for internet connection.")
             false
         }
     }

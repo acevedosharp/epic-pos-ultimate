@@ -57,7 +57,6 @@ class ClienteController : Controller(), UpdateSnapshot {
     }
 
     override fun updateSnapshot() {
-        println("Triggered update snapshot for Cliente once at ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now())}")
         clientes.setAll(clienteRepo.findAll())
     }
 }

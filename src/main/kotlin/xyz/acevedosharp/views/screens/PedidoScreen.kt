@@ -231,7 +231,7 @@ class NewPedidoFormView : Fragment() {
                         }
                     }
                 }
-
+                rectangle(width = 0, height = 24)
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
                         addClass(
@@ -310,7 +310,7 @@ class PedidoSummaryView : Fragment() {
                         hgrow = Priority.ALWAYS
                     }
                 }
-
+                rectangle(width = 0, height = 24)
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
                         addClass(
@@ -338,12 +338,11 @@ class AddLoteView : Fragment() {
 
     init {
         model.producto.onChange {
-            println("model's producto value: ${model.producto}")
             val currentProduct = productoController.findById(it!!.productoId!!)
 
             if (currentProduct != null) {
                 val precioCompra = currentProduct.precioCompraEfectivo
-                if (precioCompra == 0.0)
+                if (precioCompra == 0)
                     maxPriceDisplay.value = "No hay pedidos anteriores del producto"
                 else {
                     val res = precioCompra.toString()
@@ -397,7 +396,7 @@ class AddLoteView : Fragment() {
                     )
                 }
                 field("Precio de compra") {
-                    model.precioCompra.value = 50.0
+                    model.precioCompra.value = 50
                     hbox(spacing = 10) {
                         spinner(
                             property = model.precioCompra as Property<Double>,
@@ -445,7 +444,7 @@ class AddLoteView : Fragment() {
                     }
                 }
             }
-
+            rectangle(width = 0, height = 24)
             hbox(spacing = 80, alignment = Pos.CENTER) {
                 button("Aceptar") {
                     addClass(
