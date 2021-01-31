@@ -8,8 +8,6 @@ import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
 import xyz.acevedosharp.persistence.entities.EmpleadoDB
 import xyz.acevedosharp.persistence.repositories.EmpleadoRepo
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class EmpleadoController : Controller(), UpdateSnapshot {
     private val empleadoRepo = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoRepo::class.java)

@@ -42,4 +42,3 @@ class ClientApplication : App(PuntoDeVentaView::class, MainStylesheet::class) {
         }
     }
 }
-

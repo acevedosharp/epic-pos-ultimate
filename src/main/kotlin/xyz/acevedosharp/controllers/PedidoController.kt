@@ -12,8 +12,6 @@ import xyz.acevedosharp.persistence.entities.LoteDB
 import xyz.acevedosharp.persistence.entities.PedidoDB
 import xyz.acevedosharp.persistence.repositories.*
 import java.sql.Timestamp
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 open class PedidoController : Controller(), UpdateSnapshot {
 

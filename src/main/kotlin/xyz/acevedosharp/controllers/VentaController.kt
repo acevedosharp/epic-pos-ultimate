@@ -11,8 +11,6 @@ import xyz.acevedosharp.persistence.entities.ItemVentaDB
 import xyz.acevedosharp.persistence.entities.VentaDB
 import xyz.acevedosharp.persistence.repositories.*
 import java.sql.Timestamp
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 open class VentaController: Controller(), UpdateSnapshot {
     private val ventaRepo = find<CustomApplicationContextWrapper>().context.getBean(VentaRepo::class.java)

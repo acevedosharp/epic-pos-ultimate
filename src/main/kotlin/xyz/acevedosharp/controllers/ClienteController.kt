@@ -8,8 +8,6 @@ import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
 import xyz.acevedosharp.persistence.entities.ClienteDB
 import xyz.acevedosharp.persistence.repositories.ClienteRepo
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class ClienteController : Controller(), UpdateSnapshot {
     private val clienteRepo = find<CustomApplicationContextWrapper>().context.getBean(ClienteRepo::class.java)

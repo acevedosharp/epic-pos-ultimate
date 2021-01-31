@@ -90,4 +90,3 @@ class ItemVentaComponent(uncommittedItemVenta: UncommittedItemVenta, val current
         }
     }
 }
-

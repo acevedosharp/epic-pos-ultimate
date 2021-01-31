@@ -8,8 +8,6 @@ import org.springframework.data.repository.findByIdOrNull
 import tornadofx.*
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.repositories.FamiliaRepo
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class FamiliaController: Controller(), UpdateSnapshot {
     private val familiaRepo = find<CustomApplicationContextWrapper>().context.getBean(FamiliaRepo::class.java)

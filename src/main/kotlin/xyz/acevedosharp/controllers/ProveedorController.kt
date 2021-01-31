@@ -8,8 +8,6 @@ import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
 import xyz.acevedosharp.persistence.entities.ProveedorDB
 import xyz.acevedosharp.persistence.repositories.ProveedorRepo
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class ProveedorController : Controller(), UpdateSnapshot {
     private val proveedorRepo = find<CustomApplicationContextWrapper>().context.getBean(ProveedorRepo::class.java)
