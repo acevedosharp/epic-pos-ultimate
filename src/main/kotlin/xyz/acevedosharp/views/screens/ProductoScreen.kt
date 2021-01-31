@@ -214,7 +214,7 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
 
         model.margen.onChange {
             // update sell price if producto has already been bought
-            if (model.precioCompraEfectivo.value != 0) {
+            if (model.precioCompraEfectivo.value != 0 && model.codigo.value != "bolsa") {
                 val rawSellPrice = model.precioCompraEfectivo.value / (1 - (model.margen.value/100))
                 val roundedSellPrice = (rawSellPrice - 1) + (50 - ((rawSellPrice - 1) % 50)) // we subtract 1 so that we don't round from eg. 4000 -> 4050.
                 model.precioVenta.value = roundedSellPrice.toInt()
@@ -286,7 +286,7 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                 field("Precio de venta") {
                     if (formType == CREATE) model.precioVenta.value = 50
                     textfield(model.precioVenta as Property<Int>) {
-                        isEditable = !(formType == EDIT && model.margen.value != 0.0)
+                        isEditable = !(formType == EDIT && model.margen.value != 0.0) || model.codigo.value == "bolsa"
 
                         // prevent anything different to a number from being typed into the field
                         textFormatter = TextFormatter<Int>(UnaryOperator { change ->
@@ -477,6 +477,7 @@ class SelectProductoDialog : Fragment() {
     override val root = vbox(spacing = 0) {
         useMaxSize = true
         prefWidth = 1600.0
+        prefHeight = 800.0
         label("Seleccionar Producto") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)

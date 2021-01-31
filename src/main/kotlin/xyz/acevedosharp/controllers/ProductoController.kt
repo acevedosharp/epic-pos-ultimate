@@ -29,7 +29,7 @@ class ProductoController : Controller(), UpdateSnapshot {
 
     fun save(producto: Producto) {
         // update sell price if producto has already been bought
-        if (producto.precioCompraEfectivo != 0) {
+        if (producto.precioCompraEfectivo != 0 && producto.codigo != "bolsa") {
             val rawSellPrice = producto.precioCompraEfectivo / (1 - (producto.margen/100))
             val roundedSellPrice = (rawSellPrice - 1) + (50 - ((rawSellPrice - 1) % 50)) // we subtract 1 so that we don't round from eg. 4000 -> 4050.
             producto.precioVenta = roundedSellPrice.toInt()

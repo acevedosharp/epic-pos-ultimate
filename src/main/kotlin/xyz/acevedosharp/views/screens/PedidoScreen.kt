@@ -137,6 +137,7 @@ class NewPedidoFormView : Fragment() {
     override val root = vbox(spacing = 0) {
         useMaxSize = true
         prefWidth = 1600.0
+        prefHeight = 900.0
         label("Nuevo Pedido") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
@@ -378,6 +379,7 @@ class AddLoteView : Fragment() {
     override val root = vbox(spacing = 0) {
         useMaxSize = true
         prefWidth = 1600.0
+        prefHeight = 850.0
         label("Añadir Lote") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
