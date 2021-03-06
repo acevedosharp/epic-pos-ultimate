@@ -163,7 +163,7 @@ class BaseFamiliaFormView(formType: FormType, id: Int?) : Fragment() {
             fieldset {
                 field("Nombre") {
                     firstTextField = textfield(model.nombre) {
-                        validator(trigger = ValidationTrigger.OnBlur) {
+                        validator(trigger = ValidationTrigger.OnChange()) {
                             when {
                                 if (formType == CREATE) familiaController.isNombreAvailable(it.toString())
                                 else familiaController.existsOtherWithNombre(it.toString(), model.id.value)

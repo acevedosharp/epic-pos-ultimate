@@ -1,12 +1,15 @@
--- # create & use the app schema
--- create schema if not exists epic;
---
--- # create the database user
--- create user if not exists 'mercamas'@'localhost' identified by 'fADw0CHKJqpDinkW';
--- grant all privileges on epic.* to 'mercamas'@'localhost';
+# create the app schema
+create schema if not exists epic;
 
-# ------------------------ creation of familia table ------------------------
-create table familia
+# create the database user
+create user if not exists 'mercamas'@'localhost' identified by 'Epic271';
+create user if not exists 'mercamas'@'%' identified by 'Epic271';
+
+grant all privileges on epic.* to 'mercamas'@'localhost';
+grant all privileges on epic.* to 'mercamas'@'%';
+
+# ------------------------ create the familia table ------------------------
+create table if not exists epic.familia
 (
     familia_id int auto_increment
         primary key,
@@ -16,8 +19,8 @@ create table familia
 );
 
 
-# ------------------------ creation of producto table ------------------------
-create table producto
+# ------------------------ create the producto table ------------------------
+create table if not exists epic.producto
 (
     producto_id            int auto_increment
         primary key,
@@ -37,13 +40,13 @@ create table producto
     constraint producto_desc_larga_uindex
         unique (desc_larga),
     constraint producto_familia_familia_id_fk
-        foreign key (familia) references familia (familia_id)
+        foreign key (familia) references epic.familia (familia_id)
             on update cascade
 );
 
 
-# ------------------------ creation of proveedor table ------------------------
-create table proveedor
+# ------------------------ create the proveedor table ------------------------
+create table if not exists epic.proveedor
 (
     proveedor_id int auto_increment
         primary key,
@@ -60,8 +63,8 @@ create table proveedor
 );
 
 
-# ------------------------ creation of empleado table ------------------------
-create table empleado
+# ------------------------ create the empleado table ------------------------
+create table if not exists epic.empleado
 (
     empleado_id int auto_increment
         primary key,
@@ -74,8 +77,8 @@ create table empleado
 );
 
 
-# ------------------------ creation of cliente table ------------------------
-create table cliente
+# ------------------------ create the cliente table ------------------------
+create table if not exists epic.cliente
 (
     cliente_id int auto_increment
         primary key,
@@ -89,8 +92,8 @@ create table cliente
 );
 
 
-# ------------------------ creation of pedido table ------------------------
-create table pedido
+# ------------------------ create the pedido table ------------------------
+create table if not exists epic.pedido
 (
     pedido_id  int auto_increment
         primary key,
@@ -98,16 +101,16 @@ create table pedido
     proveedor  int      not null,
     empleado   int      not null,
     constraint pedido_empleado_empleado_id_fk
-        foreign key (empleado) references empleado (empleado_id)
+        foreign key (empleado) references epic.empleado (empleado_id)
             on update cascade,
     constraint pedido_proveedor_proveedor_id_fk
-        foreign key (proveedor) references proveedor (proveedor_id)
+        foreign key (proveedor) references epic.proveedor (proveedor_id)
             on update cascade
 );
 
 
-# ------------------------ creation of lote table ------------------------
-create table lote
+# ------------------------ create the lote table ------------------------
+create table if not exists epic.lote
 (
     lote_id       int auto_increment
         primary key,
@@ -116,16 +119,16 @@ create table lote
     producto      int not null,
     pedido        int not null,
     constraint lote_pedido_pedido_id_fk
-        foreign key (pedido) references pedido (pedido_id)
+        foreign key (pedido) references epic.pedido (pedido_id)
             on update cascade,
     constraint lote_producto_producto_id_producto_id_fk
-        foreign key (producto) references producto (producto_id)
+        foreign key (producto) references epic.producto (producto_id)
             on update cascade
 );
 
 
-# ------------------------ creation of venta table ------------------------
-create table venta
+# ------------------------ create the venta table ------------------------
+create table if not exists epic.venta
 (
     venta_id      int auto_increment
         primary key,
@@ -135,16 +138,16 @@ create table venta
     empleado      int      not null,
     cliente       int      not null,
     constraint venta_cliente_cliente_id_fk
-        foreign key (cliente) references cliente (cliente_id)
+        foreign key (cliente) references epic.cliente (cliente_id)
             on update cascade,
     constraint venta_empleado_empleado_id_fk
-        foreign key (empleado) references empleado (empleado_id)
+        foreign key (empleado) references epic.empleado (empleado_id)
             on update cascade
 );
 
 
-# ------------------------ creation of item_venta table ------------------------
-create table item_venta
+# ------------------------ create the item_venta table ------------------------
+create table if not exists epic.item_venta
 (
     item_venta_id int auto_increment
         primary key,
@@ -154,14 +157,14 @@ create table item_venta
     producto      int      not null,
     venta         int      not null,
     constraint item_venta_producto_producto_id_fk
-        foreign key (producto) references producto (producto_id)
+        foreign key (producto) references epic.producto (producto_id)
             on update cascade,
     constraint item_venta_venta_venta_id_fk
-        foreign key (venta) references venta (venta_id)
+        foreign key (venta) references epic.venta (venta_id)
             on update cascade
 );
 
 # ------------------------ add bolsa ------------------------
-insert into familia(nombre) VALUE ('Bolsas');
-insert into producto(codigo, desc_larga, desc_corta, precio_venta, precio_compra_efectivo, margen, existencias, activo, familia)
+insert into epic.familia(nombre) VALUE ('Bolsas');
+insert into epic.producto(codigo, desc_larga, desc_corta, precio_venta, precio_compra_efectivo, margen, existencias, activo, familia)
     value ('bolsa', 'Bolsa', 'Bolsa', 50, 0, 0.1, 0, 1, 1);

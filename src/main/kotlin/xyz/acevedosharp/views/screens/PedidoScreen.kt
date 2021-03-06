@@ -148,7 +148,7 @@ class NewPedidoFormView : Fragment() {
                     hbox(spacing = 8) {
                         add(DateTimePicker().apply {
                             dateTimeValueProperty().bindBidirectional(model.fechaHora)
-                            validator(this, model.fechaHora, ValidationTrigger.OnBlur) {
+                            validator(this, model.fechaHora, ValidationTrigger.OnChange()) {
                                 when (it) {
                                     null -> error("Fecha y hora requeridos")
                                     else -> null

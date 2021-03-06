@@ -235,7 +235,7 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
             fieldset {
                 field("Código") {
                     firstTextField = textfield(model.codigo) {
-                        validator(trigger = ValidationTrigger.OnBlur) {
+                        validator(trigger = ValidationTrigger.OnChange()) {
                             when {
                                 if (formType == CREATE) productoController.isCodigoAvailable(it.toString())
                                 else productoController.existsOtherWithCodigo(it.toString(), model.id.value)
@@ -249,7 +249,7 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                     }
                 }
                 field("Descripción larga") {
-                    textfield(model.descLarga).validator(trigger = ValidationTrigger.OnBlur) {
+                    textfield(model.descLarga).validator(trigger = ValidationTrigger.OnChange()) {
                         when {
                             if (formType == CREATE) productoController.isDescLargaAvailable(it.toString())
                             else productoController.existsOtherWithDescLarga(it.toString(), model.id.value)
@@ -264,7 +264,7 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                     hbox(10, Pos.CENTER_LEFT) {
                         textfield(model.descCorta) {
                             prefWidth = 400.0
-                            validator(trigger = ValidationTrigger.OnBlur) {
+                            validator(trigger = ValidationTrigger.OnChange()) {
                                 when {
                                     if (formType == CREATE) productoController.isDescCortaAvailable(it.toString())
                                     else productoController.existsOtherWithDescCorta(it.toString(), model.id.value)

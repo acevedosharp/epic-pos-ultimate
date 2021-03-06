@@ -168,7 +168,7 @@ class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
             fieldset {
                 field("Nombre") {
                     firstTextField = textfield(model.nombre) {
-                        validator(trigger = ValidationTrigger.OnBlur) {
+                        validator(trigger = ValidationTrigger.OnChange()) {
                             when {
                                 if (formType == CREATE) proveedorController.isNombreAvailable(it.toString())
                                 else proveedorController.existsOtherWithNombre(it.toString(), model.id.value)
@@ -181,7 +181,7 @@ class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
                     }
                 }
                 field("Teléfono") {
-                    textfield(model.telefono).validator(trigger = ValidationTrigger.OnBlur) {
+                    textfield(model.telefono).validator(trigger = ValidationTrigger.OnChange()) {
                         when {
                             if (formType == CREATE) proveedorController.isTelefonoAvailable(it.toString())
                             else proveedorController.existsOtherWithTelefono(it.toString(), model.id.value)
@@ -193,7 +193,7 @@ class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
                     }
                 }
                 field("Correo") {
-                    textfield(model.correo).validator(trigger = ValidationTrigger.OnBlur) {
+                    textfield(model.correo).validator(trigger = ValidationTrigger.OnChange()) {
                         when {
                             if (formType == CREATE) !it.isNullOrBlank() && proveedorController.isCorreoAvailable(it.toString())
                             else !it.isNullOrBlank() && proveedorController.existsOtherWithCorreo(it.toString(), model.id.value)
@@ -204,7 +204,7 @@ class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
                     }
                 }
                 field("Dirección") {
-                    textfield(model.direccion).validator(trigger = ValidationTrigger.OnBlur) {
+                    textfield(model.direccion).validator(trigger = ValidationTrigger.OnChange()) {
                         when {
                             !it.isNullOrBlank() && it.length > 100 -> error("Máximo 100 caracteres (${it.length})")
                             else -> null

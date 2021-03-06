@@ -166,7 +166,7 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
             fieldset {
                 field("Nombre") {
                     firstTextField = textfield(model.nombre) {
-                        validator(trigger = ValidationTrigger.OnBlur) {
+                        validator(trigger = ValidationTrigger.OnChange()) {
                             when {
                                 if (formType == CREATE) clienteController.isNombreAvailable(it.toString())
                                 else clienteController.existsOtherWithNombre(it.toString(), model.id.value)
@@ -179,7 +179,7 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
                     }
                 }
                 field("Teléfono") {
-                    textfield(model.telefono).validator(trigger = ValidationTrigger.OnBlur) {
+                    textfield(model.telefono).validator(trigger = ValidationTrigger.OnChange()) {
                         when {
                             if (formType == CREATE) clienteController.isTelefonoAvailable(it.toString())
                             else clienteController.existsOtherWithTelefono(it.toString(), model.id.value)
@@ -191,7 +191,7 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
                     }
                 }
                 field("Dirección") {
-                    textfield(model.direccion).validator(trigger = ValidationTrigger.OnBlur) {
+                    textfield(model.direccion).validator(trigger = ValidationTrigger.OnChange()) {
                         when {
                             !it.isNullOrBlank() && it.length > 100 -> error("Máximo 100 caracteres (${it.length})")
                             else -> null

@@ -164,7 +164,7 @@ class BaseEmpleadoFormView(formType: FormType, id: Int?) : Fragment() {
             fieldset {
                 field("Nombre") {
                     firstTextField = textfield(model.nombre) {
-                        validator(trigger = ValidationTrigger.OnBlur) {
+                        validator(trigger = ValidationTrigger.OnChange()) {
                             when {
                                 if (formType == CREATE) empleadoController.isNombreAvailable(it.toString())
                                 else empleadoController.existsOtherWithNombre(it.toString(), model.id.value)
@@ -177,7 +177,7 @@ class BaseEmpleadoFormView(formType: FormType, id: Int?) : Fragment() {
                     }
                 }
                 field("Teléfono") {
-                    textfield(model.telefono).validator(trigger = ValidationTrigger.OnBlur) {
+                    textfield(model.telefono).validator(trigger = ValidationTrigger.OnChange()) {
                         when {
                             if (formType == CREATE) empleadoController.isTelefonoAvailable(it.toString())
                             else empleadoController.existsOtherWithTelefono(it.toString(), model.id.value)
