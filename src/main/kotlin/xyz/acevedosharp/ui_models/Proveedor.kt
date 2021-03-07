@@ -11,10 +11,10 @@ class Proveedor(var id: Int?, nombre: String, telefono: String, direccion: Strin
     var telefono: String by telefonoProperty
 
     val direccionProperty = SimpleStringProperty(this, "direccion", direccion)
-    var direccion: String by direccionProperty
+    var direccion: String? by direccionProperty
 
     val correoProperty = SimpleStringProperty(this, "correo", correo)
-    var correo: String by correoProperty
+    var correo: String? by correoProperty
 
     override fun toString(): String = nombre
 }

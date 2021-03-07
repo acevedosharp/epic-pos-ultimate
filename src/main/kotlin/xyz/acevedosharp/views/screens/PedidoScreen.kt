@@ -27,7 +27,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class PedidoView : View("Módulo de pedidos") {
-
     private val pedidoController = find<PedidoController>()
     private val proveedorController = find<ProveedorController>()
 
@@ -36,10 +35,9 @@ class PedidoView : View("Módulo de pedidos") {
     )
     private var provComboBox by singleAssign<ComboBox<ProveedorDB>>()
     private val searchByProveedor = SimpleObjectProperty<ProveedorDB>()
-    private val view = this
 
     init {
-        Joe.currentView = view
+        Joe.currentView = this@PedidoView
 
         pedidoController.getPedidosClean().onChange {
             searchByProveedor.value = null
@@ -64,7 +62,7 @@ class PedidoView : View("Módulo de pedidos") {
 
     override val root = hbox {
         setPrefSize(1920.0, 1080.0)
-        add(SideNavigation(PEDIDOS, view))
+        add(SideNavigation(PEDIDOS, this@PedidoView))
         borderpane {
             setPrefSize(1720.0, 1080.0)
             top {
@@ -78,7 +76,7 @@ class PedidoView : View("Módulo de pedidos") {
                             openInternalWindow<NewPedidoFormView>(
                                 closeButton = false,
                                 modal = true,
-                                params = mapOf("owner" to view)
+                                params = mapOf("owner" to this@PedidoView)
                             )
                         }
                     }
@@ -125,7 +123,7 @@ class NewPedidoFormView : Fragment() {
     private val model = PedidoModel()
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@NewPedidoFormView
         super.onDock()
     }
 
@@ -273,7 +271,7 @@ class PedidoSummaryView : Fragment() {
     private val pedido = params["pedido"] as PedidoDB
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@PedidoSummaryView
         super.onDock()
     }
 
@@ -330,7 +328,6 @@ class PedidoSummaryView : Fragment() {
 }
 
 class AddLoteView : Fragment() {
-
     private val productoController = find<ProductoController>()
     private val currentUncommittedLotes = find<CurrentUncommittedLotes>()
     private val model = LoteModel()
@@ -348,14 +345,10 @@ class AddLoteView : Fragment() {
                 else {
                     val res = precioCompra.toString()
 
-                    val split = res.split(".")
-                    val integerPart = split[0]
-                    val decimalPart = split[1]
-
-                    if (integerPart.length > 3) {
-                        val beforeSpace = integerPart.substring(0, integerPart.length - 3)
-                        val afterSpace = integerPart.substring(integerPart.length - 3, integerPart.length)
-                        maxPriceDisplay.value = "$$beforeSpace,$afterSpace.$decimalPart"
+                    if (res.length > 3) {
+                        val beforeSpace = res.substring(0, res.length - 3)
+                        val afterSpace = res.substring(res.length - 3, res.length)
+                        maxPriceDisplay.value = "$$beforeSpace,$afterSpace"
                     } else {
                         maxPriceDisplay.value = "$$res"
                     }
@@ -367,7 +360,7 @@ class AddLoteView : Fragment() {
     }
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@AddLoteView
         super.onDock()
     }
 

@@ -21,17 +21,15 @@ import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.EmpleadoDB
 
 class EmpleadoView : View("Módulo de empleados") {
-
     private val empleadoController = find<EmpleadoController>()
 
     private val selectedId = SimpleIntegerProperty()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty("")
     private var table: TableView<EmpleadoDB> by singleAssign()
-    private val view = this
 
     init {
-        Joe.currentView = view
+        Joe.currentView = this@EmpleadoView
 
         searchByNombre.onChange { searchString ->
             if (searchString != null) {
@@ -44,7 +42,7 @@ class EmpleadoView : View("Módulo de empleados") {
 
     override val root = hbox {
         setPrefSize(1920.0, 1080.0)
-        add(SideNavigation(EMPLEADOS, view))
+        add(SideNavigation(EMPLEADOS, this@EmpleadoView))
         borderpane {
             setPrefSize(1720.0, 1080.0)
             top {
@@ -58,7 +56,7 @@ class EmpleadoView : View("Módulo de empleados") {
                             openInternalWindow<NewEmpleadoFormView>(
                                 closeButton = false,
                                 modal = true,
-                                params = mapOf("owner" to view)
+                                params = mapOf("owner" to this@EmpleadoView)
                             )
                         }
                     }
@@ -71,7 +69,7 @@ class EmpleadoView : View("Módulo de empleados") {
                                 modal = true,
                                 params = mapOf(
                                     "id" to selectedId.value,
-                                    "owner" to view
+                                    "owner" to this@EmpleadoView
                                 )
                             )
                         }
@@ -130,7 +128,6 @@ class EmpleadoView : View("Módulo de empleados") {
 }
 
 class BaseEmpleadoFormView(formType: FormType, id: Int?) : Fragment() {
-
     private val empleadoController = find<EmpleadoController>()
 
     private var firstTextField: TextField by singleAssign()
@@ -221,7 +218,7 @@ class NewEmpleadoFormView : Fragment() {
     override val root = BaseEmpleadoFormView(CREATE, null).root
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@NewEmpleadoFormView
         super.onDock()
     }
 
@@ -235,7 +232,7 @@ class EditEmpleadoFormView : Fragment() {
     override val root = BaseEmpleadoFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@EditEmpleadoFormView
         super.onDock()
     }
 

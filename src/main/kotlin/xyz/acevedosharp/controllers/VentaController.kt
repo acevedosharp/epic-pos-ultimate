@@ -53,7 +53,8 @@ open class VentaController: Controller(), UpdateSnapshot {
                 uncommittedItemVenta.cantidad,
                 uncommittedItemVenta.producto.precioVenta,
                 uncommittedItemVenta.producto,
-                preRes
+                preRes,
+                preRes.cliente
             )
         })
 

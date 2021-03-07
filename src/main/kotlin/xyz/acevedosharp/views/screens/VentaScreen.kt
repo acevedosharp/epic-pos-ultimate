@@ -203,7 +203,7 @@ class ChooseHistoryRange : Fragment() {
     }
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@ChooseHistoryRange
         super.onDock()
     }
 
@@ -269,7 +269,7 @@ class VentaHistory : Fragment() {
     }
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@VentaHistory
         super.onDock()
     }
 
@@ -302,7 +302,7 @@ class DetalleVenta : Fragment() {
     }
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@DetalleVenta
         super.onDock()
     }
 

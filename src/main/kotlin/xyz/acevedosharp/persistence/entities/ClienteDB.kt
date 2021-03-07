@@ -15,7 +15,7 @@ class ClienteDB(
     var nombre: String,
 
     @Column(name = "telefono")
-    var telefono: String,
+    var telefono: String?,
 
     @Column(name = "direccion")
     var direccion: String?

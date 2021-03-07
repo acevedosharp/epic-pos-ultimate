@@ -83,7 +83,7 @@ create table if not exists epic.cliente
     cliente_id int auto_increment
         primary key,
     nombre     varchar(50)  not null,
-    telefono   varchar(20)  not null,
+    telefono   varchar(20)  null,
     direccion  varchar(100) null,
     constraint cliente_nombre_uindex
         unique (nombre),
@@ -156,6 +156,10 @@ create table if not exists epic.item_venta
     precio_venta  int      not null,
     producto      int      not null,
     venta         int      not null,
+    cliente       int      not null,
+    constraint item_venta_cliente_cliente_id_fk
+        foreign key (cliente) references epic.cliente (cliente_id)
+            on update cascade,
     constraint item_venta_producto_producto_id_fk
         foreign key (producto) references epic.producto (producto_id)
             on update cascade,

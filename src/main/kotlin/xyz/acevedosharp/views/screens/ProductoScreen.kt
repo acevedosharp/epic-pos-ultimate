@@ -37,10 +37,9 @@ class ProductoView : View("Módulo de productos") {
     private val searchByCodigo = SimpleStringProperty("")
     private val searchByDescripcion = SimpleStringProperty("")
     private val searchByFamilia = SimpleObjectProperty<FamiliaDB>()
-    private val view = this
 
     init {
-        Joe.currentView = view
+        Joe.currentView = this@ProductoView
 
         productoController.getProductosClean().onChange {
             searchByCodigo.value = ""
@@ -78,7 +77,7 @@ class ProductoView : View("Módulo de productos") {
 
     override val root = hbox {
         setPrefSize(1920.0, 1080.0)
-        add(SideNavigation(PRODUCTOS, view))
+        add(SideNavigation(PRODUCTOS, this@ProductoView))
         borderpane {
             setPrefSize(1720.0, 1080.0)
             top {
@@ -92,7 +91,7 @@ class ProductoView : View("Módulo de productos") {
                             openInternalWindow<NewProductoFormView>(
                                 closeButton = false,
                                 modal = true,
-                                params = mapOf("owner" to view)
+                                params = mapOf("owner" to this@ProductoView)
                             )
                         }
                     }
@@ -105,7 +104,7 @@ class ProductoView : View("Módulo de productos") {
                                 modal = true,
                                 params = mapOf(
                                     "id" to selectedId.value,
-                                    "owner" to view
+                                    "owner" to this@ProductoView
                                 )
                             )
                         }
@@ -184,7 +183,6 @@ class ProductoView : View("Módulo de productos") {
 }
 
 class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
-
     private val productoController = find<ProductoController>()
     private val familiaController = find<FamiliaController>()
 
@@ -354,7 +352,7 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                                 openInternalWindow<NewFamiliaFormView>(
                                     closeButton = false,
                                     modal = true,
-                                    params = mapOf("owner" to this)
+                                    params = mapOf("owner" to this@BaseProductoFormView)
                                 )
                             }
                         }
@@ -399,7 +397,7 @@ class NewProductoFormView : Fragment() {
     override val root = BaseProductoFormView(CREATE, null).root
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@NewProductoFormView
         super.onDock()
     }
 
@@ -413,7 +411,7 @@ class EditProductoFormView : Fragment() {
     override val root = BaseProductoFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@EditProductoFormView
         super.onDock()
     }
 
@@ -424,7 +422,6 @@ class EditProductoFormView : Fragment() {
 }
 
 class SelectProductoDialog : Fragment() {
-
     private val productoController = find<ProductoController>()
     private val familiaController = find<FamiliaController>()
 
@@ -605,7 +602,7 @@ class SelectProductoDialog : Fragment() {
     }
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@SelectProductoDialog
         super.onDock()
     }
 

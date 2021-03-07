@@ -41,7 +41,6 @@ import kotlin.math.ceil
 import kotlin.math.floor
 
 class PuntoDeVentaView : View("Punto de venta") {
-
     class CurrentUncommittedIVS {
         val ivs: ObservableList<ItemVentaComponent> = FXCollections.observableArrayList()
 
@@ -84,10 +83,8 @@ class PuntoDeVentaView : View("Punto de venta") {
 
     private val productoController = find<ProductoController>()
 
-    private val view = this
     private lateinit var scene: Scene
     private lateinit var listener: ChangeListener<Node>
-    private lateinit var keepItemSync: ChangeListener<Node>
 
     private val uncommittedItems: ObservableList<Node> = FXCollections.observableArrayList()
     private val dineroEntregado = SimpleIntegerProperty()
@@ -98,7 +95,7 @@ class PuntoDeVentaView : View("Punto de venta") {
     private lateinit var currentCodigoTextField: TextField
 
     init {
-        Joe.currentView = view
+        Joe.currentView = this@PuntoDeVentaView
 
         currentUncommittedIVS.flush()
 
@@ -121,7 +118,7 @@ class PuntoDeVentaView : View("Punto de venta") {
 
     override val root = hbox {
         setPrefSize(1920.0, 1080.0)
-        add(SideNavigation(CurrentModule.PUNTO_DE_VENTA, view))
+        add(SideNavigation(CurrentModule.PUNTO_DE_VENTA, this@PuntoDeVentaView))
         borderpane {
             setPrefSize(1720.0, 1080.0)
             style {
@@ -209,7 +206,7 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 openInternalWindow<CodigoNotRecognizedDialog>(
                                     closeButton = false,
                                     modal = true,
-                                    params = mapOf("owner" to view)
+                                    params = mapOf("owner" to this@PuntoDeVentaView)
                                 )
                             }
                             currentCodigo.set("")
@@ -229,7 +226,7 @@ class PuntoDeVentaView : View("Punto de venta") {
                                 modal = true,
                                 params = mapOf(
                                     "cuivs" to currentUncommittedIVS,
-                                    "papi" to view
+                                    "papi" to this@PuntoDeVentaView
                                 )
                             )
                             removeAlwaysFocusListener()
@@ -445,7 +442,7 @@ class PuntoDeVentaView : View("Punto de venta") {
                                     modal = true,
                                     params = mapOf(
                                         "cuivs" to currentUncommittedIVS,
-                                        "owner" to view
+                                        "owner" to this@PuntoDeVentaView
                                     )
                                 )
                                 removeAlwaysFocusListener()
@@ -467,7 +464,7 @@ class PuntoDeVentaView : View("Punto de venta") {
                                         modal = true,
                                         params = mapOf(
                                             "cuivs" to currentUncommittedIVS,
-                                            "owner" to view,
+                                            "owner" to this@PuntoDeVentaView,
                                             "dineroEntregado" to dineroEntregado,
                                             "valorTotal" to currentUncommittedIVS.total.value.toDouble()
                                         )
@@ -492,7 +489,7 @@ class PuntoDeVentaView : View("Punto de venta") {
                                     closeButton = false,
                                     modal = true,
                                     params = mapOf(
-                                        "owner" to view
+                                        "owner" to this@PuntoDeVentaView
                                     )
                                 )
                                 removeAlwaysFocusListener()
@@ -515,7 +512,6 @@ class PuntoDeVentaView : View("Punto de venta") {
 }
 
 class CreateItemVentaManuallyForm : Fragment() {
-
     private val productoController = find<ProductoController>()
     private val model = UncommittedIVModel()
 
@@ -523,7 +519,7 @@ class CreateItemVentaManuallyForm : Fragment() {
     private val papi: PuntoDeVentaView = params["papi"] as PuntoDeVentaView
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@CreateItemVentaManuallyForm
         super.onDock()
     }
 
@@ -618,7 +614,6 @@ class CreateItemVentaManuallyForm : Fragment() {
 }
 
 class  BolsasSelect : Fragment() {
-
     private val productoController = find<ProductoController>()
 
     private val numeroBolsas = SimpleIntegerProperty(1)
@@ -679,7 +674,7 @@ class  BolsasSelect : Fragment() {
 
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@BolsasSelect
         super.onDock()
     }
 
@@ -690,7 +685,6 @@ class  BolsasSelect : Fragment() {
 }
 
 class CommitVenta : Fragment() {
-
     private val printingService = find<CustomApplicationContextWrapper>().context.getBean(RecipePrintingService::class.java)
 
     private val empleadoController = find<EmpleadoController>()
@@ -705,7 +699,7 @@ class CommitVenta : Fragment() {
     private val impresora = SimpleStringProperty(printingService.getPrinters()[0])
     private val impresoras = FXCollections.observableArrayList<String>()
 
-    private val imprimirFactura = SimpleStringProperty("")
+    private val imprimirFactura = SimpleStringProperty("No")
 
     override fun onDock() {
         Joe.currentView = this
@@ -719,7 +713,7 @@ class CommitVenta : Fragment() {
 
     override val root = vbox(spacing = 0, alignment = Pos.CENTER) {
         useMaxSize = true
-        prefWidth = 600.0
+        prefWidth = 800.0
         label("Checkout") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
@@ -750,6 +744,16 @@ class CommitVenta : Fragment() {
                         when (it) {
                             null -> error("Cliente requerido")
                             else -> null
+                        }
+                    }
+                    button("+") {
+                        addClass(MainStylesheet.addButton, MainStylesheet.greenButton)
+                        action {
+                            openInternalWindow<NewClienteFormView>(
+                                closeButton = false,
+                                modal = true,
+                                params = mapOf("owner" to this@CommitVenta)
+                            )
                         }
                     }
                 }
@@ -806,6 +810,7 @@ class CommitVenta : Fragment() {
                                     printingService.printRecipe(res, impresora.value)
                                 currentUncommittedIVS.flush()
                                 owner.addAlwaysFocusListener()
+                                dineroEntregado.set(0)
                                 close()
                             }
                         }

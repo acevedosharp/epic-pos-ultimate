@@ -11,6 +11,7 @@ import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import tornadofx.*
 import xyz.acevedosharp.CustomApplicationContextWrapper
+import xyz.acevedosharp.persistence.entities.ClienteDB
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
 import xyz.acevedosharp.persistence.repositories.ItemVentaRepo
@@ -48,7 +49,7 @@ class ReportesController : Controller() {
     private val itemVentaRepo = find<CustomApplicationContextWrapper>().context.getBean(ItemVentaRepo::class.java)
     private val familiaController = find<FamiliaController>()
 
-    fun generateReport(startDate: String, endDate: String): VBox {
+    fun generateReport(filterByCliente: Boolean, clienteToFilterBy: ClienteDB?, startDate: String, endDate: String): VBox {
 
         val startDateMonthYear = decodeMonthAndYearRaw(startDate)
         val startCalendar = Calendar.getInstance()
@@ -80,12 +81,20 @@ class ReportesController : Controller() {
         val products = productoRepo.findAll()
 
         products.forEach { producto ->
-            val matchingSoldItems =
+            val matchingSoldItems = if (filterByCliente) {
+                itemVentaRepo.findAllByProductoEqualsAndFechaHoraBetweenAndClienteEquals(
+                    producto,
+                    startDateTimestamp,
+                    endDateTimestamp,
+                    clienteToFilterBy!!
+                )
+            } else { // don't filter by cliente
                 itemVentaRepo.findAllByProductoEqualsAndFechaHoraBetween(
                     producto,
                     startDateTimestamp,
                     endDateTimestamp
                 )
+            }
 
             totalSales = matchingSoldItems.groupBy { it.venta }.size
 
@@ -142,10 +151,14 @@ class ReportesController : Controller() {
                 }
 
                 hbox(alignment = Pos.CENTER) {
-                    label("Reporte de: ").style { fontSize = 40.px }
-                    label(startDate).style { fontSize = 40.px; fontWeight = FontWeight.EXTRA_BOLD }
-                    label(" hasta ").style { fontSize = 40.px }
-                    label(endDate).style { fontSize = 40.px; fontWeight = FontWeight.EXTRA_BOLD }
+                    label("Reporte de: ").style { fontSize = 36.px }
+                    label(startDate).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
+                    label(" hasta ").style { fontSize = 36.px }
+                    label(endDate).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
+                    if (filterByCliente) {
+                        label(" - Cliente: ").style { fontSize = 36.px }
+                        label(clienteToFilterBy!!.nombre).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
+                    }
 
                     hgrow = Priority.ALWAYS
                     style {

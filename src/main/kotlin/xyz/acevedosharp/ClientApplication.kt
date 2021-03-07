@@ -10,7 +10,6 @@ import tornadofx.*
 import xyz.acevedosharp.views.*
 import xyz.acevedosharp.views.screens.PuntoDeVentaView
 
-
 class ClientApplication : App(PuntoDeVentaView::class, MainStylesheet::class) {
 
     private val context: ConfigurableApplicationContext = SpringApplicationBuilder(LocalSpringBootApplication::class.java).run()

@@ -21,17 +21,15 @@ import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 
 class FamiliaView : View("Módulo de familias") {
-
     private val familiaController = find<FamiliaController>()
 
     private val selectedId = SimpleIntegerProperty()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty("")
     private var table: TableView<FamiliaDB> by singleAssign()
-    private val view = this
 
     init {
-        Joe.currentView = view
+        Joe.currentView = this@FamiliaView
 
         searchByNombre.onChange { searchString ->
             if (searchString != null) {
@@ -44,7 +42,7 @@ class FamiliaView : View("Módulo de familias") {
 
     override val root = hbox {
         setPrefSize(1920.0, 1080.0)
-        add(SideNavigation(FAMILIAS, view))
+        add(SideNavigation(FAMILIAS, this@FamiliaView))
         borderpane {
             setPrefSize(1720.0, 1080.0)
             top {
@@ -58,7 +56,7 @@ class FamiliaView : View("Módulo de familias") {
                             openInternalWindow<NewFamiliaFormView>(
                                 closeButton = false,
                                 modal = true,
-                                params = mapOf("owner" to view)
+                                params = mapOf("owner" to this@FamiliaView)
                             )
                         }
 
@@ -72,7 +70,7 @@ class FamiliaView : View("Módulo de familias") {
                                 modal = true,
                                 params = mapOf(
                                     "id" to selectedId.value,
-                                    "owner" to view
+                                    "owner" to this@FamiliaView
                                 )
                             )
                         }
@@ -130,7 +128,6 @@ class FamiliaView : View("Módulo de familias") {
 }
 
 class BaseFamiliaFormView(formType: FormType, id: Int?) : Fragment() {
-
     private val familiaController = find<FamiliaController>()
 
     private var firstTextField: TextField by singleAssign()
@@ -208,7 +205,7 @@ class NewFamiliaFormView : Fragment() {
     override val root = BaseFamiliaFormView(CREATE, null).root
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@NewFamiliaFormView
         super.onDock()
     }
 
@@ -222,7 +219,7 @@ class EditFamiliaFormView : Fragment() {
     override val root = BaseFamiliaFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@EditFamiliaFormView
         super.onDock()
     }
 

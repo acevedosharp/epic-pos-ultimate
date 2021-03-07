@@ -18,6 +18,7 @@ class Lote(var id: Int?, cantidad: Int, precioCompra: Int, producto: ProductoDB)
     var producto: ProductoDB by productoProperty
 
     fun productoDescCorta(): String = producto.descripcionCorta
+    fun productoDescLarga(): String = producto.descripcionLarga
 }
 
 class LoteModel: ItemViewModel<Lote>() {

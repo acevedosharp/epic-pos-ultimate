@@ -24,5 +24,8 @@ class ItemVentaDB(
     var producto: ProductoDB,
 
     @ManyToOne @JoinColumn(name = "venta")
-    var venta: VentaDB
+    var venta: VentaDB,
+
+    @ManyToOne @JoinColumn(name = "cliente")
+    var cliente: ClienteDB,
 )

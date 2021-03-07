@@ -21,17 +21,15 @@ import xyz.acevedosharp.ui_models.Cliente
 import xyz.acevedosharp.ui_models.ClienteModel
 
 class ClienteView : View("Módulo de clientes") {
-
     private val clienteController = find<ClienteController>()
 
     private val selectedId = SimpleIntegerProperty()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty("")
     private var table: TableView<ClienteDB> by singleAssign()
-    private val view = this
 
     init {
-        Joe.currentView = view
+        Joe.currentView = this@ClienteView
 
         searchByNombre.onChange { searchString ->
             if (searchString != null) {
@@ -44,7 +42,7 @@ class ClienteView : View("Módulo de clientes") {
 
     override val root = hbox {
         setPrefSize(1920.0, 1080.0)
-        add(SideNavigation(CLIENTES, view))
+        add(SideNavigation(CLIENTES, this@ClienteView))
         borderpane {
             setPrefSize(1720.0, 1080.0)
             top {
@@ -58,7 +56,7 @@ class ClienteView : View("Módulo de clientes") {
                             openInternalWindow<NewClienteFormView>(
                                 closeButton = false,
                                 modal = true,
-                                params = mapOf("owner" to view)
+                                params = mapOf("owner" to this@ClienteView)
                             )
                         }
                     }
@@ -71,7 +69,7 @@ class ClienteView : View("Módulo de clientes") {
                                 modal = true,
                                 params = mapOf(
                                     "id" to selectedId.value,
-                                    "owner" to view
+                                    "owner" to this@ClienteView
                                 )
                             )
                         }
@@ -131,7 +129,6 @@ class ClienteView : View("Módulo de clientes") {
 }
 
 class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
-
     private val clienteController = find<ClienteController>()
 
     private var firstTextField: TextField by singleAssign()
@@ -181,11 +178,10 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
                 field("Teléfono") {
                     textfield(model.telefono).validator(trigger = ValidationTrigger.OnChange()) {
                         when {
-                            if (formType == CREATE) clienteController.isTelefonoAvailable(it.toString())
+                            if (formType == CREATE && !it.isNullOrBlank()) clienteController.isTelefonoAvailable(it.toString())
                             else clienteController.existsOtherWithTelefono(it.toString(), model.id.value)
                             -> error("Teléfono no disponible")
-                            it.isNullOrBlank() -> error("Teléfono requerido")
-                            it.length > 20 -> error("Máximo 20 caracteres (${it.length})")
+                            !it.isNullOrBlank() && it.length > 20 -> error("Máximo 20 caracteres (${it.length})")
                             else -> null
                         }
                     }
@@ -232,7 +228,7 @@ class NewClienteFormView : Fragment() {
     override val root = BaseClienteFormView(CREATE, null).root
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@NewClienteFormView
         super.onDock()
     }
 
@@ -246,7 +242,7 @@ class EditClienteFormView : Fragment() {
     override val root = BaseClienteFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@EditClienteFormView
         super.onDock()
     }
 

@@ -21,17 +21,15 @@ import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.ProveedorDB
 
 class ProveedorView : View("Módulo de proveedores") {
-
     private val proveedorController = find<ProveedorController>()
 
     private val selectedId = SimpleIntegerProperty()
     private val existsSelection = SimpleBooleanProperty(false)
     private val searchByNombre = SimpleStringProperty("")
     private var table: TableView<ProveedorDB> by singleAssign()
-    private val view = this
 
     init {
-        Joe.currentView = view
+        Joe.currentView = this@ProveedorView
 
         searchByNombre.onChange { searchString ->
             if (searchString != null) {
@@ -44,7 +42,7 @@ class ProveedorView : View("Módulo de proveedores") {
 
     override val root = hbox {
         setPrefSize(1920.0, 1080.0)
-        add(SideNavigation(PROVEEDORES, view))
+        add(SideNavigation(PROVEEDORES, this@ProveedorView))
         borderpane {
             setPrefSize(1720.0, 1080.0)
             top {
@@ -58,7 +56,7 @@ class ProveedorView : View("Módulo de proveedores") {
                             openInternalWindow<NewProveedorFormView>(
                                 closeButton = false,
                                 modal = true,
-                                params = mapOf("owner" to view)
+                                params = mapOf("owner" to this@ProveedorView)
                             )
                         }
                     }
@@ -71,7 +69,7 @@ class ProveedorView : View("Módulo de proveedores") {
                                 modal = true,
                                 params = mapOf(
                                     "id" to selectedId.value,
-                                    "owner" to view
+                                    "owner" to this@ProveedorView
                                 )
                             )
                         }
@@ -132,7 +130,6 @@ class ProveedorView : View("Módulo de proveedores") {
 }
 
 class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
-
     private val proveedorController = find<ProveedorController>()
 
     private var firstTextField: TextField by singleAssign()
@@ -195,8 +192,8 @@ class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
                 field("Correo") {
                     textfield(model.correo).validator(trigger = ValidationTrigger.OnChange()) {
                         when {
-                            if (formType == CREATE) !it.isNullOrBlank() && proveedorController.isCorreoAvailable(it.toString())
-                            else !it.isNullOrBlank() && proveedorController.existsOtherWithCorreo(it.toString(), model.id.value)
+                            if (formType == CREATE && !it.isNullOrBlank()) proveedorController.isCorreoAvailable(it.toString())
+                            else proveedorController.existsOtherWithCorreo(it.toString(), model.id.value)
                             -> error("Correo no disponible")
                             !it.isNullOrBlank() && it.length > 40 -> error("Máximo 40 caracteres (${it.length})")
                             else -> null
@@ -247,7 +244,7 @@ class NewProveedorFormView : Fragment() {
     override val root = BaseProveedorFormView(CREATE, null).root
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@NewProveedorFormView
         super.onDock()
     }
 
@@ -261,7 +258,7 @@ class EditProveedorFormView : Fragment() {
     override val root = BaseProveedorFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView = this@EditProveedorFormView
         super.onDock()
     }
 
