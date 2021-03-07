@@ -696,7 +696,7 @@ class CommitVenta : Fragment() {
     private val owner: PuntoDeVentaView = params["owner"] as PuntoDeVentaView
     private val dineroEntregado = params["dineroEntregado"] as SimpleIntegerProperty
     private val valorTotal = params["valorTotal"] as Double
-    private val impresora = SimpleStringProperty(printingService.getPrinters()[0])
+    private val impresora = if (Joe.rememberPrinter.value == false) SimpleStringProperty(printingService.getPrinters()[0]) else Joe.persistentPrinter
     private val impresoras = FXCollections.observableArrayList<String>()
 
     private val imprimirFactura = SimpleStringProperty("No")
@@ -776,6 +776,7 @@ class CommitVenta : Fragment() {
                         makeAutocompletable(false)
                         style { fontSize = 28.px }
                     }
+                    checkbox("¿Recordar?", Joe.rememberPrinter)
                 }
                 rectangle(width = 0, height = 24)
                 hbox(spacing = 80, alignment = Pos.CENTER) {
@@ -811,6 +812,11 @@ class CommitVenta : Fragment() {
                                 currentUncommittedIVS.flush()
                                 owner.addAlwaysFocusListener()
                                 dineroEntregado.set(0)
+
+                                // remember printer selection
+                                if (Joe.rememberPrinter.value) {
+                                    Joe.persistentPrinter.set(impresora.value)
+                                }
                                 close()
                             }
                         }

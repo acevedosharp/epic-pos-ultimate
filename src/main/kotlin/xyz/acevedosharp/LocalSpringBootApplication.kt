@@ -1,6 +1,8 @@
 package xyz.acevedosharp
 
 import javafx.application.Application
+import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleStringProperty
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import java.io.IOException
 import java.net.MalformedURLException
@@ -33,4 +35,6 @@ object InternetConnection {
 
 object Joe {
     var currentView: UIComponent? = null
+    var rememberPrinter = SimpleBooleanProperty(false)
+    var persistentPrinter = SimpleStringProperty()
 }

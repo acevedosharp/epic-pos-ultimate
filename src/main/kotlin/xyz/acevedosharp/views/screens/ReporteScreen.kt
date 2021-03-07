@@ -58,7 +58,9 @@ class ReporteScreen : View("Módulo de Reportes") {
                         combobox(
                             property = filterByCliente,
                             values = FXCollections.observableArrayList("Sí", "No")
-                        )
+                        ) {
+                            prefWidth = 250.0
+                        }
                     }
 
                     vbox {
@@ -66,7 +68,10 @@ class ReporteScreen : View("Módulo de Reportes") {
                         combobox(
                             property = clienteToFilterBy,
                             values = clienteController.getClientesWithUpdate()
-                        ) { makeAutocompletable() }
+                        ) {
+                            prefWidth = 250.0
+                            makeAutocompletable()
+                        }
                         hiddenWhen {
                             filterByCliente.isNotEqualTo("Sí")
                         }
@@ -77,7 +82,9 @@ class ReporteScreen : View("Módulo de Reportes") {
                         combobox(
                             property = startDate,
                             values = startDates
-                        )
+                        ) {
+                            prefWidth = 250.0
+                        }
                     }
 
                     vbox {
@@ -86,7 +93,9 @@ class ReporteScreen : View("Módulo de Reportes") {
                         combobox(
                             property = endDate,
                             values = endDates
-                        )
+                        ) {
+                            prefWidth = 250.0
+                        }
                     }
 
                     rectangle(width = 32, height = 0)

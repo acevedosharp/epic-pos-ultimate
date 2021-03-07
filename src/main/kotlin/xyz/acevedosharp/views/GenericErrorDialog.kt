@@ -12,10 +12,12 @@ class GenericErrorDialog(message: String): Fragment() {
             addClass(MainStylesheet.titleLabel)
             addClass(MainStylesheet.redLabel)
         }
+        rectangle(width = 0, height = 20)
         text("Mensaje: $message").style {
             wrapText = true
             padding = box(vertical = 30.px, horizontal = 5.px)
         }
+        rectangle(width = 0, height = 20)
         hbox(spacing = 80, alignment = Pos.CENTER) {
             button("Aceptar") {
                 addClass(MainStylesheet.coolBaseButton)
