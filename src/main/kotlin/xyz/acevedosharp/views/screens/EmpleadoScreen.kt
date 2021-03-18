@@ -29,7 +29,7 @@ class EmpleadoView : View("Módulo de empleados") {
     private var table: TableView<EmpleadoDB> by singleAssign()
 
     init {
-        Joe.currentView = this@EmpleadoView
+        Joe.currentView.setValue(this@EmpleadoView)
 
         searchByNombre.onChange { searchString ->
             if (searchString != null) {
@@ -218,12 +218,12 @@ class NewEmpleadoFormView : Fragment() {
     override val root = BaseEmpleadoFormView(CREATE, null).root
 
     override fun onDock() {
-        Joe.currentView = this@NewEmpleadoFormView
+        Joe.currentView.setValue(this@NewEmpleadoFormView)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }
@@ -232,12 +232,12 @@ class EditEmpleadoFormView : Fragment() {
     override val root = BaseEmpleadoFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
-        Joe.currentView = this@EditEmpleadoFormView
+        Joe.currentView.setValue(this@EditEmpleadoFormView)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }

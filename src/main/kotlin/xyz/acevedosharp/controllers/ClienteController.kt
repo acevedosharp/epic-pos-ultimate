@@ -31,7 +31,9 @@ class ClienteController : Controller(), UpdateSnapshot {
                 cliente.id,
                 cliente.nombre,
                 cliente.telefono,
-                cliente.direccion
+                cliente.direccion,
+                cliente.birthdayDay,
+                cliente.birthdayMonth
             )
         )
         updateSnapshot()

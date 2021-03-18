@@ -8,6 +8,9 @@ import xyz.acevedosharp.views.helpers.CurrentModule
 import xyz.acevedosharp.views.helpers.CurrentModule.*
 import xyz.acevedosharp.views.screens.*
 import tornadofx.*
+import xyz.acevedosharp.Joe
+import xyz.acevedosharp.controllers.NotificationsController
+import xyz.acevedosharp.views.dialogs.NotificationsDialog
 
 class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment() {
     override val root = vbox(alignment = Pos.TOP_CENTER) {
@@ -122,6 +125,14 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
             }
             action {
                 currentView.replaceWith(ClienteView())
+            }
+        }
+        button("Notificationes") {
+            action {
+                openInternalWindow(
+                    NotificationsDialog(find<NotificationsController>().getNotifications()),
+                    owner = Joe.currentView.value.root
+                )
             }
         }
 

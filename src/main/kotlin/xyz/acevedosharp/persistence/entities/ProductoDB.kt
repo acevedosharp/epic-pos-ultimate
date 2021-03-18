@@ -33,7 +33,10 @@ class ProductoDB(
     var margen: Double,
 
     @ManyToOne @JoinColumn(name = "familia")
-    var familia: FamiliaDB
+    var familia: FamiliaDB,
+
+    @Column(name = "alerta_existencias")
+    var alertaExistencias: Int
 ) {
     fun toModel() = Producto(
         productoId,
@@ -44,7 +47,8 @@ class ProductoDB(
         precioCompraEfectivo,
         existencias,
         margen,
-        familia
+        familia,
+        alertaExistencias
     )
 
     override fun toString() = descripcionCorta

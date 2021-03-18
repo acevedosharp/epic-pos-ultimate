@@ -2,6 +2,7 @@ package xyz.acevedosharp
 
 import javafx.application.Application
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import java.io.IOException
@@ -34,7 +35,7 @@ object InternetConnection {
 }
 
 object Joe {
-    var currentView: UIComponent? = null
+    var currentView = SimpleObjectProperty<UIComponent>(null)
     var rememberPrinter = SimpleBooleanProperty(false)
     var persistentPrinter = SimpleStringProperty()
 }

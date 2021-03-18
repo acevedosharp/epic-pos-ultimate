@@ -1,18 +1,30 @@
-package xyz.acevedosharp.views
+package xyz.acevedosharp.views.dialogs
 
 import javafx.geometry.Pos
 import tornadofx.*
+import xyz.acevedosharp.Joe
+import xyz.acevedosharp.views.MainStylesheet
 
-class NoInternetConnectionErrorDialog : Fragment() {
+class CodigoNotRecognizedDialog: Fragment() {
+
+    override fun onDock() {
+        Joe.currentView.setValue(this@CodigoNotRecognizedDialog)
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView.setValue(params["owner"] as UIComponent)
+        super.onUndock()
+    }
+
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        label("No hay acceso a internet") {
+        label("Código no reconocido") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
             addClass(MainStylesheet.redLabel)
         }
-        text("Por favor cambie de red y vuelva a intentar. Si sí tiene internet comuníquese con 302 217 5285.").style {
-            wrapText = true
+        label("No se ha encontrado un producto con el código introducido.").style {
             padding = box(vertical = 30.px, horizontal = 5.px)
         }
         hbox(spacing = 80, alignment = Pos.CENTER) {

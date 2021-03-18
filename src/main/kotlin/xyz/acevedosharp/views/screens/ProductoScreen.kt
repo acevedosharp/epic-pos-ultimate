@@ -39,7 +39,7 @@ class ProductoView : View("Módulo de productos") {
     private val searchByFamilia = SimpleObjectProperty<FamiliaDB>()
 
     init {
-        Joe.currentView = this@ProductoView
+        Joe.currentView.setValue(this@ProductoView)
 
         productoController.getProductosClean().onChange {
             searchByCodigo.value = ""
@@ -155,6 +155,7 @@ class ProductoView : View("Módulo de productos") {
                         column("P. Compra", ProductoDB::precioCompraEfectivo)
                         column("Margen", ProductoDB::margen)
                         column("Existencias", ProductoDB::existencias)
+                        column("Alerta", ProductoDB::alertaExistencias)
                         column("Familia", ProductoDB::familia)
 
                         smartResize()
@@ -320,6 +321,17 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                         editable = true
                     )
                 }
+                field("Alerta Existencias") {
+                    if (formType == CREATE) model.alertaExistencias.value = 0
+                    spinner(
+                        property = model.alertaExistencias,
+                        initialValue = 0,
+                        min = Int.MIN_VALUE,
+                        max = Int.MAX_VALUE,
+                        amountToStepBy = 1,
+                        editable = true
+                    )
+                }
                 field("Margen (%)") {
                     hbox(10, Pos.CENTER_LEFT) {
                         spinner(
@@ -374,7 +386,8 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                                         if (formType == CREATE) 0 else model.precioCompraEfectivo.value.toInt(),
                                         model.existencias.value.toInt(),
                                         model.margen.value.toDouble(),
-                                        model.familia.value
+                                        model.familia.value,
+                                        model.alertaExistencias.value.toInt()
                                     )
                                 )
                                 close()
@@ -397,12 +410,12 @@ class NewProductoFormView : Fragment() {
     override val root = BaseProductoFormView(CREATE, null).root
 
     override fun onDock() {
-        Joe.currentView = this@NewProductoFormView
+        Joe.currentView.setValue(this@NewProductoFormView)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }
@@ -411,12 +424,12 @@ class EditProductoFormView : Fragment() {
     override val root = BaseProductoFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
-        Joe.currentView = this@EditProductoFormView
+        Joe.currentView.setValue(this@EditProductoFormView)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }
@@ -435,7 +448,7 @@ class SelectProductoDialog : Fragment() {
     private val parentProductoProperty = params["productoProperty"] as Property<ProductoDB>
 
     init {
-        Joe.currentView = this
+        Joe.currentView.setValue(this)
 
         productoController.getProductosClean().onChange {
             searchByCodigo.value = ""
@@ -602,12 +615,12 @@ class SelectProductoDialog : Fragment() {
     }
 
     override fun onDock() {
-        Joe.currentView = this@SelectProductoDialog
+        Joe.currentView.setValue(this@SelectProductoDialog)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }

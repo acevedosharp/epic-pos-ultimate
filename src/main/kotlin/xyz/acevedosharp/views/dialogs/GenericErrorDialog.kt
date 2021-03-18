@@ -1,21 +1,24 @@
-package xyz.acevedosharp.views
+package xyz.acevedosharp.views.dialogs
 
 import javafx.geometry.Pos
 import tornadofx.*
+import xyz.acevedosharp.views.MainStylesheet
 
-class UnexpectedErrorDialog(message: String): Fragment() {
+class GenericErrorDialog(message: String): Fragment() {
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        label("Ocurrió un error inesperado") {
+        label("Ha ocurrido un error") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
             addClass(MainStylesheet.redLabel)
         }
+        rectangle(width = 0, height = 20)
         text("Mensaje: $message").style {
             wrapText = true
             padding = box(vertical = 30.px, horizontal = 5.px)
         }
+        rectangle(width = 0, height = 20)
         hbox(spacing = 80, alignment = Pos.CENTER) {
             button("Aceptar") {
                 addClass(MainStylesheet.coolBaseButton)
@@ -28,3 +31,5 @@ class UnexpectedErrorDialog(message: String): Fragment() {
         }
     }
 }
+
+class GenericApplicationException(message: String): RuntimeException(message)

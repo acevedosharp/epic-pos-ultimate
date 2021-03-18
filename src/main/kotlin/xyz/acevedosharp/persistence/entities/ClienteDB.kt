@@ -18,13 +18,21 @@ class ClienteDB(
     var telefono: String?,
 
     @Column(name = "direccion")
-    var direccion: String?
+    var direccion: String?,
+
+    @Column(name = "birthday_day")
+    var birthdayDay: Int?,
+
+    @Column(name = "birthday_month")
+    var birthdayMonth: Int?
 ) {
     fun toModel() = Cliente(
         clienteId,
         nombre,
         telefono,
-        direccion
+        direccion,
+        birthdayDay,
+        birthdayMonth
     )
 
     override fun toString() = nombre

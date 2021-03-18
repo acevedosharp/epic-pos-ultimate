@@ -29,7 +29,7 @@ class FamiliaView : View("Módulo de familias") {
     private var table: TableView<FamiliaDB> by singleAssign()
 
     init {
-        Joe.currentView = this@FamiliaView
+        Joe.currentView.setValue(this@FamiliaView)
 
         searchByNombre.onChange { searchString ->
             if (searchString != null) {
@@ -205,12 +205,12 @@ class NewFamiliaFormView : Fragment() {
     override val root = BaseFamiliaFormView(CREATE, null).root
 
     override fun onDock() {
-        Joe.currentView = this@NewFamiliaFormView
+        Joe.currentView.setValue(this@NewFamiliaFormView)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }
@@ -219,12 +219,12 @@ class EditFamiliaFormView : Fragment() {
     override val root = BaseFamiliaFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
-        Joe.currentView = this@EditFamiliaFormView
+        Joe.currentView.setValue(this@EditFamiliaFormView)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }

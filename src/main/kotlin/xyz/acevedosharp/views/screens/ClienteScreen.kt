@@ -29,7 +29,7 @@ class ClienteView : View("Módulo de clientes") {
     private var table: TableView<ClienteDB> by singleAssign()
 
     init {
-        Joe.currentView = this@ClienteView
+        Joe.currentView.setValue(this@ClienteView)
 
         searchByNombre.onChange { searchString ->
             if (searchString != null) {
@@ -96,6 +96,8 @@ class ClienteView : View("Módulo de clientes") {
                         column("Nombre", ClienteDB::nombre)
                         column("Teléfono", ClienteDB::telefono)
                         column("Dirección", ClienteDB::direccion).remainingWidth()
+                        column("Día", ClienteDB::birthdayDay)
+                        column("Mes", ClienteDB::birthdayMonth)
                         smartResize()
 
                         clienteController.getClientesClean().onChange {
@@ -194,6 +196,28 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
                         }
                     }
                 }
+                field("Cumpleaños") {
+                    hbox(spacing = 20) {
+                        field("Día") {
+                            textfield(model.birthdayDay).validator {
+                                when {
+                                    !it.isNullOrBlank() && !it.isInt() -> error("Sólo puedes ingresar un número")
+                                    !it.isNullOrBlank() && (it.toInt() > 31 || it.toInt() < 1) -> error("Día inválido")
+                                    else -> null
+                                }
+                            }
+                        }
+                        field("Mes") {
+                            textfield(model.birthdayMonth).validator {
+                                when {
+                                    !it.isNullOrBlank() && !it.isInt() -> error("Sólo puedes ingresar un número")
+                                    !it.isNullOrBlank() && (it.toInt() > 12 || it.toInt() < 1) -> error("Mes inválido")
+                                    else -> null
+                                }
+                            }
+                        }
+                    }
+                }
                 rectangle(width = 0, height = 24)
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
@@ -205,7 +229,9 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
                                         if (formType == CREATE) null else model.id.value,
                                         model.nombre.value,
                                         model.telefono.value,
-                                        model.direccion.value
+                                        model.direccion.value,
+                                        model.birthdayDay.value,
+                                        model.birthdayMonth.value
                                     )
                                 )
                                 close()
@@ -228,12 +254,12 @@ class NewClienteFormView : Fragment() {
     override val root = BaseClienteFormView(CREATE, null).root
 
     override fun onDock() {
-        Joe.currentView = this@NewClienteFormView
+        Joe.currentView.setValue(this@NewClienteFormView)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }
@@ -242,12 +268,12 @@ class EditClienteFormView : Fragment() {
     override val root = BaseClienteFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
-        Joe.currentView = this@EditClienteFormView
+        Joe.currentView.setValue(this@EditClienteFormView)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }

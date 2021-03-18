@@ -32,7 +32,7 @@ class ReporteScreen : View("Módulo de Reportes") {
     private val endDates = FXCollections.observableArrayList<String>()
 
     init {
-        Joe.currentView = this@ReporteScreen
+        Joe.currentView.setValue(this@ReporteScreen)
 
         startDates.setAll(reportesController.getStartDates())
 

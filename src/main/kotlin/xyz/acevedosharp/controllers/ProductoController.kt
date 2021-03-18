@@ -45,7 +45,8 @@ class ProductoController : Controller(), UpdateSnapshot {
                 producto.precioVenta,
                 producto.precioCompraEfectivo,
                 producto.margen,
-                producto.familia
+                producto.familia,
+                producto.alertaExistencias
             )
         )
         updateSnapshot()

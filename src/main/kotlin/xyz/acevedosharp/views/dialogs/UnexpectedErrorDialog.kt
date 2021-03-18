@@ -1,29 +1,20 @@
-package xyz.acevedosharp.views
+package xyz.acevedosharp.views.dialogs
 
 import javafx.geometry.Pos
 import tornadofx.*
-import xyz.acevedosharp.Joe
+import xyz.acevedosharp.views.MainStylesheet
 
-class CodigoNotRecognizedDialog: Fragment() {
-
-    override fun onDock() {
-        Joe.currentView = this
-        super.onDock()
-    }
-
-    override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
-        super.onUndock()
-    }
+class UnexpectedErrorDialog(message: String): Fragment() {
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        label("Código no reconocido") {
+        label("Ocurrió un error inesperado") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
             addClass(MainStylesheet.redLabel)
         }
-        label("No se ha encontrado un producto con el código introducido.").style {
+        text("Mensaje: $message").style {
+            wrapText = true
             padding = box(vertical = 30.px, horizontal = 5.px)
         }
         hbox(spacing = 80, alignment = Pos.CENTER) {

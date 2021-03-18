@@ -1,9 +1,10 @@
 package xyz.acevedosharp.ui_models
 
+import javafx.beans.property.SimpleObjectProperty
 import tornadofx.*
 import javafx.beans.property.SimpleStringProperty
 
-class Cliente(val id: Int?, nombre: String, telefono: String?, direccion: String?) {
+class Cliente(val id: Int?, nombre: String, telefono: String?, direccion: String?, birthdayDay: Int?, birthdayMonth: Int?) {
     val nombreProperty = SimpleStringProperty(this, "nombre", nombre)
     var nombre: String by nombreProperty
 
@@ -13,12 +14,20 @@ class Cliente(val id: Int?, nombre: String, telefono: String?, direccion: String
     val direccionProperty = SimpleStringProperty(this, "direccion", direccion)
     var direccion: String? by direccionProperty
 
+    val birthdayDayProperty = SimpleObjectProperty<Int>(this, "bithdayDay", birthdayDay)
+    var birthdayDay: Int? by birthdayDayProperty
+
+    val birthdayMonthProperty = SimpleObjectProperty<Int>(this, "birthdayMonth", birthdayMonth)
+    var birthdayMonth: Int? by birthdayMonthProperty
+
     override fun toString(): String = nombre
 }
 
 class ClienteModel: ItemViewModel<Cliente>() {
-    val id =        bind(Cliente::id)
-    val nombre =    bind(Cliente::nombreProperty)
-    val telefono =  bind(Cliente::telefonoProperty)
-    val direccion = bind(Cliente::direccionProperty)
+    val id =            bind(Cliente::id)
+    val nombre =        bind(Cliente::nombreProperty)
+    val telefono =      bind(Cliente::telefonoProperty)
+    val direccion =     bind(Cliente::direccionProperty)
+    val birthdayDay =   bind(Cliente::birthdayDayProperty)
+    val birthdayMonth = bind(Cliente::birthdayMonthProperty)
 }

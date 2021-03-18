@@ -37,7 +37,7 @@ class PedidoView : View("Módulo de pedidos") {
     private val searchByProveedor = SimpleObjectProperty<ProveedorDB>()
 
     init {
-        Joe.currentView = this@PedidoView
+        Joe.currentView.setValue(this@PedidoView)
 
         pedidoController.getPedidosClean().onChange {
             searchByProveedor.value = null
@@ -123,12 +123,12 @@ class NewPedidoFormView : Fragment() {
     private val model = PedidoModel()
 
     override fun onDock() {
-        Joe.currentView = this@NewPedidoFormView
+        Joe.currentView.setValue(this@NewPedidoFormView)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 
@@ -271,12 +271,12 @@ class PedidoSummaryView : Fragment() {
     private val pedido = params["pedido"] as PedidoDB
 
     override fun onDock() {
-        Joe.currentView = this@PedidoSummaryView
+        Joe.currentView.setValue(this@PedidoSummaryView)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 
@@ -360,12 +360,12 @@ class AddLoteView : Fragment() {
     }
 
     override fun onDock() {
-        Joe.currentView = this@AddLoteView
+        Joe.currentView.setValue(this@AddLoteView)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 

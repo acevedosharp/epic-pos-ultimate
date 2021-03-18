@@ -1,23 +1,21 @@
-package xyz.acevedosharp.views
+package xyz.acevedosharp.views.dialogs
 
 import javafx.geometry.Pos
 import tornadofx.*
+import xyz.acevedosharp.views.MainStylesheet
 
-class GenericErrorDialog(message: String): Fragment() {
-
+class NoInternetConnectionErrorDialog : Fragment() {
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        label("Ha ocurrido un error") {
+        label("No hay acceso a internet") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel)
             addClass(MainStylesheet.redLabel)
         }
-        rectangle(width = 0, height = 20)
-        text("Mensaje: $message").style {
+        text("Por favor cambie de red y vuelva a intentar. Si sí tiene internet comuníquese con 302 217 5285.").style {
             wrapText = true
             padding = box(vertical = 30.px, horizontal = 5.px)
         }
-        rectangle(width = 0, height = 20)
         hbox(spacing = 80, alignment = Pos.CENTER) {
             button("Aceptar") {
                 addClass(MainStylesheet.coolBaseButton)
@@ -30,5 +28,3 @@ class GenericErrorDialog(message: String): Fragment() {
         }
     }
 }
-
-class GenericApplicationException(message: String): RuntimeException(message)

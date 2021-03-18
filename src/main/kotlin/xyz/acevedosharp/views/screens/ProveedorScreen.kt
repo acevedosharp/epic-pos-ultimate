@@ -29,7 +29,7 @@ class ProveedorView : View("Módulo de proveedores") {
     private var table: TableView<ProveedorDB> by singleAssign()
 
     init {
-        Joe.currentView = this@ProveedorView
+        Joe.currentView.setValue(this@ProveedorView)
 
         searchByNombre.onChange { searchString ->
             if (searchString != null) {
@@ -244,12 +244,12 @@ class NewProveedorFormView : Fragment() {
     override val root = BaseProveedorFormView(CREATE, null).root
 
     override fun onDock() {
-        Joe.currentView = this@NewProveedorFormView
+        Joe.currentView.setValue(this@NewProveedorFormView)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }
@@ -258,12 +258,12 @@ class EditProveedorFormView : Fragment() {
     override val root = BaseProveedorFormView(EDIT, params["id"] as Int).root
 
     override fun onDock() {
-        Joe.currentView = this@EditProveedorFormView
+        Joe.currentView.setValue(this@EditProveedorFormView)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }

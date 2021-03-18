@@ -203,12 +203,12 @@ class ChooseHistoryRange : Fragment() {
     }
 
     override fun onDock() {
-        Joe.currentView = this@ChooseHistoryRange
+        Joe.currentView.setValue(this@ChooseHistoryRange)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }
@@ -269,12 +269,12 @@ class VentaHistory : Fragment() {
     }
 
     override fun onDock() {
-        Joe.currentView = this@VentaHistory
+        Joe.currentView.setValue(this@VentaHistory)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }
@@ -302,12 +302,12 @@ class DetalleVenta : Fragment() {
     }
 
     override fun onDock() {
-        Joe.currentView = this@DetalleVenta
+        Joe.currentView.setValue(this@DetalleVenta)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }

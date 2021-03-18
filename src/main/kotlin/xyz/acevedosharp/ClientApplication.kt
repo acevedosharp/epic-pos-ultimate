@@ -8,6 +8,10 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.dao.DataAccessResourceFailureException
 import tornadofx.*
 import xyz.acevedosharp.views.*
+import xyz.acevedosharp.views.dialogs.GenericApplicationException
+import xyz.acevedosharp.views.dialogs.GenericErrorDialog
+import xyz.acevedosharp.views.dialogs.NoInternetConnectionErrorDialog
+import xyz.acevedosharp.views.dialogs.UnexpectedErrorDialog
 import xyz.acevedosharp.views.screens.PuntoDeVentaView
 
 class ClientApplication : App(PuntoDeVentaView::class, MainStylesheet::class) {
@@ -24,15 +28,15 @@ class ClientApplication : App(PuntoDeVentaView::class, MainStylesheet::class) {
         stage.icons.add(Image("images/store_logo_icon.png"))
 
         Thread.setDefaultUncaughtExceptionHandler { _: Thread, e: Throwable ->
-            if (Joe.currentView != null) {
+            if (Joe.currentView.value != null) {
                 if (e is DataAccessResourceFailureException || e is JDBCConnectionException) {
-                    Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog())
+                    Joe.currentView.value.openInternalWindow(NoInternetConnectionErrorDialog())
                 } else if (e is GenericApplicationException) {
-                    Joe.currentView!!.openInternalWindow(GenericErrorDialog(e.message!!))
+                    Joe.currentView.value.openInternalWindow(GenericErrorDialog(e.message!!))
                 } else if (!InternetConnection.isAvailable()) {
-                    Joe.currentView!!.openInternalWindow(NoInternetConnectionErrorDialog()) // show this mf again just to make sure
+                    Joe.currentView.value.openInternalWindow(NoInternetConnectionErrorDialog()) // show this mf again just to make sure
                 } else {
-                    Joe.currentView!!.openInternalWindow(UnexpectedErrorDialog(e.message!!))
+                    Joe.currentView.value.openInternalWindow(UnexpectedErrorDialog(e.message!!))
                     e.printStackTrace()
                 }
             } else {

@@ -17,7 +17,7 @@ import xyz.acevedosharp.persistence.entities.ProductoDB
 import xyz.acevedosharp.persistence.repositories.ItemVentaRepo
 import xyz.acevedosharp.persistence.repositories.ProductoRepo
 import xyz.acevedosharp.persistence.repositories.VentaRepo
-import xyz.acevedosharp.views.GenericApplicationException
+import xyz.acevedosharp.views.dialogs.GenericApplicationException
 import xyz.acevedosharp.views.MainStylesheet
 import java.sql.Timestamp
 import java.text.NumberFormat

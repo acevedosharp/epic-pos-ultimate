@@ -4,7 +4,18 @@ import tornadofx.*
 import javafx.beans.property.*
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 
-class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: String, precioVenta: Int, precioCompraEfectivo: Int, existencias: Int, margen: Double, familia: FamiliaDB) {
+class Producto(
+    var id: Int?,
+    codigo: String,
+    descLarga: String,
+    descCorta: String,
+    precioVenta: Int,
+    precioCompraEfectivo: Int,
+    existencias: Int,
+    margen: Double,
+    familia: FamiliaDB,
+    alertaExistencias: Int
+) {
     val codigoProperty = SimpleStringProperty(this, "codigo", codigo)
     var codigo: String by codigoProperty
 
@@ -29,6 +40,9 @@ class Producto(var id: Int?, codigo: String, descLarga: String, descCorta: Strin
     val familiaProperty = SimpleObjectProperty(this, "familia", familia)
     var familia: FamiliaDB by familiaProperty
 
+    val alertaExistenciasProperty = SimpleIntegerProperty(this, "alertaExistencias", alertaExistencias)
+    var alertaExistencias: Int by alertaExistenciasProperty
+
     override fun toString(): String = descCorta
 }
 
@@ -42,4 +56,5 @@ class ProductoModel: ItemViewModel<Producto>() {
     val existencias =          bind(Producto::existenciasProperty)
     val margen =               bind(Producto::margenProperty)
     val familia =              bind(Producto::familiaProperty)
+    val alertaExistencias =    bind(Producto::alertaExistenciasProperty)
 }

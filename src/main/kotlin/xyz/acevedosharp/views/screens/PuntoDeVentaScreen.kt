@@ -4,7 +4,7 @@ package xyz.acevedosharp.views.screens
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
 import xyz.acevedosharp.ui_models.*
-import xyz.acevedosharp.views.CodigoNotRecognizedDialog
+import xyz.acevedosharp.views.dialogs.CodigoNotRecognizedDialog
 import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.helpers.CurrentModule
 import xyz.acevedosharp.views.helpers.RecipePrintingService
@@ -33,8 +33,8 @@ import xyz.acevedosharp.controllers.*
 import xyz.acevedosharp.persistence.entities.ClienteDB
 import xyz.acevedosharp.persistence.entities.EmpleadoDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
-import xyz.acevedosharp.views.GenericApplicationException
-import xyz.acevedosharp.views.UnexpectedErrorDialog
+import xyz.acevedosharp.views.dialogs.GenericApplicationException
+import xyz.acevedosharp.views.dialogs.UnexpectedErrorDialog
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import kotlin.math.ceil
@@ -95,7 +95,7 @@ class PuntoDeVentaView : View("Punto de venta") {
     private lateinit var currentCodigoTextField: TextField
 
     init {
-        Joe.currentView = this@PuntoDeVentaView
+        Joe.currentView.setValue(this@PuntoDeVentaView)
 
         currentUncommittedIVS.flush()
 
@@ -519,12 +519,12 @@ class CreateItemVentaManuallyForm : Fragment() {
     private val papi: PuntoDeVentaView = params["papi"] as PuntoDeVentaView
 
     override fun onDock() {
-        Joe.currentView = this@CreateItemVentaManuallyForm
+        Joe.currentView.setValue(this@CreateItemVentaManuallyForm)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["papi"] as UIComponent
+        Joe.currentView.setValue(params["papi"] as UIComponent)
         super.onUndock()
     }
 
@@ -674,12 +674,12 @@ class  BolsasSelect : Fragment() {
 
 
     override fun onDock() {
-        Joe.currentView = this@BolsasSelect
+        Joe.currentView.setValue(this@BolsasSelect)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 }
@@ -702,12 +702,12 @@ class CommitVenta : Fragment() {
     private val imprimirFactura = SimpleStringProperty("No")
 
     override fun onDock() {
-        Joe.currentView = this
+        Joe.currentView.setValue(this)
         super.onDock()
     }
 
     override fun onUndock() {
-        Joe.currentView = params["owner"] as UIComponent
+        Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
 
