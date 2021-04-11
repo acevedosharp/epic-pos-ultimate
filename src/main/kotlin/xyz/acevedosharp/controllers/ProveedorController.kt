@@ -6,6 +6,7 @@ import xyz.acevedosharp.ui_models.Proveedor
 import javafx.collections.ObservableList
 import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
+import xyz.acevedosharp.GlobalHelper
 import xyz.acevedosharp.persistence.entities.ProveedorDB
 import xyz.acevedosharp.persistence.repositories.ProveedorRepo
 
@@ -31,8 +32,8 @@ class ProveedorController : Controller(), UpdateSnapshot {
                 proveedor.id,
                 proveedor.nombre,
                 proveedor.telefono,
-                proveedor.correo,
-                proveedor.direccion
+                GlobalHelper.nullableStringEnforcer(proveedor.correo),
+                GlobalHelper.nullableStringEnforcer(proveedor.direccion)
             )
         )
         updateSnapshot()

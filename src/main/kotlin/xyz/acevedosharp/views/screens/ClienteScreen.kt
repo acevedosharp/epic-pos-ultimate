@@ -15,6 +15,7 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.util.Duration
 import tornadofx.*
+import xyz.acevedosharp.GlobalHelper
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.ClienteDB
 import xyz.acevedosharp.ui_models.Cliente
@@ -145,6 +146,8 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
             this.nombre.value = cliente.nombre
             this.telefono.value = cliente.telefono
             this.direccion.value = cliente.direccion
+            this.birthdayDay.value = GlobalHelper.denullifyIntBy0Value(cliente.birthdayDay)
+            this.birthdayMonth.value = GlobalHelper.denullifyIntBy0Value(cliente.birthdayMonth)
         }
 
     init {
@@ -196,13 +199,18 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
                         }
                     }
                 }
+                label("Valores de 0 son nulos.").style {
+                    textFill = Color.BLUE
+                }
                 field("Cumpleaños") {
                     hbox(spacing = 20) {
                         field("Día") {
                             textfield(model.birthdayDay).validator {
                                 when {
                                     !it.isNullOrBlank() && !it.isInt() -> error("Sólo puedes ingresar un número")
-                                    !it.isNullOrBlank() && (it.toInt() > 31 || it.toInt() < 1) -> error("Día inválido")
+                                    (!it.isNullOrBlank() && it.toInt() == 0) &&
+                                            (model.birthdayMonth.value.toInt() != 0) -> error("Debes ingresar tanto mes y día o ponerlos en 0")
+                                    !it.isNullOrBlank() && (it.toInt() > 31 || it.toInt() < 0) -> error("Día inválido")
                                     else -> null
                                 }
                             }
@@ -211,11 +219,14 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
                             textfield(model.birthdayMonth).validator {
                                 when {
                                     !it.isNullOrBlank() && !it.isInt() -> error("Sólo puedes ingresar un número")
-                                    !it.isNullOrBlank() && (it.toInt() > 12 || it.toInt() < 1) -> error("Mes inválido")
+                                    (!it.isNullOrBlank() && it.toInt() == 0) &&
+                                            (model.birthdayDay.value.toInt() != 0) -> error("Debes ingresar tanto mes y día o ponerlos en 0")
+                                    !it.isNullOrBlank() && (it.toInt() > 12 || it.toInt() < 0) -> error("Mes inválido")
                                     else -> null
                                 }
                             }
                         }
+
                     }
                 }
                 rectangle(width = 0, height = 24)

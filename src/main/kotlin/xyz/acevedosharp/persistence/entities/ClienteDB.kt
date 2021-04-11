@@ -31,8 +31,8 @@ class ClienteDB(
         nombre,
         telefono,
         direccion,
-        birthdayDay,
-        birthdayMonth
+        birthdayDay ?: 0, // close the loop of nullable Int by 0 value
+        birthdayMonth ?: 0
     )
 
     override fun toString() = nombre

@@ -51,7 +51,6 @@ class ProductoController(productoRepo: ProductoRepo? = null) : Controller(), Upd
             )
         )
         updateSnapshot()
-        println("Controller saved a product")
     }
 
     fun isCodigoAvailable(codigo: String): Boolean {

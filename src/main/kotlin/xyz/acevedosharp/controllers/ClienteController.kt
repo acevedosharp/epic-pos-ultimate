@@ -6,6 +6,7 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import org.springframework.data.repository.findByIdOrNull
 import tornadofx.Controller
+import xyz.acevedosharp.GlobalHelper
 import xyz.acevedosharp.persistence.entities.ClienteDB
 import xyz.acevedosharp.persistence.repositories.ClienteRepo
 
@@ -30,10 +31,10 @@ class ClienteController : Controller(), UpdateSnapshot {
             ClienteDB(
                 cliente.id,
                 cliente.nombre,
-                cliente.telefono,
-                cliente.direccion,
-                cliente.birthdayDay,
-                cliente.birthdayMonth
+                GlobalHelper.nullableStringEnforcer(cliente.telefono),
+                GlobalHelper.nullableStringEnforcer(cliente.direccion),
+                GlobalHelper.nullableIntBy0Value(cliente.birthdayDay),
+                GlobalHelper.nullableIntBy0Value(cliente.birthdayMonth)
             )
         )
         updateSnapshot()
