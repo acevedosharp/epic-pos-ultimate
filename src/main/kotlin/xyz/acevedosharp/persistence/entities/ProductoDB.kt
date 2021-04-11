@@ -52,4 +52,37 @@ class ProductoDB(
     )
 
     override fun toString() = descripcionCorta
+
+    override fun hashCode(): Int {
+        var result = productoId ?: 0
+        result = 31 * result + codigo.hashCode()
+        result = 31 * result + descripcionLarga.hashCode()
+        result = 31 * result + descripcionCorta.hashCode()
+        result = 31 * result + existencias
+        result = 31 * result + precioVenta
+        result = 31 * result + precioCompraEfectivo
+        result = 31 * result + margen.hashCode()
+        result = 31 * result + familia.hashCode()
+        result = 31 * result + alertaExistencias
+        return result
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as ProductoDB
+
+        if (productoId != other.productoId) return false
+        if (codigo != other.codigo) return false
+        if (descripcionLarga != other.descripcionLarga) return false
+        if (descripcionCorta != other.descripcionCorta) return false
+        if (existencias != other.existencias) return false
+        if (precioVenta != other.precioVenta) return false
+        if (precioCompraEfectivo != other.precioCompraEfectivo) return false
+        if (margen != other.margen) return false
+        if (familia.familiaId != other.familia.familiaId) return false
+        if (alertaExistencias != other.alertaExistencias) return false
+
+        return true
+    }
 }
