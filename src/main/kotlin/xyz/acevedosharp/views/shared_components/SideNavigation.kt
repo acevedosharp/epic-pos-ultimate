@@ -6,11 +6,13 @@ import javafx.scene.control.ContentDisplay
 import javafx.scene.paint.Color
 import xyz.acevedosharp.views.helpers.CurrentModule
 import xyz.acevedosharp.views.helpers.CurrentModule.*
-import xyz.acevedosharp.views.screens.*
 import tornadofx.*
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.controllers.NotificationsController
 import xyz.acevedosharp.views.dialogs.NotificationsDialog
+import xyz.acevedosharp.views.dialogs.PasswordDialog
+import xyz.acevedosharp.views.helpers.CurrentModuleHelper
+import xyz.acevedosharp.views.helpers.SecuritySettings
 
 class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment() {
     override val root = vbox(alignment = Pos.TOP_CENTER) {
@@ -41,90 +43,90 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
                 paddingVertical = 32
             }
             action {
-                currentView.replaceWith(PuntoDeVentaView())
+                doNavigationEnforcingPasswordRule(tag, currentView)
             }
         }
         line(startX = 0, endX = 175).style {
             stroke = c(255, 255, 255, 0.25)
         }
         button("Productos") {
-            tag = PRODUCTOS
+            val tag = PRODUCTOS
             addClass(MainStylesheet.navigationButton, if (tag == currentModule) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
             graphic = imageview("images/productos.png") {
                 fitWidth = 50.0
                 fitHeight = 50.0
             }
             action {
-                currentView.replaceWith(ProductoView())
+                doNavigationEnforcingPasswordRule(tag, currentView)
             }
         }
         button("Pedidos") {
-            tag = PEDIDOS
+            val tag = PEDIDOS
             addClass(MainStylesheet.navigationButton, if (tag == currentModule) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
             graphic = imageview("images/pedidos.png") {
                 fitWidth = 50.0
                 fitHeight = 50.0
             }
             action {
-                currentView.replaceWith(PedidoView())
+                doNavigationEnforcingPasswordRule(tag, currentView)
             }
         }
         button("Reportes") {
-            tag = REPORTES
+            val tag = REPORTES
             addClass(MainStylesheet.navigationButton, if (tag == currentModule) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
             graphic = imageview("images/reportes.png") {
                 fitWidth = 50.0
                 fitHeight = 50.0
             }
             action {
-                currentView.replaceWith(ReporteScreen())
+                doNavigationEnforcingPasswordRule(tag, currentView)
             }
         }
         line(startX = 0, endX = 175).style {
             stroke = c(255, 255, 255, 0.25)
         }
         button("Familias") {
-            tag = FAMILIAS
+            val tag = FAMILIAS
             addClass(MainStylesheet.navigationButton, if (tag == currentModule) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
             graphic = imageview("images/familias.png") {
                 fitWidth = 50.0
                 fitHeight = 50.0
             }
             action {
-                currentView.replaceWith(FamiliaView())
+                doNavigationEnforcingPasswordRule(tag, currentView)
             }
         }
         button("Proveedores") {
-            tag = PROVEEDORES
+            val tag = PROVEEDORES
             addClass(MainStylesheet.navigationButton, if (tag == currentModule) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
             graphic = imageview("images/proveedores.png") {
                 fitWidth = 50.0
                 fitHeight = 50.0
             }
             action {
-                currentView.replaceWith(ProveedorView())
+                doNavigationEnforcingPasswordRule(tag, currentView)
             }
         }
         button("Empleados") {
-            tag = EMPLEADOS
+            val tag = EMPLEADOS
             addClass(MainStylesheet.navigationButton, if (tag == currentModule) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
             graphic = imageview("images/empleados.png") {
                 fitWidth = 50.0
                 fitHeight = 50.0
             }
             action {
-                currentView.replaceWith(EmpleadoView())
+                doNavigationEnforcingPasswordRule(tag, currentView)
             }
         }
         button("Clientes") {
-            tag = CLIENTES
+            val tag = CLIENTES
             addClass(MainStylesheet.navigationButton, if (tag == currentModule) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
             graphic = imageview("images/clientes.jpg") {
                 fitWidth = 50.0
                 fitHeight = 50.0
             }
             action {
-                currentView.replaceWith(ClienteView())
+                doNavigationEnforcingPasswordRule(tag, currentView)
             }
         }
         button("Notificationes") {
@@ -138,6 +140,14 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
 
         style {
             backgroundColor += c(21, 55, 83)
+        }
+    }
+
+    private fun doNavigationEnforcingPasswordRule(tag: CurrentModule, currentView: View) {
+        if (SecuritySettings.securedModules[tag]!!) {
+            currentView.openInternalWindow(PasswordDialog(currentView, tag))
+        } else {
+            currentView.replaceWith(CurrentModuleHelper.screenMappings[tag]!!)
         }
     }
 }
