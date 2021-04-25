@@ -6,6 +6,7 @@ import javafx.scene.control.Button
 import javafx.scene.control.PasswordField
 import javafx.scene.input.KeyCode
 import tornadofx.*
+import xyz.acevedosharp.Joe
 import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.helpers.CurrentModule
 import xyz.acevedosharp.views.helpers.CurrentModuleHelper
@@ -44,7 +45,9 @@ class PasswordDialog(currentView: View, tag: CurrentModule) : Fragment() {
                 action {
                     if (passField.text == SecuritySettings.password) {
                         close()
-                        currentView.replaceWith(CurrentModuleHelper.screenMappings[tag]!!)
+                        val targetView = CurrentModuleHelper.screenMappings[tag]!!
+                        Joe.currentView.setValue(targetView)
+                        currentView.replaceWith(targetView)
                     } else {
                         this@PasswordDialog.openInternalWindow(GenericErrorDialog("Contraseña incorrecta"))
                     }

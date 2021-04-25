@@ -2,7 +2,6 @@ package xyz.acevedosharp.views.helpers
 
 import tornadofx.*
 import xyz.acevedosharp.views.screens.*
-import kotlin.reflect.KClass
 
 enum class CurrentModule {
     PUNTO_DE_VENTA,

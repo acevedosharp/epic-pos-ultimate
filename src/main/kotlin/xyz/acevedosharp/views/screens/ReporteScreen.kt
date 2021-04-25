@@ -6,6 +6,7 @@ import javafx.collections.FXCollections
 import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import tornadofx.*
+import tornadofx.control.DateTimePicker
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.controllers.ClienteController
 import xyz.acevedosharp.controllers.ProductoController
@@ -14,6 +15,7 @@ import xyz.acevedosharp.persistence.entities.ClienteDB
 import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.helpers.CurrentModule.REPORTES
 import xyz.acevedosharp.views.shared_components.SideNavigation
+import java.time.LocalDateTime
 
 class ReporteScreen : View("Módulo de Reportes") {
     private val reportesController = find<ReportesController>()
@@ -21,9 +23,14 @@ class ReporteScreen : View("Módulo de Reportes") {
     private val clienteController = find<ClienteController>()
 
     private var contentContainer: HBox by singleAssign()
+    private var dayOrRangeSelectorInjector: HBox by singleAssign()
 
     private val filterByCliente = SimpleStringProperty("No")
     private val clienteToFilterBy = SimpleObjectProperty<ClienteDB>()
+
+    private val reportRange = SimpleStringProperty("")
+
+    private val selectedDay = SimpleObjectProperty<LocalDateTime>()
 
     private val startDate = SimpleStringProperty("")
     private val startDates = FXCollections.observableArrayList<String>()
@@ -32,12 +39,64 @@ class ReporteScreen : View("Módulo de Reportes") {
     private val endDates = FXCollections.observableArrayList<String>()
 
     init {
-        Joe.currentView.setValue(this@ReporteScreen)
+        val daySelector = vbox {
+            label("Día").apply { addClass(MainStylesheet.searchLabel) }
+            add(DateTimePicker().apply {
+                this.format = "dd/MM/yyyy"
+                dateTimeValueProperty().bindBidirectional(selectedDay)
+                prefWidth = 250.0
+            })
+        }
 
-        startDates.setAll(reportesController.getStartDates())
+        val monthlyStartRangeSelector = vbox {
+            label("Inicio").apply { addClass(MainStylesheet.searchLabel) }
+            combobox(
+                property = startDate,
+                values = startDates
+            ) {
+                prefWidth = 250.0
+            }
+        }
+
+        val monthlyEndRangeSelector = vbox {
+            label("Fin").apply { addClass(MainStylesheet.searchLabel) }
+            hiddenWhen { startDate.isEqualTo("") }
+            combobox(
+                property = endDate,
+                values = endDates
+            ) {
+                prefWidth = 250.0
+            }
+        }
+
+        reportRange.onChange { currentReportRange ->
+            try {
+                when (currentReportRange) {
+                    "Diario" -> {
+                        dayOrRangeSelectorInjector.children.setAll(
+                            daySelector
+                        )
+                        startDate.value = ""
+                        endDate.value = ""
+                    }
+                    "Mensual" -> {
+                        dayOrRangeSelectorInjector.children.setAll(
+                            monthlyStartRangeSelector, monthlyEndRangeSelector
+                        )
+                        startDates.setAll(reportesController.getMonthlyStartDates())
+                        selectedDay.value = null
+                    }
+                    else -> throw IllegalStateException("$currentReportRange shouldn't be achievable.")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
         startDate.onChange { currentStartDate ->
-            endDates.setAll(reportesController.getEndDates(currentStartDate!!))
+            if (!currentStartDate.isNullOrBlank()) {
+                endDates.setAll(reportesController.getEndDates(currentStartDate))
+            }
         }
     }
 
@@ -51,7 +110,6 @@ class ReporteScreen : View("Módulo de Reportes") {
                     addClass(MainStylesheet.topBar)
                     paddingBottom = 4
                     useMaxWidth = true
-
 
                     vbox {
                         label("¿Filtrar por cliente específico?").apply { addClass(MainStylesheet.searchLabel) }
@@ -78,24 +136,18 @@ class ReporteScreen : View("Módulo de Reportes") {
                     }
 
                     vbox {
-                        label("Inicio").apply { addClass(MainStylesheet.searchLabel) }
+                        label("Rango del reporte").apply { addClass(MainStylesheet.searchLabel) }
                         combobox(
-                            property = startDate,
-                            values = startDates
+                            property = reportRange,
+
+                            values = listOf("Diario", "Mensual")
                         ) {
                             prefWidth = 250.0
                         }
                     }
 
-                    vbox {
-                        label("Fin").apply { addClass(MainStylesheet.searchLabel) }
-                        hiddenWhen { startDate.isEqualTo("") }
-                        combobox(
-                            property = endDate,
-                            values = endDates
-                        ) {
-                            prefWidth = 250.0
-                        }
+                    dayOrRangeSelectorInjector = hbox {
+                        style { spacing = 10.px }
                     }
 
                     rectangle(width = 32, height = 0)
@@ -106,12 +158,15 @@ class ReporteScreen : View("Módulo de Reportes") {
                             fontSize = 24.px
                         }
                         action {
+                            println("Generating report...")
                             contentContainer.children.setAll(
                                 reportesController.generateReport(
+                                    reportRange.value,
                                     filterByCliente.value == "Sí",
                                     clienteToFilterBy.value,
                                     startDate.value,
-                                    endDate.value
+                                    endDate.value,
+                                    selectedDay.value
                                 )
                             )
                         }

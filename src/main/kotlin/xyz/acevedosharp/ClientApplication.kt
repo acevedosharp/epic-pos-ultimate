@@ -13,8 +13,12 @@ import xyz.acevedosharp.views.dialogs.GenericErrorDialog
 import xyz.acevedosharp.views.dialogs.NoInternetConnectionErrorDialog
 import xyz.acevedosharp.views.dialogs.UnexpectedErrorDialog
 import xyz.acevedosharp.views.screens.PuntoDeVentaView
+import kotlin.reflect.KClass
 
-class ClientApplication : App(PuntoDeVentaView::class, MainStylesheet::class) {
+// Treat starting view as a value. In the future could read it from a config file
+private val startingView: KClass<out UIComponent> = PuntoDeVentaView::class
+
+class ClientApplication : App(startingView, MainStylesheet::class) {
 
     private val context: ConfigurableApplicationContext = SpringApplicationBuilder(LocalSpringBootApplication::class.java).run()
 
@@ -26,6 +30,8 @@ class ClientApplication : App(PuntoDeVentaView::class, MainStylesheet::class) {
         stage.isResizable = true
         stage.isFullScreen = true
         stage.icons.add(Image("images/store_logo_icon.png"))
+
+        Joe.currentView.setValue(find(PuntoDeVentaView::class, this.scope))
 
         Thread.setDefaultUncaughtExceptionHandler { _: Thread, e: Throwable ->
             if (Joe.currentView.value != null) {

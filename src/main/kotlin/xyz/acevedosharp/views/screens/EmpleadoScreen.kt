@@ -29,8 +29,6 @@ class EmpleadoView : View("Módulo de empleados") {
     private var table: TableView<EmpleadoDB> by singleAssign()
 
     init {
-        Joe.currentView.setValue(this@EmpleadoView)
-
         searchByNombre.onChange { searchString ->
             if (searchString != null) {
                 table.items = empleadoController.getEmpleadosClean().filter {

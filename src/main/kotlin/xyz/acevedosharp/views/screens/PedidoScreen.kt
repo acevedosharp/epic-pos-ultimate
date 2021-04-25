@@ -37,8 +37,6 @@ class PedidoView : View("Módulo de pedidos") {
     private val searchByProveedor = SimpleObjectProperty<ProveedorDB>()
 
     init {
-        Joe.currentView.setValue(this@PedidoView)
-
         pedidoController.getPedidosClean().onChange {
             searchByProveedor.value = null
 

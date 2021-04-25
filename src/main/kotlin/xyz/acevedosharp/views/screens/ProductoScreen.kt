@@ -39,8 +39,6 @@ class ProductoView : View("Módulo de productos") {
     private val searchByFamilia = SimpleObjectProperty<FamiliaDB>()
 
     init {
-        Joe.currentView.setValue(this@ProductoView)
-
         productoController.getProductosClean().onChange {
             searchByCodigo.value = ""
             searchByDescripcion.value = ""

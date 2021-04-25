@@ -95,8 +95,6 @@ class PuntoDeVentaView : View("Punto de venta") {
     private lateinit var currentCodigoTextField: TextField
 
     init {
-        Joe.currentView.setValue(this@PuntoDeVentaView)
-
         currentUncommittedIVS.flush()
 
         currentUncommittedIVS.ivs.onChange {

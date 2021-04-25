@@ -43,7 +43,7 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
                 paddingVertical = 32
             }
             action {
-                doNavigationEnforcingPasswordRule(tag, currentView)
+                doNavigationMiddleware(tag, currentView)
             }
         }
         line(startX = 0, endX = 175).style {
@@ -57,7 +57,7 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
                 fitHeight = 50.0
             }
             action {
-                doNavigationEnforcingPasswordRule(tag, currentView)
+                doNavigationMiddleware(tag, currentView)
             }
         }
         button("Pedidos") {
@@ -68,7 +68,7 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
                 fitHeight = 50.0
             }
             action {
-                doNavigationEnforcingPasswordRule(tag, currentView)
+                doNavigationMiddleware(tag, currentView)
             }
         }
         button("Reportes") {
@@ -79,7 +79,7 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
                 fitHeight = 50.0
             }
             action {
-                doNavigationEnforcingPasswordRule(tag, currentView)
+                doNavigationMiddleware(tag, currentView)
             }
         }
         line(startX = 0, endX = 175).style {
@@ -93,7 +93,7 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
                 fitHeight = 50.0
             }
             action {
-                doNavigationEnforcingPasswordRule(tag, currentView)
+                doNavigationMiddleware(tag, currentView)
             }
         }
         button("Proveedores") {
@@ -104,7 +104,7 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
                 fitHeight = 50.0
             }
             action {
-                doNavigationEnforcingPasswordRule(tag, currentView)
+                doNavigationMiddleware(tag, currentView)
             }
         }
         button("Empleados") {
@@ -115,7 +115,7 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
                 fitHeight = 50.0
             }
             action {
-                doNavigationEnforcingPasswordRule(tag, currentView)
+                doNavigationMiddleware(tag, currentView)
             }
         }
         button("Clientes") {
@@ -126,7 +126,7 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
                 fitHeight = 50.0
             }
             action {
-                doNavigationEnforcingPasswordRule(tag, currentView)
+                doNavigationMiddleware(tag, currentView)
             }
         }
         button("Notificationes") {
@@ -143,11 +143,14 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
         }
     }
 
-    private fun doNavigationEnforcingPasswordRule(tag: CurrentModule, currentView: View) {
+    // check password and update Joe.currentView here since I can't get onDock working on Views
+    private fun doNavigationMiddleware(tag: CurrentModule, currentView: View) {
         if (SecuritySettings.securedModules[tag]!!) {
             currentView.openInternalWindow(PasswordDialog(currentView, tag))
         } else {
-            currentView.replaceWith(CurrentModuleHelper.screenMappings[tag]!!)
+            val targetView = CurrentModuleHelper.screenMappings[tag]!!
+            Joe.currentView.setValue(targetView)
+            currentView.replaceWith(targetView)
         }
     }
 }

@@ -29,8 +29,6 @@ class FamiliaView : View("Módulo de familias") {
     private var table: TableView<FamiliaDB> by singleAssign()
 
     init {
-        Joe.currentView.setValue(this@FamiliaView)
-
         searchByNombre.onChange { searchString ->
             if (searchString != null) {
                 table.items = familiaController.getFamiliasClean().filter {

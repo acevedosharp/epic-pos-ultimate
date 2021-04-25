@@ -30,8 +30,6 @@ class ClienteView : View("Módulo de clientes") {
     private var table: TableView<ClienteDB> by singleAssign()
 
     init {
-        Joe.currentView.setValue(this@ClienteView)
-
         searchByNombre.onChange { searchString ->
             if (searchString != null) {
                 table.items = clienteController.getClientesClean().filter {

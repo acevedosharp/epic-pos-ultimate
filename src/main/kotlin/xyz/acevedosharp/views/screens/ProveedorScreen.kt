@@ -29,8 +29,6 @@ class ProveedorView : View("Módulo de proveedores") {
     private var table: TableView<ProveedorDB> by singleAssign()
 
     init {
-        Joe.currentView.setValue(this@ProveedorView)
-
         searchByNombre.onChange { searchString ->
             if (searchString != null) {
                 table.items = proveedorController.getProveedoresClean().filter {

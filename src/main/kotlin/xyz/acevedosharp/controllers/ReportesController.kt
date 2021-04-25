@@ -21,6 +21,8 @@ import xyz.acevedosharp.views.dialogs.GenericApplicationException
 import xyz.acevedosharp.views.MainStylesheet
 import java.sql.Timestamp
 import java.text.NumberFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class ReportesController : Controller() {
@@ -49,30 +51,64 @@ class ReportesController : Controller() {
     private val itemVentaRepo = find<CustomApplicationContextWrapper>().context.getBean(ItemVentaRepo::class.java)
     private val familiaController = find<FamiliaController>()
 
-    fun generateReport(filterByCliente: Boolean, clienteToFilterBy: ClienteDB?, startDate: String, endDate: String): VBox {
+    fun generateReport(
+        reportRange: String, // Diario, Mensual
+        filterByCliente: Boolean,
+        clienteToFilterBy: ClienteDB?,
+        startDate: String,
+        endDate: String,
+        day: LocalDateTime
+    ): VBox {
+        println("with reportRange: $reportRange, $startDate, $endDate, $day")
 
-        val startDateMonthYear = decodeMonthAndYearRaw(startDate)
-        val startCalendar = Calendar.getInstance()
-        startCalendar.set(Calendar.MONTH, startDateMonthYear.first - 1)
-        startCalendar.set(Calendar.YEAR, startDateMonthYear.second)
-        startCalendar.set(Calendar.DATE, 1)
-        startCalendar.set(Calendar.HOUR_OF_DAY, 0)
-        startCalendar.set(Calendar.MINUTE, 0)
-        startCalendar.set(Calendar.SECOND, 0)
-        startCalendar.set(Calendar.MILLISECOND, 0)
-        val startDateTimestamp = Timestamp(startCalendar.timeInMillis)
+        val startRangeTimestamp: Timestamp
+        val endRangeTimestamp: Timestamp
+        if (reportRange == "Mensual") {
+            val startDateMonthYear = decodeMonthAndYearRaw(startDate)
+            val startCalendar = Calendar.getInstance()
+            startCalendar.set(Calendar.MONTH, startDateMonthYear.first - 1)
+            startCalendar.set(Calendar.YEAR, startDateMonthYear.second)
+            startCalendar.set(Calendar.DATE, 1)
+            startCalendar.set(Calendar.HOUR_OF_DAY, 0)
+            startCalendar.set(Calendar.MINUTE, 0)
+            startCalendar.set(Calendar.SECOND, 0)
+            startCalendar.set(Calendar.MILLISECOND, 0)
 
-        val endDateMonthYear = decodeMonthAndYearRaw(endDate)
-        val endCalendar = Calendar.getInstance()
-        endCalendar.set(Calendar.YEAR, endDateMonthYear.second)
-        endCalendar.set(Calendar.MONTH, endDateMonthYear.first - 1) // gregorian calendar months are 0-11
-        endCalendar.set(Calendar.DATE, endCalendar.getActualMaximum(Calendar.DATE))
-        endCalendar.set(Calendar.HOUR_OF_DAY, 23)
-        endCalendar.set(Calendar.MINUTE, 59)
-        endCalendar.set(Calendar.SECOND, 59)
-        endCalendar.set(Calendar.MILLISECOND, 999)
-        val endDateTimestamp = Timestamp(endCalendar.timeInMillis)
+            val endDateMonthYear = decodeMonthAndYearRaw(endDate)
+            val endCalendar = Calendar.getInstance()
+            endCalendar.set(Calendar.YEAR, endDateMonthYear.second)
+            endCalendar.set(Calendar.MONTH, endDateMonthYear.first - 1) // gregorian calendar months are 0-11
+            endCalendar.set(Calendar.DATE, endCalendar.getActualMaximum(Calendar.DATE))
+            endCalendar.set(Calendar.HOUR_OF_DAY, 23)
+            endCalendar.set(Calendar.MINUTE, 59)
+            endCalendar.set(Calendar.SECOND, 59)
+            endCalendar.set(Calendar.MILLISECOND, 999)
 
+            startRangeTimestamp = Timestamp(startCalendar.timeInMillis)
+            endRangeTimestamp = Timestamp(endCalendar.timeInMillis)
+        } else {
+            val startCalendar = Calendar.getInstance()
+            val endCalendar = Calendar.getInstance()
+
+            startCalendar.set(Calendar.MONTH, day.monthValue - 1)
+            startCalendar.set(Calendar.YEAR, day.year)
+            startCalendar.set(Calendar.DATE, day.dayOfMonth)
+            startCalendar.set(Calendar.HOUR_OF_DAY, 0)
+            startCalendar.set(Calendar.MINUTE, 0)
+            startCalendar.set(Calendar.SECOND, 0)
+            startCalendar.set(Calendar.MILLISECOND, 0)
+
+            endCalendar.set(Calendar.MONTH, day.monthValue - 1)
+            endCalendar.set(Calendar.YEAR, day.year)
+            startCalendar.set(Calendar.DATE, day.dayOfMonth)
+            endCalendar.set(Calendar.HOUR_OF_DAY, 23)
+            endCalendar.set(Calendar.MINUTE, 59)
+            endCalendar.set(Calendar.SECOND, 59)
+            endCalendar.set(Calendar.MILLISECOND, 999)
+
+            startRangeTimestamp = Timestamp(startCalendar.timeInMillis)
+            endRangeTimestamp = Timestamp(endCalendar.timeInMillis)
+        }
 
         val data = arrayListOf<RankingReportDisplay>()
         var bagQuantity = 0
@@ -86,15 +122,15 @@ class ReportesController : Controller() {
             val matchingSoldItems = if (filterByCliente) {
                 itemVentaRepo.findAllByProductoEqualsAndFechaHoraBetweenAndClienteEquals(
                     producto,
-                    startDateTimestamp,
-                    endDateTimestamp,
+                    startRangeTimestamp,
+                    endRangeTimestamp,
                     clienteToFilterBy!!
                 )
             } else { // don't filter by cliente
                 itemVentaRepo.findAllByProductoEqualsAndFechaHoraBetween(
                     producto,
-                    startDateTimestamp,
-                    endDateTimestamp
+                    startRangeTimestamp,
+                    endRangeTimestamp
                 )
             }
 
@@ -134,7 +170,8 @@ class ReportesController : Controller() {
         // This case can only be produced when a registered client hasn't bought anything, if there are no sales in general
         // (only once in the POS' lifetime) the tab wouldn't even open
         if (totalNumberOfSales == 0) {
-            throw GenericApplicationException("El cliente ${clienteToFilterBy!!.nombre} no ha realizado compras en el periodo de tiempo indicado.")
+            println("about to throw an exception")
+            throw GenericApplicationException("No hay compras en el periodo de tiempo indicado.")
         } else {
             var totalAmountSold = 0.0
             var totalAmountEarned = 0.0
@@ -160,10 +197,15 @@ class ReportesController : Controller() {
                     }
 
                     hbox(alignment = Pos.CENTER) {
-                        label("Reporte de: ").style { fontSize = 36.px }
-                        label(startDate).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
-                        label(" hasta ").style { fontSize = 36.px }
-                        label(endDate).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
+                        if (reportRange == "Mensual") {
+                            label("Reporte de: ").style { fontSize = 36.px }
+                            label(startDate).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
+                            label(" hasta ").style { fontSize = 36.px }
+                            label(endDate).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
+                        } else {
+                            label("Reporte de: ").style { fontSize = 36.px }
+                            label(day.format(DateTimeFormatter.ISO_LOCAL_DATE)).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
+                        }
                         if (filterByCliente) {
                             label(" - Cliente: ").style { fontSize = 36.px }
                             label(clienteToFilterBy!!.nombre).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
@@ -205,7 +247,7 @@ class ReportesController : Controller() {
 
                                 hbox {
                                     label("Ganancias totales: ").style { fontSize = 24.px }
-                                    label("$${NumberFormat.getIntegerInstance().format(totalAmountEarned)} (${(totalAmountEarned/totalAmountSold)*100}%)").style {
+                                    label("$${NumberFormat.getIntegerInstance().format(totalAmountEarned)} (${(totalAmountEarned / totalAmountSold) * 100}%)").style {
                                         textFill = Color.GREEN
                                         fontSize = 24.px
                                         fontWeight = FontWeight.BOLD
@@ -284,7 +326,7 @@ class ReportesController : Controller() {
         }
     }
 
-    fun getStartDates(): List<String> {
+    fun getMonthlyStartDates(): List<String> {
 
         val oldestDate: Timestamp = ventaRepo.findFirstByOrderByVentaIdAsc()?.fechaHora ?: throw GenericApplicationException("No existe ninguna venta registrada!")
         val newestDate: Timestamp = ventaRepo.findFirstByOrderByVentaIdDesc()?.fechaHora ?: throw GenericApplicationException("No existe ninguna venta registrada!")
@@ -325,7 +367,7 @@ class ReportesController : Controller() {
     fun getEndDates(startDate: String): List<String> {
         val startMonthYear = decodeMonthAndYearRaw(startDate)
 
-        return getStartDates().filter {
+        return getMonthlyStartDates().filter {
             val endMonthYear = decodeMonthAndYearRaw(it)
 
             return@filter endMonthYear.second >= startMonthYear.second && endMonthYear.first >= startMonthYear.first
