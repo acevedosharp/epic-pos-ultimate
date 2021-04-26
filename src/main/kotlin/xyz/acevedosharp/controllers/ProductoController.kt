@@ -53,6 +53,12 @@ class ProductoController(productoRepo: ProductoRepo? = null) : Controller(), Upd
         updateSnapshot()
     }
 
+    fun saveAllIgnoreRoundingForPedido(productos: List<ProductoDB>) {
+        // rounding already taken care in PedidoController
+        productoRepo.saveAll(productos)
+        updateSnapshot()
+    }
+
     fun isCodigoAvailable(codigo: String): Boolean {
         return productoRepo.existsByCodigo(codigo)
     }

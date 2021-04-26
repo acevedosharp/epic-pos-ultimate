@@ -99,6 +99,8 @@ class ClienteView : View("Módulo de clientes") {
                         column("Mes", ClienteDB::birthdayMonth)
                         smartResize()
 
+                        placeholder = label("No hay clientes")
+
                         clienteController.getClientesClean().onChange {
                             if (searchByNombre.value == "")
                                 table.items = clienteController.getClientesClean().asObservable()

@@ -114,6 +114,10 @@ class PuntoDeVentaView : View("Punto de venta") {
         }
     }
 
+    fun clearAllIVS() {
+        currentUncommittedIVS.ivs.clear()
+    }
+
     override val root = hbox {
         setPrefSize(1920.0, 1080.0)
         add(SideNavigation(CurrentModule.PUNTO_DE_VENTA, this@PuntoDeVentaView))

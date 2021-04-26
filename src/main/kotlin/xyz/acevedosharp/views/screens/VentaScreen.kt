@@ -15,6 +15,7 @@ import xyz.acevedosharp.views.MainStylesheet
 import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.Month
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class ChooseHistoryRange : Fragment() {
@@ -236,10 +237,12 @@ class VentaHistory : Fragment() {
             readonlyColumn("Cambio", VentaDB::cambio)
             readonlyColumn("Empleado", VentaDB::empleado)
             readonlyColumn("Cliente", VentaDB::cliente)
+            smartResize()
+
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy@HH:mm")
+            placeholder = label("No hay ventas de ${inicio.toLocalDateTime().format(formatter)} a ${fin.toLocalDateTime().format(formatter)}")
 
             vgrow = Priority.ALWAYS
-
-            smartResize()
         }
 
         hbox(spacing = 10, alignment = Pos.CENTER) {
@@ -289,8 +292,9 @@ class DetalleVenta : Fragment() {
             readonlyColumn("Producto", ItemVentaDB::producto).pctWidth(60)
             readonlyColumn("Cantidad", ItemVentaDB::cantidad).pctWidth(15)
             readonlyColumn("P. Unidad", ItemVentaDB::precioVenta).pctWidth(25)
-
             smartResize()
+
+            placeholder = label("No hay productos en la venta")
         }
 
         hbox(alignment = Pos.CENTER) {

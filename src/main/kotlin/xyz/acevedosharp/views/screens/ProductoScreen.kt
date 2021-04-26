@@ -155,8 +155,9 @@ class ProductoView : View("Módulo de productos") {
                         column("Existencias", ProductoDB::existencias)
                         column("Alerta", ProductoDB::alertaExistencias)
                         column("Familia", ProductoDB::familia)
-
                         smartResize()
+
+                        placeholder = label("No hay productos")
 
                         selectionModel.selectedItemProperty().onChange {
                             existsSelection.value = it != null
@@ -569,8 +570,9 @@ class SelectProductoDialog : Fragment() {
                             column("Margen", ProductoDB::margen)
                             column("Existencias", ProductoDB::existencias)
                             column("Familia", ProductoDB::familia)
-
                             smartResize()
+
+                            placeholder = label("No hay productos")
 
                             selectionModel.selectedItemProperty().onChange {
                                 existsSelection.value = it != null

@@ -11,6 +11,7 @@ import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.helpers.CurrentModule
 import xyz.acevedosharp.views.helpers.CurrentModuleHelper
 import xyz.acevedosharp.views.helpers.SecuritySettings
+import xyz.acevedosharp.views.screens.PuntoDeVentaView
 
 class PasswordDialog(currentView: View, tag: CurrentModule) : Fragment() {
 
@@ -46,6 +47,10 @@ class PasswordDialog(currentView: View, tag: CurrentModule) : Fragment() {
                     if (passField.text == SecuritySettings.password) {
                         close()
                         val targetView = CurrentModuleHelper.screenMappings[tag]!!
+                        if (targetView::class == PuntoDeVentaView::class) {
+                            // don't keep items in ivs while prices may change
+                            (targetView as PuntoDeVentaView).clearAllIVS()
+                        }
                         Joe.currentView.setValue(targetView)
                         currentView.replaceWith(targetView)
                     } else {

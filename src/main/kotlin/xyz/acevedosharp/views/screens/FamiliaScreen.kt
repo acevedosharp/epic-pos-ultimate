@@ -95,6 +95,8 @@ class FamiliaView : View("Módulo de familias") {
                         column("Nombre", FamiliaDB::nombre)
                         smartResize()
 
+                        placeholder = label("No hay familias")
+
                         familiaController.getFamiliasClean().onChange {
                             if (searchByNombre.value == "")
                                 items = familiaController.getFamiliasClean().toObservable()

@@ -221,8 +221,10 @@ class NewPedidoFormView : Fragment() {
                             column("Producto", Lote::productoProperty).remainingWidth()
                             column("Cantidad", Lote::cantidadProperty)
                             column("P. Compra", Lote::precioCompraProperty)
-
                             smartResize()
+
+                            placeholder = label("No hay lotes aún")
+
                             paddingAll = 5
                             hgrow = Priority.ALWAYS
                         }
@@ -301,8 +303,10 @@ class PedidoSummaryView : Fragment() {
                         column("Producto", LoteDB::producto).remainingWidth()
                         column("Cantidad", LoteDB::cantidad)
                         column("P. Compra", LoteDB::precioCompra)
-
                         smartResize()
+
+                        placeholder = label("El pedido no tiene lotes")
+
                         paddingAll = 5
                         hgrow = Priority.ALWAYS
                     }

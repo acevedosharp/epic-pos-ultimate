@@ -2,8 +2,10 @@
 
 package xyz.acevedosharp.controllers
 
+import javafx.beans.binding.Bindings
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import javafx.scene.control.Button
 import tornadofx.*
 import xyz.acevedosharp.CustomApplicationContextWrapper
 import xyz.acevedosharp.GlobalSettings
@@ -16,20 +18,28 @@ import java.util.*
 class NotificationsController : Controller() {
     private val applicationContext = find<CustomApplicationContextWrapper>().context
 
-    // for notifications on startup
     private val clienteRepo = applicationContext.getBean(ClienteRepo::class.java)
     private val productoRepo = applicationContext.getBean(ProductoRepo::class.java)
 
     private val notifications = FXCollections.observableArrayList<Notification>()
+    private val notificationButtons = FXCollections.observableArrayList<Button>()
 
     private val millisDayOffset = 86_400_000L * GlobalSettings.daysForBirthdayCheck
 
     init {
+        // only startup notifications
         doBirthDayCheck()
         doInventoryCheck()
     }
 
-    fun pushNotifications(notification: List<Notification>) = notifications.addAll(notification)
+    fun bindTextNotificationButton(button: Button) {
+        button.textProperty().bind(
+            Bindings.concat("Notificaciones (", notifications.sizeProperty, ")")
+        )
+    }
+    fun pushNotifications(notification: List<Notification>): Boolean {
+        return notifications.addAll(notification)
+    }
     fun getNotifications(): ObservableList<Notification> = notifications
     fun clearNotification(uuid: UUID) = notifications.removeIf { it.uuid == uuid }
     fun clearAllNotifications() = notifications.clear()

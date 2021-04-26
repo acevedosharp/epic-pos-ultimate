@@ -1,7 +1,6 @@
 package xyz.acevedosharp.ui_models
 
 import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleObjectProperty
 import tornadofx.*
 import javafx.beans.property.SimpleStringProperty
 

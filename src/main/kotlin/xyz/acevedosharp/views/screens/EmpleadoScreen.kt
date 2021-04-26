@@ -95,6 +95,8 @@ class EmpleadoView : View("Módulo de empleados") {
                         column("Teléfono", EmpleadoDB::telefono)
                         smartResize()
 
+                        placeholder = label("No hay empleados")
+
                         empleadoController.getEmpleadosClean().onChange {
                             if (searchByNombre.value == "")
                                 table.items = empleadoController.getEmpleadosClean().asObservable()

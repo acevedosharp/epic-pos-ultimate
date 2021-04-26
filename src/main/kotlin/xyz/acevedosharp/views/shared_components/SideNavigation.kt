@@ -4,6 +4,8 @@ import xyz.acevedosharp.views.MainStylesheet
 import javafx.geometry.Pos
 import javafx.scene.control.ContentDisplay
 import javafx.scene.paint.Color
+import javafx.scene.text.FontWeight
+import javafx.scene.text.TextAlignment
 import xyz.acevedosharp.views.helpers.CurrentModule
 import xyz.acevedosharp.views.helpers.CurrentModule.*
 import tornadofx.*
@@ -13,6 +15,7 @@ import xyz.acevedosharp.views.dialogs.NotificationsDialog
 import xyz.acevedosharp.views.dialogs.PasswordDialog
 import xyz.acevedosharp.views.helpers.CurrentModuleHelper
 import xyz.acevedosharp.views.helpers.SecuritySettings
+import xyz.acevedosharp.views.screens.PuntoDeVentaView
 
 class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment() {
     override val root = vbox(alignment = Pos.TOP_CENTER) {
@@ -129,10 +132,28 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
                 doNavigationMiddleware(tag, currentView)
             }
         }
-        button("Notificationes") {
+        rectangle(width = 0, height = 20)
+        button {
+            style {
+                fontSize = 22.px
+                borderRadius += box(4.px)
+                backgroundRadius += box(4.px)
+                padding = box(8.px, 15.px)
+                backgroundInsets += box(0.px)
+                textFill = Color.WHITE
+                fontWeight = FontWeight.BOLD
+                wrapText = true
+                prefHeight = 110.px
+                prefWidth = 180.px
+                textAlignment = TextAlignment.CENTER
+            }
+            addClass(MainStylesheet.redButton)
+
+            val notificationsController = find<NotificationsController>()
+            notificationsController.bindTextNotificationButton(this)
             action {
                 openInternalWindow(
-                    NotificationsDialog(find<NotificationsController>().getNotifications()),
+                    NotificationsDialog(notificationsController),
                     owner = Joe.currentView.value.root
                 )
             }
@@ -149,6 +170,10 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
             currentView.openInternalWindow(PasswordDialog(currentView, tag))
         } else {
             val targetView = CurrentModuleHelper.screenMappings[tag]!!
+            if (targetView::class == PuntoDeVentaView::class) {
+                // don't keep items in ivs while prices may change
+                (targetView as PuntoDeVentaView).clearAllIVS()
+            }
             Joe.currentView.setValue(targetView)
             currentView.replaceWith(targetView)
         }

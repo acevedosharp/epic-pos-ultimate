@@ -97,6 +97,8 @@ class ProveedorView : View("Módulo de proveedores") {
                         column("Dirección", ProveedorDB::direccion).remainingWidth()
                         smartResize()
 
+                        placeholder = label("No hay proveedores")
+
                         proveedorController.getProveedoresClean().onChange {
                             if (searchByNombre.value == "")
                                 table.items = proveedorController.getProveedoresClean().asObservable()
