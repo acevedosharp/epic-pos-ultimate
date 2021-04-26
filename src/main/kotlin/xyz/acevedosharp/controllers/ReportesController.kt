@@ -57,10 +57,8 @@ class ReportesController : Controller() {
         clienteToFilterBy: ClienteDB?,
         startDate: String,
         endDate: String,
-        day: LocalDateTime
+        day: LocalDateTime?
     ): VBox {
-        println("with reportRange: $reportRange, $startDate, $endDate, $day")
-
         val startRangeTimestamp: Timestamp
         val endRangeTimestamp: Timestamp
         if (reportRange == "Mensual") {
@@ -90,6 +88,7 @@ class ReportesController : Controller() {
             val startCalendar = Calendar.getInstance()
             val endCalendar = Calendar.getInstance()
 
+            day!! // no way day is null if reportRange is 'Diario'
             startCalendar.set(Calendar.MONTH, day.monthValue - 1)
             startCalendar.set(Calendar.YEAR, day.year)
             startCalendar.set(Calendar.DATE, day.dayOfMonth)
@@ -100,7 +99,7 @@ class ReportesController : Controller() {
 
             endCalendar.set(Calendar.MONTH, day.monthValue - 1)
             endCalendar.set(Calendar.YEAR, day.year)
-            startCalendar.set(Calendar.DATE, day.dayOfMonth)
+            endCalendar.set(Calendar.DATE, day.dayOfMonth)
             endCalendar.set(Calendar.HOUR_OF_DAY, 23)
             endCalendar.set(Calendar.MINUTE, 59)
             endCalendar.set(Calendar.SECOND, 59)
@@ -170,7 +169,6 @@ class ReportesController : Controller() {
         // This case can only be produced when a registered client hasn't bought anything, if there are no sales in general
         // (only once in the POS' lifetime) the tab wouldn't even open
         if (totalNumberOfSales == 0) {
-            println("about to throw an exception")
             throw GenericApplicationException("No hay compras en el periodo de tiempo indicado.")
         } else {
             var totalAmountSold = 0.0
@@ -204,7 +202,7 @@ class ReportesController : Controller() {
                             label(endDate).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
                         } else {
                             label("Reporte de: ").style { fontSize = 36.px }
-                            label(day.format(DateTimeFormatter.ISO_LOCAL_DATE)).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
+                            label(day!!.format(DateTimeFormatter.ISO_LOCAL_DATE)).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
                         }
                         if (filterByCliente) {
                             label(" - Cliente: ").style { fontSize = 36.px }

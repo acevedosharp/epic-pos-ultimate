@@ -7,7 +7,6 @@ import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import tornadofx.*
 import tornadofx.control.DateTimePicker
-import xyz.acevedosharp.Joe
 import xyz.acevedosharp.controllers.ClienteController
 import xyz.acevedosharp.controllers.ProductoController
 import xyz.acevedosharp.controllers.ReportesController
@@ -158,7 +157,7 @@ class ReporteScreen : View("Módulo de Reportes") {
                             fontSize = 24.px
                         }
                         action {
-                            println("Generating report...")
+                            contentContainer.children.clear()
                             contentContainer.children.setAll(
                                 reportesController.generateReport(
                                     reportRange.value,
