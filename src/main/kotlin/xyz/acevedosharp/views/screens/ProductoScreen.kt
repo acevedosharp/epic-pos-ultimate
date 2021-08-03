@@ -154,6 +154,7 @@ class ProductoView : View("Módulo de productos") {
                         column("P. Venta", ProductoDB::precioVenta)
                         column("P. Compra", ProductoDB::precioCompra)
                         column("Margen", ProductoDB::margen)
+                        column("Iva", ProductoDB::iva)
                         column("Existencias", ProductoDB::existencias)
                         column("Alerta", ProductoDB::alertaExistencias)
                         column("Familia", ProductoDB::familia)

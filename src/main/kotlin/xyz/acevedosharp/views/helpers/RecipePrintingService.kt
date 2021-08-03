@@ -1,6 +1,8 @@
 package xyz.acevedosharp.views.helpers
 
 import org.springframework.stereotype.Service
+import xyz.acevedosharp.GlobalHelper
+import xyz.acevedosharp.GlobalHelper.round
 import xyz.acevedosharp.persistence.entities.ItemVentaDB
 import xyz.acevedosharp.persistence.entities.VentaDB
 import java.text.SimpleDateFormat
@@ -14,20 +16,26 @@ class RecipePrintingService {
 
     fun printRecipe(venta: VentaDB, impName: String) {
         fun formatItem(item: ItemVentaDB): String {
+            val (_, ivaAmount, sellPrice) = GlobalHelper.calculateSellPriceBrokenDown(
+                item.producto.precioCompra,
+                item.producto.margen,
+                item.producto.iva
+            )
+
             val res = StringBuilder()
 
             res.append(item.producto.descripcionCorta)
             res.append(" ".repeat(max(26 - item.producto.descripcionCorta.length, 0)))
-            val s1 = "$${item.producto.precioVenta}"
+            val s1 = "$${(sellPrice - ivaAmount).round(2)}"
             res.append(s1)
-            res.append(" ".repeat(max(7 - s1.length, 0)))
-            val s2 = "x${item.cantidad}"
+            res.append(" ".repeat(max(10 - s1.length, 0)))
+            val s2 = " x${item.cantidad}"
             res.append(s2)
-            res.append(" ".repeat(max(6 - s2.length, 0)))
-            res.append("= $${item.producto.precioVenta * item.cantidad}")
 
             return res.toString()
         }
+
+        var subtotal = 0.0
 
         val lowerPadding = "\n\n\n\n\n\n\n"
 
@@ -37,22 +45,53 @@ class RecipePrintingService {
         sb.append("||          Autoservicio Mercamás             ||\n")
         sb.append("||    Tel: 6000607 - Dir: Calle 35 #34-168    ||\n")
         sb.append("*==============================================*\n")
-        //sb.append("Atendido por: ${venta.empleado.nombre}\n"          )
-        //sb.append("Cliente: ${venta.cliente.nombre} \n"               )
-        //sb.append("------------------------------------------------\n")
+        sb.append("Atendido por: ${venta.empleado.nombre}\n")
+        sb.append("Cliente: ${venta.cliente.nombre} \n")
+        sb.append("------------------------------------------------\n")
         venta.items.forEach {
             sb.append(formatItem(it))
             sb.append("\n")
+
+            val (_, ivaAmount, sellPrice) = GlobalHelper.calculateSellPriceBrokenDown(
+                it.producto.precioCompra,
+                it.producto.margen,
+                it.producto.iva
+            )
+
+            subtotal += (sellPrice - ivaAmount) * it.cantidad
+        }
+        sb.append("Subtotal: $${subtotal.round(2)}\n")
+        sb.append("------------------------------------------------\n")
+        sb.append("                   Impuestos                    \n")
+        val groupedByIva = venta.items.groupBy { it.producto.iva }
+        groupedByIva.forEach { entry: Map.Entry<Int, List<ItemVentaDB>> ->
+            if (entry.key != 0) {
+                val iva = "${entry.key}%"
+                sb.append(iva)
+                sb.append(" ".repeat(max(38 - iva.length, 0)))
+                var ivaValue = 0.0
+                entry.value.forEach {
+                    val (_, ivaAmount, _) = GlobalHelper.calculateSellPriceBrokenDown(
+                        it.producto.precioCompra,
+                        it.producto.margen,
+                        it.producto.iva
+                    )
+
+                    ivaValue += ivaAmount * it.cantidad
+                }
+                sb.append("$${ivaValue.round(2)}\n")
+            }
         }
         sb.append("------------------------------------------------\n")
-        val pago = "Pago: \$${venta.pagoRecibido}"
+        val pago = "Total (con iva): \$${venta.precioTotal}"
         sb.append(pago)
-        sb.append(" ".repeat(max(34 - pago.length, 0)))
-        sb.append("Total: \$${venta.precioTotal}\n")
+        sb.append(" ".repeat(max(33 - pago.length, 0)))
+        sb.append("Pago: \$${venta.pagoRecibido}\n")
         sb.append("Cambio: $${venta.pagoRecibido - venta.precioTotal}\n")
         sb.append("Gracias por su compra el ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
         sb.append(lowerPadding)
 
+        println(sb.toString())
         printString(impName, sb.toString())
         printBytes(impName, byteArrayOf(0x1d, 'V'.toByte(), 1))
     }
@@ -63,7 +102,8 @@ class RecipePrintingService {
 
         val printServices: Array<PrintService> = PrintServiceLookup.lookupPrintServices(flavor, printRequestAttributes)
 
-        return printServices.map { it.name }.filter { it !in listOf("Microsoft XPS Document Writer", "Microsoft Print to PDF", "Fax") }
+        return printServices.map { it.name }
+            .filter { it !in listOf("Microsoft XPS Document Writer", "Microsoft Print to PDF", "Fax") }
     }
 
     private fun printString(printerName: String, text: String) {
