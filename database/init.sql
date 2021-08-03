@@ -28,12 +28,14 @@ create table if not exists epic.producto
     desc_larga             varchar(50)          not null,
     desc_corta             varchar(25)          not null,
     precio_venta           int                  not null,
-    precio_compra_efectivo int                  not null,
+    precio_compra_efectivo double               not null,
     margen                 double               not null,
     existencias            int                  not null,
     activo                 tinyint(1) default 1 not null,
     familia                int                  not null,
     alerta_existencias     int                  not null,
+    iva                    int                  not null,
+    precio_compra          double               not null,
     constraint producto_codigo_uindex
         unique (codigo),
     constraint producto_desc_corta_uindex
@@ -81,13 +83,13 @@ create table if not exists epic.empleado
 # ------------------------ create the cliente table ------------------------
 create table if not exists epic.cliente
 (
-    cliente_id int auto_increment
+    cliente_id     int auto_increment
         primary key,
-    nombre     varchar(50)  not null,
-    telefono   varchar(20)  null,
-    direccion  varchar(100) null,
-    birthday_day   int      null,
-    birthday_month int      null,
+    nombre         varchar(50)  not null,
+    telefono       varchar(20)  null,
+    direccion      varchar(100) null,
+    birthday_day   int          null,
+    birthday_month int          null,
     constraint cliente_nombre_uindex
         unique (nombre),
     constraint cliente_telefono_uindex
@@ -154,12 +156,12 @@ create table if not exists epic.item_venta
 (
     item_venta_id int auto_increment
         primary key,
-    fecha_hora     datetime not null,
-    cantidad       int      not null,
-    precio_venta   int      not null,
-    producto       int      not null,
-    venta          int      not null,
-    cliente        int      not null,
+    fecha_hora    datetime not null,
+    cantidad      int      not null,
+    precio_venta  int      not null,
+    producto      int      not null,
+    venta         int      not null,
+    cliente       int      not null,
     constraint item_venta_cliente_cliente_id_fk
         foreign key (cliente) references epic.cliente (cliente_id)
             on update cascade,
@@ -173,5 +175,6 @@ create table if not exists epic.item_venta
 
 # ------------------------ add bolsa ------------------------
 insert into epic.familia(nombre) VALUE ('Bolsas');
-insert into epic.producto(codigo, desc_larga, desc_corta, precio_venta, precio_compra_efectivo, margen, existencias, activo, familia, alerta_existencias)
+insert into epic.producto(codigo, desc_larga, desc_corta, precio_venta, precio_compra_efectivo, margen, existencias,
+                          activo, familia, alerta_existencias)
     value ('bolsa', 'Bolsa', 'Bolsa', 50, 0, 0.1, 0, 1, 1, 0);

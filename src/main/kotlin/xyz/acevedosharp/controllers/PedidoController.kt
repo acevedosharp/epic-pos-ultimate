@@ -61,6 +61,8 @@ open class PedidoController : Controller(), UpdateSnapshot {
             )
         })
 
+        val priceChangeNotifications = mutableListOf<Notification>()
+
         // update prices and existencias of producto
         val productosWithNewPriceAndQuantity = lotesPersist.map { currentLote ->
             val producto = ProductoDB(
@@ -73,38 +75,28 @@ open class PedidoController : Controller(), UpdateSnapshot {
                 currentLote.producto.precioCompraEfectivo,
                 currentLote.producto.margen,
                 currentLote.producto.familia,
-                currentLote.producto.alertaExistencias
+                currentLote.producto.alertaExistencias,
+                currentLote.producto.iva,
+                currentLote.producto.precioCompra
             )
 
             producto.existencias += currentLote.cantidad
 
-            if (producto.precioCompraEfectivo == 0 || producto.precioCompraEfectivo < currentLote.precioCompra) {
+            if (currentLote.precioCompra > producto.precioCompraEfectivo) {
+                priceChangeNotifications.add(
+                    Notification(
+                        UUID.randomUUID(),
+                        NotificationType.BUY_PRICE_INCREASED,
+                        "P. de compra del último lote de ${producto.descripcionCorta} ha " +
+                                "subido de $${producto.precioCompraEfectivo} a ${currentLote.precioCompra}"
+                    )
+                )
                 producto.precioCompraEfectivo = currentLote.precioCompra
-            }
-
-            // update sell price if producto has already been bought
-            if (producto.precioCompraEfectivo != 0 && producto.codigo != "bolsa") {
-                val rawSellPrice = producto.precioCompraEfectivo / (1 - (producto.margen / 100))
-                val roundedSellPrice = (rawSellPrice - 1) + (50 - ((rawSellPrice - 1) % 50)) // we subtract 1 so that we don't round from eg. 4000 -> 4050.
-                producto.precioVenta = roundedSellPrice.toInt()
             }
 
             return@map producto
         }
 
-        val priceChangeNotifications = mutableListOf<Notification>()
-        IntRange(0, productosWithNewPriceAndQuantity.size - 1).forEach { i ->
-            if (productosWithNewPriceAndQuantity[i].precioVenta != lotesPersist[i].producto.precioVenta) {
-                priceChangeNotifications.add(
-                    Notification(
-                        UUID.randomUUID(),
-                        NotificationType.PRICE_ROUNDED_UP_ALERT,
-                        "${productosWithNewPriceAndQuantity[i].descripcionCorta} (${productosWithNewPriceAndQuantity[i].codigo}) ha " +
-                                "cambiado de precio de venta: $${lotesPersist[i].producto.precioVenta} a $${productosWithNewPriceAndQuantity[i].precioVenta}."
-                    )
-                )
-            }
-        }
         notificationsController.pushNotifications(priceChangeNotifications)
 
         productoController.saveAllIgnoreRoundingForPedido(productosWithNewPriceAndQuantity)

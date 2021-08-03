@@ -21,6 +21,8 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.util.Duration
 import tornadofx.*
+import xyz.acevedosharp.GlobalHelper
+import xyz.acevedosharp.GlobalHelper.round
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
@@ -150,7 +152,7 @@ class ProductoView : View("Módulo de productos") {
                         column("Desc. Larga", ProductoDB::descripcionLarga).remainingWidth()
                         column("Desc. Corta", ProductoDB::descripcionCorta).pctWidth(20)
                         column("P. Venta", ProductoDB::precioVenta)
-                        column("P. Compra", ProductoDB::precioCompraEfectivo)
+                        column("P. Compra", ProductoDB::precioCompra)
                         column("Margen", ProductoDB::margen)
                         column("Existencias", ProductoDB::existencias)
                         column("Alerta", ProductoDB::alertaExistencias)
@@ -188,6 +190,9 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
 
     private var firstTextField: TextField by singleAssign()
 
+    private val marginString = SimpleStringProperty("")
+    private val ivaString = SimpleStringProperty("")
+
     private val model = if (formType == CREATE)
         ProductoModel()
     else
@@ -203,6 +208,8 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
             this.existencias.value = producto.existencias
             this.margen.value = producto.margen
             this.familia.value = producto.familia
+            this.iva.value = producto.iva
+            this.precioCompra.value = producto.precioCompra
         }
 
     init {
@@ -210,14 +217,25 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
             firstTextField.requestFocus()
         }
 
-        model.margen.onChange {
-            // update sell price if producto has already been bought
-            if (model.precioCompraEfectivo.value != 0 && model.codigo.value != "bolsa") {
-                val rawSellPrice = model.precioCompraEfectivo.value / (1 - (model.margen.value/100))
-                val roundedSellPrice = (rawSellPrice - 1) + (50 - ((rawSellPrice - 1) % 50)) // we subtract 1 so that we don't round from eg. 4000 -> 4050.
-                model.precioVenta.value = roundedSellPrice.toInt()
-            }
+        fun updateSellPrice() {
+            val (marginAmount, ivaAmount, sellPrice) = GlobalHelper.calculateSellPriceBrokenDown(
+                basePrice = model.precioCompra.value,
+                margin = model.margen.value,
+                iva = model.iva.value
+            )
+
+            marginString.set("Margen: $${marginAmount.round(2)}")
+            ivaString.set("Iva: $${ivaAmount.round(2)}")
+
+            model.precioVenta.set(sellPrice.toInt())
         }
+
+        if (formType == EDIT)
+            updateSellPrice()
+
+        model.precioCompra.onChange { updateSellPrice() }
+        model.iva.onChange { updateSellPrice() }
+        model.margen.onChange { updateSellPrice() }
     }
 
     override val root = vbox(spacing = 0) {
@@ -281,34 +299,6 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                         }
                     }
                 }
-                field("Precio de venta") {
-                    if (formType == CREATE) model.precioVenta.value = 50
-                    textfield(model.precioVenta as Property<Int>) {
-                        isEditable = !(formType == EDIT && model.margen.value != 0.0) || model.codigo.value == "bolsa"
-
-                        // prevent anything different to a number from being typed into the field
-                        textFormatter = TextFormatter<Int>(UnaryOperator { change ->
-                            val newText = change.controlNewText
-                            if (newText.any { !it.isDigit() })
-                                return@UnaryOperator null
-                            else
-                                return@UnaryOperator change
-                        })
-
-                        validator(trigger = ValidationTrigger.OnChange()) {
-                            when {
-                                it.isNullOrBlank() -> error("Precio de venta requerido")
-                                it[0] == '-' -> error("No se pueden poner precios negativos")
-                                it.any { char -> char == ',' || char == '.' } -> error("No se pueden poner precios decimales")
-                                it.any { char -> !char.isDigit() } -> error("Ingresa sólo números")
-                                it.toInt() <= 0 -> error("Precio inválido")
-                                it.toInt() % 50 != 0 -> error("El precio debe ser múltiplo de 50")
-                                else -> null
-                            }
-
-                        }
-                    }
-                }
                 field("Existencias") {
                     if (formType == CREATE) model.existencias.value = 0
                     spinner(
@@ -331,18 +321,86 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                         editable = true
                     )
                 }
-                field("Margen (%)") {
-                    hbox(10, Pos.CENTER_LEFT) {
-                        spinner(
-                            property = model.margen as Property<Double>,
-                            initialValue = 0.0,
-                            min = 0.0,
-                            max = 99.9,
-                            amountToStepBy = 0.1,
-                            editable = true
-                        ).validator {
-                            if (it == 0.0) error("El margen de ganancia no puede ser 0.")
-                            else null
+                field("Precio de compra") {
+                    if (formType == CREATE) model.precioCompra.value = 50.0
+                    spinner(
+                        property = model.precioCompra,
+                        initialValue = 50.0,
+                        min = 0.0,
+                        max = Double.MAX_VALUE,
+                        amountToStepBy = 50.0,
+                        editable = true
+                    )
+                }
+                if (model.precioCompraEfectivo.value != 0.0)
+                    label("Precio último pedido (unidad): $${model.precioCompraEfectivo.value}").style {
+                        fontSize = 20.px
+                        textFill = Color.GREEN
+                    }
+                hbox(10, Pos.CENTER_LEFT) {
+                    vbox(5) {
+                        field("Margen (%)") {
+                            spinner(
+                                property = model.margen as Property<Double>,
+                                initialValue = 0.0,
+                                min = 0.0,
+                                max = 99.9,
+                                amountToStepBy = 0.1,
+                                editable = true
+                            ).validator {
+                                if (it == 0.0) error("El margen de ganancia no puede ser 0.")
+                                else null
+                            }
+                        }
+                        label(marginString).style {
+                            fontSize = 20.px
+                            textFill = Color.GREEN
+                        }
+                    }
+                    rectangle(width = 10, height = 0)
+                    vbox(5) {
+                        hbox(0, Pos.CENTER_LEFT) {
+                            label("Iva (%)")
+                            rectangle(width = 3, height = 0)
+                            spinner(
+                                property = model.iva,
+                                initialValue = 0,
+                                min = 0,
+                                max = 50,
+                                amountToStepBy = 1,
+                                editable = true
+                            )
+                        }
+                        label(ivaString).style {
+                            fontSize = 20.px
+                            textFill = Color.GREEN
+                        }
+                    }
+                }
+                field("Precio de venta") {
+                    if (formType == CREATE) model.precioVenta.value = 50
+                    textfield(model.precioVenta as Property<Int>) {
+                        isEditable = false
+
+                        // prevent anything different to a number from being typed into the field
+                        textFormatter = TextFormatter<Int>(UnaryOperator { change ->
+                            val newText = change.controlNewText
+                            if (newText.any { !it.isDigit() })
+                                return@UnaryOperator null
+                            else
+                                return@UnaryOperator change
+                        })
+
+                        validator(trigger = ValidationTrigger.OnChange()) {
+                            when {
+                                it.isNullOrBlank() -> error("Precio de venta requerido")
+                                it[0] == '-' -> error("No se pueden poner precios negativos")
+                                it.any { char -> char == ',' || char == '.' } -> error("No se pueden poner precios decimales")
+                                it.any { char -> !char.isDigit() } -> error("Ingresa sólo números")
+                                it.toInt() <= 0 -> error("Precio inválido")
+                                it.toInt() % 50 != 0 -> error("El precio debe ser múltiplo de 50")
+                                else -> null
+                            }
                         }
                     }
                 }
@@ -372,7 +430,11 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                 rectangle(width = 0, height = 24)
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
-                        addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
+                        addClass(
+                            MainStylesheet.coolBaseButton,
+                            MainStylesheet.greenButton,
+                            MainStylesheet.expandedButton
+                        )
                         action {
                             model.commit {
                                 productoController.save(
@@ -382,11 +444,13 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                                         model.descLarga.value,
                                         model.descCorta.value,
                                         model.precioVenta.value.toInt(),
-                                        if (formType == CREATE) 0 else model.precioCompraEfectivo.value.toInt(),
+                                        if (formType == CREATE) 0.0 else model.precioCompraEfectivo.value.toDouble(),
                                         model.existencias.value.toInt(),
                                         model.margen.value.toDouble(),
                                         model.familia.value,
-                                        model.alertaExistencias.value.toInt()
+                                        model.alertaExistencias.value.toInt(),
+                                        model.iva.value.toInt(),
+                                        model.precioCompra.value.toDouble()
                                     )
                                 )
                                 close()

@@ -10,11 +10,13 @@ class Producto(
     descLarga: String,
     descCorta: String,
     precioVenta: Int,
-    precioCompraEfectivo: Int,
+    precioCompraEfectivo: Double,
     existencias: Int,
     margen: Double,
     familia: FamiliaDB,
-    alertaExistencias: Int
+    alertaExistencias: Int,
+    iva: Int,
+    precioCompra: Double
 ) {
     val codigoProperty = SimpleStringProperty(this, "codigo", codigo)
     var codigo: String by codigoProperty
@@ -28,8 +30,8 @@ class Producto(
     val precioVentaProperty = SimpleIntegerProperty(this, "precioVenta", precioVenta)
     var precioVenta: Int by precioVentaProperty
 
-    val precioCompraEfectivoProperty = SimpleIntegerProperty(this, "precioCompraEfectivo", precioCompraEfectivo)
-    var precioCompraEfectivo: Int by precioCompraEfectivoProperty
+    val precioCompraEfectivoProperty = SimpleDoubleProperty(this, "precioCompraEfectivo", precioCompraEfectivo)
+    var precioCompraEfectivo: Double by precioCompraEfectivoProperty
 
     val existenciasProperty = SimpleIntegerProperty(this, "existencias", existencias)
     var existencias: Int by existenciasProperty
@@ -42,6 +44,12 @@ class Producto(
 
     val alertaExistenciasProperty = SimpleIntegerProperty(this, "alertaExistencias", alertaExistencias)
     var alertaExistencias: Int by alertaExistenciasProperty
+
+    val ivaProperty = SimpleIntegerProperty(this, "iva", iva)
+    var iva: Int by ivaProperty
+
+    val precioCompraProperty = SimpleDoubleProperty(this, "precioCompra", precioCompra)
+    var precioCompra: Double by precioCompraProperty
 
     override fun toString(): String = descCorta
 }
@@ -57,4 +65,6 @@ class ProductoModel: ItemViewModel<Producto>() {
     val margen =               bind(Producto::margenProperty)
     val familia =              bind(Producto::familiaProperty)
     val alertaExistencias =    bind(Producto::alertaExistenciasProperty)
+    val iva =                  bind(Producto::iva)
+    val precioCompra =         bind(Producto::precioCompra)
 }

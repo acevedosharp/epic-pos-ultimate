@@ -342,18 +342,11 @@ class AddLoteView : Fragment() {
 
             if (currentProduct != null) {
                 val precioCompra = currentProduct.precioCompraEfectivo
-                if (precioCompra == 0)
+                if (precioCompra == 0.0)
                     maxPriceDisplay.value = "No hay pedidos anteriores del producto"
                 else {
                     val res = precioCompra.toString()
-
-                    if (res.length > 3) {
-                        val beforeSpace = res.substring(0, res.length - 3)
-                        val afterSpace = res.substring(res.length - 3, res.length)
-                        maxPriceDisplay.value = "$$beforeSpace,$afterSpace"
-                    } else {
-                        maxPriceDisplay.value = "$$res"
-                    }
+                    maxPriceDisplay.value = "$$res"
                 }
             } else {
                 maxPriceDisplay.value = "Selecciona un producto"
@@ -393,7 +386,7 @@ class AddLoteView : Fragment() {
                     )
                 }
                 field("Precio de compra") {
-                    model.precioCompra.value = 50
+                    model.precioCompra.value = 50.0
                     hbox(spacing = 10) {
                         spinner(
                             property = model.precioCompra as Property<Double>,
@@ -405,7 +398,7 @@ class AddLoteView : Fragment() {
                         )
 
                         vbox(spacing = 2) {
-                            label("Costo efectivo anterior: ").style {
+                            label("Último precio de compra: ").style {
                                 fontSize = 22.px
                             }
                             label(maxPriceDisplay).style {

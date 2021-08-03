@@ -27,7 +27,7 @@ class ProductoDB(
     var precioVenta: Int,
 
     @Column(name = "precio_compra_efectivo")
-    var precioCompraEfectivo: Int,
+    var precioCompraEfectivo: Double,
 
     @Column(name = "margen")
     var margen: Double,
@@ -36,7 +36,13 @@ class ProductoDB(
     var familia: FamiliaDB,
 
     @Column(name = "alerta_existencias")
-    var alertaExistencias: Int
+    var alertaExistencias: Int,
+
+    @Column(name = "iva")
+    var iva: Int,
+
+    @Column(name = "precio_compra")
+    var precioCompra: Double
 ) {
     fun toModel() = Producto(
         productoId,
@@ -48,28 +54,16 @@ class ProductoDB(
         existencias,
         margen,
         familia,
-        alertaExistencias
+        alertaExistencias,
+        iva,
+        precioCompra
     )
 
     override fun toString() = descripcionCorta
-
-    override fun hashCode(): Int {
-        var result = productoId ?: 0
-        result = 31 * result + codigo.hashCode()
-        result = 31 * result + descripcionLarga.hashCode()
-        result = 31 * result + descripcionCorta.hashCode()
-        result = 31 * result + existencias
-        result = 31 * result + precioVenta
-        result = 31 * result + precioCompraEfectivo
-        result = 31 * result + margen.hashCode()
-        result = 31 * result + familia.hashCode()
-        result = 31 * result + alertaExistencias
-        return result
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
+
         other as ProductoDB
 
         if (productoId != other.productoId) return false
@@ -80,9 +74,29 @@ class ProductoDB(
         if (precioVenta != other.precioVenta) return false
         if (precioCompraEfectivo != other.precioCompraEfectivo) return false
         if (margen != other.margen) return false
-        if (familia.familiaId != other.familia.familiaId) return false
+        if (familia != other.familia) return false
         if (alertaExistencias != other.alertaExistencias) return false
+        if (iva != other.iva) return false
+        if (precioCompra != other.precioCompra) return false
 
         return true
     }
+
+    override fun hashCode(): Int {
+        var result = productoId ?: 0
+        result = 31 * result + codigo.hashCode()
+        result = 31 * result + descripcionLarga.hashCode()
+        result = 31 * result + descripcionCorta.hashCode()
+        result = 31 * result + existencias
+        result = 31 * result + precioVenta
+        result = 31 * result + precioCompraEfectivo.hashCode()
+        result = 31 * result + margen.hashCode()
+        result = 31 * result + familia.hashCode()
+        result = 31 * result + alertaExistencias
+        result = 31 * result + iva
+        result = 31 * result + precioCompra.hashCode()
+        return result
+    }
+
+
 }
