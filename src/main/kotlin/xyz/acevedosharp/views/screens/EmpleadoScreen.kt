@@ -20,7 +20,7 @@ import tornadofx.*
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.EmpleadoDB
 
-class EmpleadoView : View("Módulo de empleados") {
+class EmpleadoView : View("Epic POS - Empleados") {
     private val empleadoController = find<EmpleadoController>()
 
     private val selectedId = SimpleIntegerProperty()

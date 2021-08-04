@@ -26,7 +26,7 @@ import xyz.acevedosharp.persistence.entities.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class PedidoView : View("Módulo de pedidos") {
+class PedidoView : View("Epic POS - Pedidos") {
     private val pedidoController = find<PedidoController>()
     private val proveedorController = find<ProveedorController>()
 

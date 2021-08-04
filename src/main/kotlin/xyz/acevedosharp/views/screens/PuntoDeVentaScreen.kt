@@ -41,7 +41,7 @@ import java.time.LocalDateTime
 import kotlin.math.ceil
 import kotlin.math.floor
 
-class PuntoDeVentaView : View("Punto de venta") {
+class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
     class CurrentUncommittedIVS {
         val ivs: ObservableList<ItemVentaComponent> = FXCollections.observableArrayList()
 

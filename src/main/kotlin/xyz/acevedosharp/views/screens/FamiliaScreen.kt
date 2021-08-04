@@ -20,7 +20,7 @@ import tornadofx.*
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 
-class FamiliaView : View("Módulo de familias") {
+class FamiliaView : View("Epic POS - Familias") {
     private val familiaController = find<FamiliaController>()
 
     private val selectedId = SimpleIntegerProperty()

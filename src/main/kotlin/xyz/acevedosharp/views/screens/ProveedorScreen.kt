@@ -20,7 +20,7 @@ import tornadofx.*
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.ProveedorDB
 
-class ProveedorView : View("Módulo de proveedores") {
+class ProveedorView : View("Epic POS - Proveedores") {
     private val proveedorController = find<ProveedorController>()
 
     private val selectedId = SimpleIntegerProperty()

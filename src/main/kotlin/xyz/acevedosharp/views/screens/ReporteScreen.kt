@@ -16,7 +16,7 @@ import xyz.acevedosharp.views.helpers.CurrentModule.REPORTES
 import xyz.acevedosharp.views.shared_components.SideNavigation
 import java.time.LocalDateTime
 
-class ReporteScreen : View("Módulo de Reportes") {
+class ReporteScreen : View("Epic POS - Reportes") {
     private val reportesController = find<ReportesController>()
     private val productoController = find<ProductoController>()
     private val clienteController = find<ClienteController>()

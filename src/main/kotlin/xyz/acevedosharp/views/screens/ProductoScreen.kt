@@ -28,7 +28,7 @@ import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
 import java.util.function.UnaryOperator
 
-class ProductoView : View("Módulo de productos") {
+class ProductoView : View("Epic POS - Productos") {
 
     private val productoController = find<ProductoController>()
     private val familiaController = find<FamiliaController>()

@@ -23,6 +23,7 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
         imageview("images/epic_logo.png") {
             fitWidth = 150.0
             fitHeight = 150.0
+            preserveRatioProperty().set(true)
         }
         rectangle(width = 0, height = 25)
         line(startX = 0, endX = 185).style {
@@ -32,8 +33,8 @@ class SideNavigation(currentModule: CurrentModule, currentView: View) : Fragment
             val tag = PUNTO_DE_VENTA
             contentDisplay = ContentDisplay.GRAPHIC_ONLY
             addClass(if (tag == currentModule) MainStylesheet.selectedButton else MainStylesheet.unselectedButton)
-            graphic = imageview("images/store_logo.png") {
-                fitWidth = 150.0
+            graphic = imageview("images/cart.png") {
+                fitWidth = 80.0
                 fitHeight = 80.0
             }
             style {

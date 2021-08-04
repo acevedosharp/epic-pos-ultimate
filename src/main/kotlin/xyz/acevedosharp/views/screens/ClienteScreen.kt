@@ -21,7 +21,7 @@ import xyz.acevedosharp.persistence.entities.ClienteDB
 import xyz.acevedosharp.ui_models.Cliente
 import xyz.acevedosharp.ui_models.ClienteModel
 
-class ClienteView : View("Módulo de clientes") {
+class ClienteView : View("Epic POS - Clientes") {
     private val clienteController = find<ClienteController>()
 
     private val selectedId = SimpleIntegerProperty()
