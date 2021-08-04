@@ -61,25 +61,27 @@ class RecipePrintingService {
             subtotal += (sellPrice - ivaAmount) * it.cantidad
         }
         sb.append("Subtotal: $${subtotal.round(2)}\n")
-        sb.append("------------------------------------------------\n")
-        sb.append("                   Impuestos                    \n")
-        val groupedByIva = venta.items.groupBy { it.producto.iva }
-        groupedByIva.forEach { entry: Map.Entry<Int, List<ItemVentaDB>> ->
-            if (entry.key != 0) {
-                val iva = "${entry.key}%"
-                sb.append(iva)
-                sb.append(" ".repeat(max(38 - iva.length, 0)))
-                var ivaValue = 0.0
-                entry.value.forEach {
-                    val (_, ivaAmount, _) = GlobalHelper.calculateSellPriceBrokenDown(
-                        it.producto.precioCompra,
-                        it.producto.margen,
-                        it.producto.iva
-                    )
+        if (venta.items.any { it.producto.iva != 0 }) {
+            sb.append("------------------------------------------------\n")
+            sb.append("                   Impuestos                    \n")
+            val groupedByIva = venta.items.groupBy { it.producto.iva }
+            groupedByIva.forEach { entry: Map.Entry<Int, List<ItemVentaDB>> ->
+                if (entry.key != 0) {
+                    val iva = "${entry.key}%"
+                    sb.append(iva)
+                    sb.append(" ".repeat(max(38 - iva.length, 0)))
+                    var ivaValue = 0.0
+                    entry.value.forEach {
+                        val (_, ivaAmount, _) = GlobalHelper.calculateSellPriceBrokenDown(
+                            it.producto.precioCompra,
+                            it.producto.margen,
+                            it.producto.iva
+                        )
 
-                    ivaValue += ivaAmount * it.cantidad
+                        ivaValue += ivaAmount * it.cantidad
+                    }
+                    sb.append("$${ivaValue.round(2)}\n")
                 }
-                sb.append("$${ivaValue.round(2)}\n")
             }
         }
         sb.append("------------------------------------------------\n")
@@ -90,8 +92,6 @@ class RecipePrintingService {
         sb.append("Cambio: $${venta.pagoRecibido - venta.precioTotal}\n")
         sb.append("Gracias por su compra el ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
         sb.append(lowerPadding)
-
-        println(sb.toString())
         printString(impName, sb.toString())
         printBytes(impName, byteArrayOf(0x1d, 'V'.toByte(), 1))
     }
