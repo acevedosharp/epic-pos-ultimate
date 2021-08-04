@@ -85,15 +85,17 @@ class RecipePrintingService {
             }
         }
         sb.append("------------------------------------------------\n")
-        val pago = "Total (con iva): \$${venta.precioTotal}"
+        val pago = "Total (con iva): \$${venta.totalConIva}"
         sb.append(pago)
         sb.append(" ".repeat(max(33 - pago.length, 0)))
         sb.append("Pago: \$${venta.pagoRecibido}\n")
-        sb.append("Cambio: $${venta.pagoRecibido - venta.precioTotal}\n")
+        sb.append("Cambio: $${venta.pagoRecibido - venta.totalConIva}\n")
         sb.append("Gracias por su compra el ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
         sb.append(lowerPadding)
-        printString(impName, sb.toString())
-        printBytes(impName, byteArrayOf(0x1d, 'V'.toByte(), 1))
+
+        println(sb.toString())
+//        printString(impName, sb.toString())
+//        printBytes(impName, byteArrayOf(0x1d, 'V'.toByte(), 1))
     }
 
     fun getPrinters(): List<String> {

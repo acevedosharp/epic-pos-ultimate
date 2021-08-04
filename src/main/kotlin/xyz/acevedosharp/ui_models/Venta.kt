@@ -1,5 +1,6 @@
 package xyz.acevedosharp.ui_models
 
+import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
 import tornadofx.*
@@ -7,12 +8,13 @@ import xyz.acevedosharp.persistence.entities.ClienteDB
 import xyz.acevedosharp.persistence.entities.EmpleadoDB
 import java.time.LocalDateTime
 
-class Venta(var id: Int?, fechaHora: LocalDateTime, precioTotal: Int, pagoRecibido: Int, empleado: EmpleadoDB, cliente: ClienteDB) {
+class Venta(var id: Int?, fechaHora: LocalDateTime, totalSinIva: Double, pagoRecibido: Int,
+            empleado: EmpleadoDB, cliente: ClienteDB, totalConIva: Int) {
     val fechaHoraProperty = SimpleObjectProperty(this, "fechaHora", fechaHora)
     var fechaHora: LocalDateTime by fechaHoraProperty
 
-    val precioTotalProperty = SimpleIntegerProperty(this, "precioTotal", precioTotal)
-    var precioTotal: Int by precioTotalProperty
+    val totalSinIvaProperty = SimpleDoubleProperty(this, "totalSinIva", totalSinIva)
+    var totalSinIva: Double by totalSinIvaProperty
 
     val pagoRecibidoProperty = SimpleIntegerProperty(this, "pagoRecibido", pagoRecibido)
     var pagoRecibido: Int by pagoRecibidoProperty
@@ -22,13 +24,17 @@ class Venta(var id: Int?, fechaHora: LocalDateTime, precioTotal: Int, pagoRecibi
 
     val clienteProperty = SimpleObjectProperty(this, "cliente", cliente)
     var cliente: ClienteDB by clienteProperty
+
+    val totalConIvaProperty = SimpleIntegerProperty(this, "totalConIva", totalConIva)
+    var totalConIva: Int by totalConIvaProperty
 }
 
 class VentaModel: ItemViewModel<Venta>() {
     val id           = bind(Venta::id)
     val fechaHora    = bind(Venta::fechaHoraProperty)
-    val precioTotal  = bind(Venta::precioTotalProperty)
+    val totalSinIva  = bind(Venta::totalSinIva)
     val pagoRecibido = bind(Venta::pagoRecibidoProperty)
     val empleado     = bind(Venta::empleadoProperty)
     val cliente      = bind(Venta::clienteProperty)
+    val totalConIva  = bind(Venta::totalConIva)
 }

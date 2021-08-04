@@ -28,6 +28,7 @@ import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
 import javafx.util.Duration
 import tornadofx.*
+import xyz.acevedosharp.GlobalHelper
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.controllers.*
 import xyz.acevedosharp.persistence.entities.ClienteDB
@@ -71,7 +72,7 @@ class PuntoDeVentaView : View("Punto de venta") {
 
         fun recalculateTotal() {
             if (ivs.size != 0) {
-                total.value = ivs.sumBy { it.producto.precioVenta * it.cantidad.value }
+                total.value = ivs.sumOf { it.producto.precioVenta * it.cantidad.value }
 
                 totalDisplay.value = NumberFormat.getIntegerInstance().format(total.value)
             } else {
@@ -790,15 +791,30 @@ class CommitVenta : Fragment() {
                         )
                         action {
                             model.commit {
+                                var totalSinIva = 0.0
+                                var totalConIva = 0
+
+                                currentUncommittedIVS.ivs.forEach {
+                                    val (_, ivaAmount, sellPrice) = GlobalHelper.calculateSellPriceBrokenDown(
+                                        it.producto.precioCompra,
+                                        it.producto.margen,
+                                        it.producto.iva
+                                    )
+
+                                    totalSinIva += (sellPrice - ivaAmount) * it.cantidad.value.toDouble()
+                                    totalConIva += sellPrice.toInt() * it.cantidad.value
+                                }
+
                                 // Persistence logic
                                 val res = ventaController.add(
                                     Venta(
                                         null,
                                         LocalDateTime.now(),
-                                        (if (valorTotal % 50 < 25) floor(valorTotal / 50) * 50 else ceil(valorTotal / 50) * 50).toInt(),
+                                        totalSinIva,
                                         dineroEntregado.value,
                                         model.empleado.value,
-                                        model.cliente.value
+                                        model.cliente.value,
+                                        totalConIva
                                     ),
                                     currentUncommittedIVS.ivs.map {
                                         UncommittedItemVenta(

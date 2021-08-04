@@ -65,7 +65,7 @@ create table if not exists epic.proveedor
     constraint proveedor_telefono_uindex
         unique (telefono),
     constraint proveedor_nit_uindex
-        unique(nit)
+        unique (nit)
 );
 
 
@@ -138,13 +138,14 @@ create table if not exists epic.lote
 # ------------------------ create the venta table ------------------------
 create table if not exists epic.venta
 (
-    venta_id      int auto_increment
+    venta_id       int auto_increment
         primary key,
-    fecha_hora    datetime not null,
-    precio_total  int      not null,
-    pago_recibido int      not null,
-    empleado      int      not null,
-    cliente       int      not null,
+    fecha_hora     datetime not null,
+    total_sin_iva double   not null,
+    pago_recibido  int      not null,
+    empleado       int      not null,
+    cliente        int      not null,
+    total_con_iva int      not null,
     constraint venta_cliente_cliente_id_fk
         foreign key (cliente) references epic.cliente (cliente_id)
             on update cascade,

@@ -232,7 +232,7 @@ class VentaHistory : Fragment() {
         }
         table = tableview(ventaController.getVentasFromTo(inicio, fin).sortedByDescending { it.fechaHora }.toObservable()) {
             readonlyColumn("Fecha y Hora", VentaDB::fechaHora)
-            readonlyColumn("Precio Total", VentaDB::precioTotal)
+            readonlyColumn("Total con Iva", VentaDB::totalConIva)
             readonlyColumn("Pago Recibido", VentaDB::pagoRecibido)
             readonlyColumn("Cambio", VentaDB::cambio)
             readonlyColumn("Empleado", VentaDB::empleado)

@@ -15,8 +15,8 @@ class VentaDB(
     @Column(name = "fecha_hora")
     var fechaHora: Timestamp,
 
-    @Column(name = "precio_total")
-    var precioTotal: Int,
+    @Column(name = "total_sin_iva")
+    var totalSinIva: Double,
 
     @Column(name = "pago_recibido")
     var pagoRecibido: Int,
@@ -28,16 +28,21 @@ class VentaDB(
     var cliente: ClienteDB,
 
     @OneToMany(mappedBy = "venta", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    var items: Set<ItemVentaDB>
+    var items: Set<ItemVentaDB>,
+
+    @Column(name = "total_con_iva")
+    var totalConIva: Int
 ) {
     val cambio: Int
-    get() = pagoRecibido - precioTotal
+        get() = pagoRecibido - totalConIva
+
     fun toModel() = Venta(
         ventaId,
         fechaHora.toLocalDateTime(),
-        precioTotal,
+        totalSinIva,
         pagoRecibido,
         empleado,
-        cliente
+        cliente,
+        totalConIva
     )
 }

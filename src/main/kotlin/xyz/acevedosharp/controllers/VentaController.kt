@@ -36,11 +36,12 @@ open class VentaController: Controller(), UpdateSnapshot {
             VentaDB(
                 null,
                 Timestamp.valueOf(venta.fechaHora),
-                venta.precioTotal,
+                venta.totalSinIva,
                 venta.pagoRecibido,
                 venta.empleado,
                 venta.cliente,
-                setOf()
+                setOf(),
+                venta.totalConIva
             )
         )
 
