@@ -22,13 +22,17 @@ class ProveedorDB(
 
     @Column(name = "direccion")
     var direccion: String?,
+
+    @Column(name = "nit")
+    var nit: String
 ) {
     fun toModel() = Proveedor(
         proveedorId,
         nombre,
         telefono,
         direccion,
-        correo
+        correo,
+        nit
     )
 
     override fun toString() = nombre

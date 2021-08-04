@@ -33,7 +33,8 @@ class ProveedorController : Controller(), UpdateSnapshot {
                 proveedor.nombre,
                 proveedor.telefono,
                 GlobalHelper.nullableStringEnforcer(proveedor.correo),
-                GlobalHelper.nullableStringEnforcer(proveedor.direccion)
+                GlobalHelper.nullableStringEnforcer(proveedor.direccion),
+                proveedor.nit
             )
         )
         updateSnapshot()
@@ -45,6 +46,14 @@ class ProveedorController : Controller(), UpdateSnapshot {
 
     fun existsOtherWithNombre(nombre: String, id: Int): Boolean {
         return proveedorRepo.existsByNombre(nombre) && (proveedorRepo.findByNombre(nombre).proveedorId != id)
+    }
+
+    fun isNitAvailable(nit: String): Boolean {
+        return proveedorRepo.existsByNit(nit)
+    }
+
+    fun existsOtherWithNit(nit: String, id: Int): Boolean {
+        return proveedorRepo.existsByNit(nit) && (proveedorRepo.findByNit(nit).proveedorId != id)
     }
 
     fun isTelefonoAvailable(telefono: String): Boolean {

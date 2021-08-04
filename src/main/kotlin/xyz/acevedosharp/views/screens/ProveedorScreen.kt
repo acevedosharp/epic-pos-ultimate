@@ -92,6 +92,7 @@ class ProveedorView : View("Módulo de proveedores") {
                 hbox {
                     table = tableview(proveedorController.getProveedoresWithUpdate()) {
                         column("Nombre", ProveedorDB::nombre)
+                        column("Nit", ProveedorDB::nit)
                         column("Teléfono", ProveedorDB::telefono)
                         column("Correo", ProveedorDB::correo)
                         column("Dirección", ProveedorDB::direccion).remainingWidth()
@@ -141,6 +142,7 @@ class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
             val proveedor = proveedorController.findById(id!!)!!
 
             this.id.value = proveedor.proveedorId
+            this.nit.value = proveedor.nit
             this.nombre.value = proveedor.nombre
             this.telefono.value = proveedor.telefono
             this.direccion.value = proveedor.direccion
@@ -172,6 +174,20 @@ class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
                                 -> error("Nombre no disponible")
                                 it.isNullOrBlank() -> error("Nombre requerido")
                                 it.length > 50 -> error("Máximo 50 caracteres (${it.length})")
+                                else -> null
+                            }
+                        }
+                    }
+                }
+                field("Nit") {
+                    textfield(model.nit) {
+                        validator(trigger = ValidationTrigger.OnChange()) {
+                            when {
+                                if (formType == CREATE) proveedorController.isNitAvailable(it.toString())
+                                else proveedorController.existsOtherWithNit(it.toString(), model.id.value)
+                                -> error("Nit no disponible")
+                                it.isNullOrBlank() -> error("Nit requerido")
+                                it.length > 32 -> error("Máximo 32 caracteres (${it.length})")
                                 else -> null
                             }
                         }
@@ -220,7 +236,8 @@ class BaseProveedorFormView(formType: FormType, id: Int?) : Fragment() {
                                         model.nombre.value,
                                         model.telefono.value,
                                         model.direccion.value,
-                                        model.correo.value
+                                        model.correo.value,
+                                        model.nit.value
                                     )
                                 )
                                 close()

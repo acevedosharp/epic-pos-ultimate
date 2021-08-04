@@ -88,7 +88,7 @@ open class PedidoController : Controller(), UpdateSnapshot {
                         UUID.randomUUID(),
                         NotificationType.BUY_PRICE_INCREASED,
                         "P. de compra del último lote de ${producto.descripcionCorta} ha " +
-                                "subido de $${producto.precioCompraEfectivo} a ${currentLote.precioCompra}"
+                                "subido de $${producto.precioCompraEfectivo} a $${currentLote.precioCompra}"
                     )
                 )
                 producto.precioCompraEfectivo = currentLote.precioCompra

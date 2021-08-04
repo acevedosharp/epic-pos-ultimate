@@ -57,12 +57,15 @@ create table if not exists epic.proveedor
     telefono     varchar(20)  not null,
     correo       varchar(40)  null,
     direccion    varchar(100) null,
+    nit          varchar(32)  not null,
     constraint proveedor_correo_uindex
         unique (correo),
     constraint proveedor_nombre_uindex
         unique (nombre),
     constraint proveedor_telefono_uindex
-        unique (telefono)
+        unique (telefono),
+    constraint proveedor_nit_uindex
+        unique(nit)
 );
 
 
@@ -176,5 +179,5 @@ create table if not exists epic.item_venta
 # ------------------------ add bolsa ------------------------
 insert into epic.familia(nombre) VALUE ('Bolsas');
 insert into epic.producto(codigo, desc_larga, desc_corta, precio_venta, precio_compra_efectivo, margen, existencias,
-                          activo, familia, alerta_existencias)
-    value ('bolsa', 'Bolsa', 'Bolsa', 50, 0, 0.1, 0, 1, 1, 0);
+                          activo, familia, alerta_existencias, iva, precio_compra)
+    value ('bolsa', 'Bolsa', 'Bolsa', 50, 0, 0.1, 0, 1, 1, 0, iva, 50);
