@@ -138,13 +138,13 @@ create table if not exists epic.lote
 # ------------------------ create the venta table ------------------------
 create table if not exists epic.venta
 (
-    venta_id       int auto_increment
+    venta_id      int auto_increment
         primary key,
-    fecha_hora     datetime not null,
+    fecha_hora    datetime not null,
     total_sin_iva double   not null,
-    pago_recibido  int      not null,
-    empleado       int      not null,
-    cliente        int      not null,
+    pago_recibido int      not null,
+    empleado      int      not null,
+    cliente       int      not null,
     total_con_iva int      not null,
     constraint venta_cliente_cliente_id_fk
         foreign key (cliente) references epic.cliente (cliente_id)
@@ -158,14 +158,17 @@ create table if not exists epic.venta
 # ------------------------ create the item_venta table ------------------------
 create table if not exists epic.item_venta
 (
-    item_venta_id int auto_increment
+    item_venta_id        int auto_increment
         primary key,
-    fecha_hora    datetime not null,
-    cantidad      int      not null,
-    precio_venta  int      not null,
-    producto      int      not null,
-    venta         int      not null,
-    cliente       int      not null,
+    fecha_hora           datetime not null,
+    cantidad             int      not null,
+    precio_venta_con_iva int      not null,
+    producto             int      not null,
+    venta                int      not null,
+    cliente              int      not null,
+    precio_venta_sin_iva double   not null,
+    iva                  int      not null,
+    margen               double   not null,
     constraint item_venta_cliente_cliente_id_fk
         foreign key (cliente) references epic.cliente (cliente_id)
             on update cascade,

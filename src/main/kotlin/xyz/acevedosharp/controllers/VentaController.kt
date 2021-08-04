@@ -7,6 +7,7 @@ import xyz.acevedosharp.CustomApplicationContextWrapper
 import xyz.acevedosharp.ui_models.UncommittedItemVenta
 import xyz.acevedosharp.ui_models.Venta
 import tornadofx.Controller
+import xyz.acevedosharp.GlobalHelper
 import xyz.acevedosharp.persistence.entities.ItemVentaDB
 import xyz.acevedosharp.persistence.entities.VentaDB
 import xyz.acevedosharp.persistence.repositories.*
@@ -48,6 +49,13 @@ open class VentaController: Controller(), UpdateSnapshot {
         updateSnapshot()
 
         val itemsVenta = itemVentaRepo.saveAll(items.map { uncommittedItemVenta ->
+
+            val (marginAmount, ivaAmount, sellPrice) = GlobalHelper.calculateSellPriceBrokenDown(
+                uncommittedItemVenta.producto.precioCompra,
+                uncommittedItemVenta.producto.margen,
+                uncommittedItemVenta.producto.iva
+            )
+
             ItemVentaDB(
                 null,
                 Timestamp.valueOf(venta.fechaHora),
@@ -55,7 +63,10 @@ open class VentaController: Controller(), UpdateSnapshot {
                 uncommittedItemVenta.producto.precioVenta,
                 uncommittedItemVenta.producto,
                 preRes,
-                preRes.cliente
+                preRes.cliente,
+                sellPrice - ivaAmount,
+                uncommittedItemVenta.producto.iva,
+                uncommittedItemVenta.producto.margen
             )
         })
 

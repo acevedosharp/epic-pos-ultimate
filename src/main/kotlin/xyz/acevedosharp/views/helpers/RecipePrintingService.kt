@@ -93,9 +93,8 @@ class RecipePrintingService {
         sb.append("Gracias por su compra el ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
         sb.append(lowerPadding)
 
-        println(sb.toString())
-//        printString(impName, sb.toString())
-//        printBytes(impName, byteArrayOf(0x1d, 'V'.toByte(), 1))
+        printString(impName, sb.toString())
+        printBytes(impName, byteArrayOf(0x1d, 'V'.toByte(), 1))
     }
 
     fun getPrinters(): List<String> {

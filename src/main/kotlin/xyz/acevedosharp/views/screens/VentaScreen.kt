@@ -291,7 +291,7 @@ class DetalleVenta : Fragment() {
         tableview(venta.items.toList().toObservable()) {
             readonlyColumn("Producto", ItemVentaDB::producto).pctWidth(60)
             readonlyColumn("Cantidad", ItemVentaDB::cantidad).pctWidth(15)
-            readonlyColumn("P. Unidad", ItemVentaDB::precioVenta).pctWidth(25)
+            readonlyColumn("P. Unidad", ItemVentaDB::precioVentaConIva).pctWidth(25)
             smartResize()
 
             placeholder = label("No hay productos en la venta")

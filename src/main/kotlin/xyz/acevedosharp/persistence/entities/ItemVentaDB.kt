@@ -6,7 +6,6 @@ import javax.persistence.*
 @Entity
 @Table(name = "item_venta", schema = "epic")
 class ItemVentaDB(
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_venta_id")
     var itemVentaId: Int? = null,
@@ -17,8 +16,8 @@ class ItemVentaDB(
     @Column(name = "cantidad")
     var cantidad: Int,
 
-    @Column(name = "precio_venta")
-    var precioVenta: Int,
+    @Column(name = "precio_venta_con_iva")
+    var precioVentaConIva: Int,
 
     @ManyToOne @JoinColumn(name = "producto")
     var producto: ProductoDB,
@@ -28,4 +27,13 @@ class ItemVentaDB(
 
     @ManyToOne @JoinColumn(name = "cliente")
     var cliente: ClienteDB,
+
+    @Column(name = "precio_venta_sin_iva")
+    var precioVentaSinIva: Double,
+
+    @Column(name = "iva")
+    var iva: Int,
+
+    @Column(name = "margen")
+    var margen: Double
 )
