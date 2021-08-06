@@ -27,7 +27,6 @@ import xyz.acevedosharp.GlobalHelper.round
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
-import java.util.*
 import java.util.function.UnaryOperator
 
 class ProductoView : View("Epic POS - Productos") {

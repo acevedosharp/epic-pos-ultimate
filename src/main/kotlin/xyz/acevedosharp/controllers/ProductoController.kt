@@ -6,7 +6,6 @@ import xyz.acevedosharp.ui_models.Producto
 import javafx.collections.ObservableList
 import tornadofx.Controller
 import org.springframework.data.repository.findByIdOrNull
-import tornadofx.label
 import xyz.acevedosharp.persistence.entities.ItemVentaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
 import xyz.acevedosharp.persistence.repositories.ItemVentaRepo
