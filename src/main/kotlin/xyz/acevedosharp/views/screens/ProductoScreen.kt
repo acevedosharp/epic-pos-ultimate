@@ -3,6 +3,7 @@
 package xyz.acevedosharp.views.screens
 
 import javafx.beans.property.*
+import javafx.collections.FXCollections
 import xyz.acevedosharp.controllers.FamiliaController
 import xyz.acevedosharp.controllers.ProductoController
 import xyz.acevedosharp.ui_models.Producto
@@ -26,6 +27,7 @@ import xyz.acevedosharp.GlobalHelper.round
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
+import java.util.*
 import java.util.function.UnaryOperator
 
 class ProductoView : View("Epic POS - Productos") {
@@ -104,6 +106,28 @@ class ProductoView : View("Epic POS - Productos") {
                                 modal = true,
                                 params = mapOf(
                                     "id" to selectedId.value,
+                                    "owner" to this@ProductoView
+                                )
+                            )
+                        }
+                    }
+                    rectangle(width = 10, height = 0)
+                    button {
+                        enableWhen(existsSelection)
+                        addClass(MainStylesheet.coolBaseButton, MainStylesheet.blueButton)
+                        prefWidth = 50.0
+                        prefHeight = 50.0
+                        graphic = imageview("images/history.png") {
+                            fitWidth = 40.0
+                            fitHeight = 40.0
+                        }
+
+                        action {
+                            openInternalWindow<ProductoSaleHistoryModal>(
+                                closeButton = false,
+                                modal = true,
+                                params = mapOf(
+                                    "product" to productoController.findById(selectedId.value.toInt())!!,
                                     "owner" to this@ProductoView
                                 )
                             )
@@ -681,6 +705,120 @@ class SelectProductoDialog : Fragment() {
 
     override fun onDock() {
         Joe.currentView.setValue(this@SelectProductoDialog)
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView.setValue(params["owner"] as UIComponent)
+        super.onUndock()
+    }
+}
+
+class ProductoSaleHistoryModal : Fragment() {
+    class HistoryPoint(val time: String, val value: String)
+
+    private val productoController = find<ProductoController>()
+    private val producto = params["product"] as ProductoDB
+
+    private val historyType = SimpleStringProperty("")
+    private val goBackNUnits = SimpleIntegerProperty(0)
+    private val timeUnitText = SimpleStringProperty("")
+
+    private val historyPoints = FXCollections.observableArrayList<HistoryPoint>()
+
+    private var table: TableView<HistoryPoint> by singleAssign()
+
+    init {
+        historyType.onChange {
+            if (!it.isNullOrBlank())
+                timeUnitText.set(if (it == "Mensual") "meses" else "días")
+        }
+    }
+
+    override val root = vbox(spacing = 0, alignment = Pos.TOP_CENTER) {
+        useMaxSize = true
+        prefWidth = 1200.0
+        prefHeight = 800.0
+        label("Historial de ventas de: ${producto.descripcionCorta}") {
+            useMaxWidth = true
+            addClass(MainStylesheet.titleLabel, MainStylesheet.blueLabel)
+        }
+        hbox(alignment = Pos.CENTER) {
+            hgrow = Priority.ALWAYS
+            form {
+                fieldset {
+                    hbox(spacing = 10, alignment = Pos.CENTER) {
+                        label("Tipo").style { fontSize = 28.px }
+                        combobox(historyType, listOf("Diario", "Mensual")).style { fontSize = 28.px }
+
+                        hbox(spacing =10, alignment = Pos.CENTER) {
+                            hiddenWhen { historyType.isEmpty }
+
+                            label("Devolverse").style { fontSize = 28.px }
+                            spinner(
+                                property = goBackNUnits,
+                                initialValue = 0,
+                                min = 0,
+                                max = Int.MAX_VALUE,
+                                amountToStepBy = 1,
+                                editable = true
+                            ).style {
+                                prefWidth = 200.px
+                                fontSize = 28.px
+                            }
+
+                            label(timeUnitText).style { fontSize = 28.px }
+                        }
+                    }
+                    rectangle(width = 0, height = 24)
+                    hbox(spacing = 80, alignment = Pos.CENTER) {
+                        button("Consultar") {
+                            addClass(
+                                MainStylesheet.coolBaseButton,
+                                MainStylesheet.greenButton,
+                                MainStylesheet.expandedButton
+                            )
+                            action {
+                                historyPoints.setAll(
+                                    productoController.getHistory(
+                                        producto,
+                                        historyType.value,
+                                        goBackNUnits.value
+                                    )
+                                )
+                            }
+                        }
+                        button("Cerrar") {
+                            addClass(
+                                MainStylesheet.coolBaseButton,
+                                MainStylesheet.redButton,
+                                MainStylesheet.expandedButton
+                            )
+                            action {
+                                close()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        table = tableview(historyPoints) {
+            readonlyColumn("Tiempo", HistoryPoint::time)
+            readonlyColumn("Unidades vendidas", HistoryPoint::value)
+            smartResize()
+
+            placeholder = label("Selecciona un tipo de historial")
+
+            hgrow = Priority.ALWAYS
+        }
+        paddingAll = 6
+        style {
+            backgroundColor += Color.WHITE
+        }
+    }
+
+    override fun onDock() {
+        Joe.currentView.setValue(this@ProductoSaleHistoryModal)
         super.onDock()
     }
 

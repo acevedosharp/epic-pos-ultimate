@@ -6,15 +6,97 @@ import xyz.acevedosharp.ui_models.Producto
 import javafx.collections.ObservableList
 import tornadofx.Controller
 import org.springframework.data.repository.findByIdOrNull
+import tornadofx.label
+import xyz.acevedosharp.persistence.entities.ItemVentaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
+import xyz.acevedosharp.persistence.repositories.ItemVentaRepo
 import xyz.acevedosharp.persistence.repositories.ProductoRepo
+import xyz.acevedosharp.views.screens.ProductoSaleHistoryModal
+import java.sql.Timestamp
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class ProductoController(productoRepo: ProductoRepo? = null) : Controller(), UpdateSnapshot {
 
     private val productoRepo = productoRepo
         ?: find<CustomApplicationContextWrapper>().context.getBean(ProductoRepo::class.java)
 
+    private val itemVentaRepo = find<CustomApplicationContextWrapper>().context.getBean(ItemVentaRepo::class.java)
+
     private val productos: ObservableList<ProductoDB> = FXCollections.observableArrayList()
+
+    fun getHistory(producto: ProductoDB, type: String, goBackNUnits: Int): List<ProductoSaleHistoryModal.HistoryPoint> {
+        class TimeGrouping(
+            val title: String,
+            val startRange: Timestamp,
+            val endRange: Timestamp,
+            val ivs: ArrayList<ItemVentaDB>
+        )
+
+        val timeGroupings = arrayListOf<TimeGrouping>()
+
+        val tz = TimeZone.getTimeZone("America/Bogota")
+        val startRangeCalendar = Calendar.getInstance(tz)
+        val endRangeCalendar = Calendar.getInstance(tz)
+
+        val startHistory: Timestamp
+
+        val formatter = DateTimeFormatter
+            .ofPattern(if (type == "Mensual") "MMM, yyyy" else "dd/MMM/yyyy")
+            .withLocale(Locale("es", "CO"))
+
+        val unitOfTime = if (type == "Mensual") Calendar.MONTH else Calendar.DAY_OF_MONTH
+
+        IntRange(1, goBackNUnits).forEach { _ ->
+            if (type == "Mensual") {
+                startRangeCalendar.set(Calendar.DAY_OF_MONTH, startRangeCalendar.getActualMinimum(Calendar.DAY_OF_MONTH))
+                endRangeCalendar.set(Calendar.DAY_OF_MONTH, endRangeCalendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+            }
+
+            startRangeCalendar.set(Calendar.HOUR_OF_DAY, startRangeCalendar.getActualMinimum(Calendar.HOUR_OF_DAY))
+            startRangeCalendar.set(Calendar.MINUTE, startRangeCalendar.getActualMinimum(Calendar.MINUTE))
+            startRangeCalendar.set(Calendar.SECOND, startRangeCalendar.getActualMinimum(Calendar.SECOND))
+
+            endRangeCalendar.set(Calendar.HOUR_OF_DAY, endRangeCalendar.getActualMaximum(Calendar.HOUR_OF_DAY))
+            endRangeCalendar.set(Calendar.MINUTE, endRangeCalendar.getActualMaximum(Calendar.MINUTE))
+            endRangeCalendar.set(Calendar.SECOND, endRangeCalendar.getActualMaximum(Calendar.SECOND))
+
+            timeGroupings.add(
+                TimeGrouping(
+                    LocalDateTime.ofInstant(startRangeCalendar.toInstant(), tz.toZoneId()).format(formatter),
+                    Timestamp.from(startRangeCalendar.toInstant()),
+                    Timestamp.from(endRangeCalendar.toInstant()),
+                    arrayListOf()
+                )
+            )
+
+            // go back one unit of time
+            startRangeCalendar.add(unitOfTime, -1)
+            endRangeCalendar.add(unitOfTime, -1)
+        }
+
+        // last iteration above got us to goBackNUnits units of time- back
+        startHistory = Timestamp.from(startRangeCalendar.apply { add(unitOfTime, 1) }.toInstant())
+
+        val ivs = itemVentaRepo.findAllByProductoAndFechaHoraAfter(producto, startHistory)
+
+        for (iv in ivs) {
+            for (timeGrouping in timeGroupings) {
+                if (iv.fechaHora.before(timeGrouping.endRange) && iv.fechaHora.after(timeGrouping.startRange))
+                    timeGrouping.ivs.add(iv)
+            }
+        }
+
+        return timeGroupings.map {
+            var unitCount = 0
+            it.ivs.forEach { unitCount += it.cantidad }
+            ProductoSaleHistoryModal.HistoryPoint(
+                it.title,
+                "$unitCount unidades"
+            )
+        }
+    }
 
     fun getProductosWithUpdate(): ObservableList<ProductoDB> {
         updateSnapshot()

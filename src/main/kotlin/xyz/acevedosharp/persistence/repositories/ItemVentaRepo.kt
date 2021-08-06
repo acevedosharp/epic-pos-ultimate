@@ -15,6 +15,8 @@ interface ItemVentaRepo: JpaRepository<ItemVentaDB, Int> {
     // newest item venta
     fun findFirstByProductoEqualsOrderByItemVentaIdDesc(producto: ProductoDB): ItemVentaDB?
 
+    fun findAllByProductoAndFechaHoraAfter(producto: ProductoDB, after: Timestamp): List<ItemVentaDB>
+
     fun findAllByProductoEqualsAndFechaHoraBetween(productoDB: ProductoDB, start: Timestamp, end: Timestamp): List<ItemVentaDB>
 
     fun findAllByProductoEqualsAndFechaHoraBetweenAndClienteEquals(productoDB: ProductoDB, start: Timestamp, end: Timestamp, cliente: ClienteDB): List<ItemVentaDB>
