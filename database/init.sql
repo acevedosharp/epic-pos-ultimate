@@ -1,13 +1,6 @@
 # create the app schema
 create schema if not exists epic;
 
-# create the database user
-create user if not exists 'mercamas'@'localhost' identified by 'Epic271';
-create user if not exists 'mercamas'@'%' identified by 'Epic271';
-
-grant all privileges on epic.* to 'mercamas'@'localhost';
-grant all privileges on epic.* to 'mercamas'@'%';
-
 # ------------------------ create the familia table ------------------------
 create table if not exists epic.familia
 (
