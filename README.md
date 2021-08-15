@@ -15,8 +15,11 @@ Notification configuration:
 - Execute init.sql on the database
 - Install printer driver(s)
 
+## Build
+Run `./gradlew bootJar` in project root.
+
 ## Execute
-Double click on the .jar, if that doesn't work, run execute-epic-pos-ultimate.sh on the same folder as .jar
+Double click on the .jar, if that doesn't work, run `execute-epic-pos-ultimate.sh` on the same folder as the generated .jar.
 
 ## Limitations
 It has only been tested in Windows machines, it might work on other platforms (it should!).
