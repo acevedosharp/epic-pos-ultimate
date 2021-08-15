@@ -1,1 +1,1 @@
-java -jar .\epic-pos-ultimate-2.7.1.jar
+java -jar epic-pos-ultimate-2.7.1.jar
