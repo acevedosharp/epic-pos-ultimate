@@ -13,7 +13,9 @@ import xyz.acevedosharp.persistence.entities.VentaDB
 import xyz.acevedosharp.persistence.repositories.*
 import java.sql.Timestamp
 
-open class VentaController: Controller(), UpdateSnapshot {
+open class VentaController : Controller(), UpdateSnapshot {
+    private val notificationsController = find<NotificationsController>()
+
     private val ventaRepo = find<CustomApplicationContextWrapper>().context.getBean(VentaRepo::class.java)
     private val itemVentaRepo = find<CustomApplicationContextWrapper>().context.getBean(ItemVentaRepo::class.java)
     private val productoRepo = find<CustomApplicationContextWrapper>().context.getBean(ProductoRepo::class.java)
@@ -50,7 +52,7 @@ open class VentaController: Controller(), UpdateSnapshot {
 
         val itemsVenta = itemVentaRepo.saveAll(items.map { uncommittedItemVenta ->
 
-            val (marginAmount, ivaAmount, sellPrice) = GlobalHelper.calculateSellPriceBrokenDown(
+            val (_, ivaAmount, sellPrice) = GlobalHelper.calculateSellPriceBrokenDown(
                 uncommittedItemVenta.producto.precioCompra,
                 uncommittedItemVenta.producto.margen,
                 uncommittedItemVenta.producto.iva
@@ -79,6 +81,10 @@ open class VentaController: Controller(), UpdateSnapshot {
         }
 
         productoRepo.saveAll(productosWithNewExistencias)
+
+        itemsVenta.forEach {
+            notificationsController.doInventoryCheck(it.producto)
+        }
 
         // return saved VentaDB for printing
         return preRes.apply {

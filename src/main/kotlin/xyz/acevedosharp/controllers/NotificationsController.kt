@@ -8,7 +8,8 @@ import javafx.collections.ObservableList
 import javafx.scene.control.Button
 import tornadofx.*
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import xyz.acevedosharp.GlobalSettings
+import xyz.acevedosharp.GlobalSettingsProvider
+import xyz.acevedosharp.persistence.entities.ProductoDB
 import xyz.acevedosharp.persistence.repositories.ClienteRepo
 import xyz.acevedosharp.persistence.repositories.ProductoRepo
 import xyz.acevedosharp.ui_models.Notification
@@ -22,12 +23,12 @@ class NotificationsController : Controller() {
     private val productoRepo = applicationContext.getBean(ProductoRepo::class.java)
 
     private val notifications = FXCollections.observableArrayList<Notification>()
-    private val notificationButtons = FXCollections.observableArrayList<Button>()
 
-    private val millisDayOffset = 86_400_000L * GlobalSettings.daysForBirthdayCheck
+    private val globalSettingsProvider = applicationContext.getBean(GlobalSettingsProvider::class.java)
+
+    private val millisDayOffset = 86_400_000L * globalSettingsProvider.daysForBirthdayCheck
 
     init {
-        // only startup notifications
         doBirthDayCheck()
         doInventoryCheck()
     }
@@ -44,8 +45,8 @@ class NotificationsController : Controller() {
     fun clearNotification(uuid: UUID) = notifications.removeIf { it.uuid == uuid }
     fun clearAllNotifications() = notifications.clear()
 
-    fun doBirthDayCheck() {
-        if (GlobalSettings.isBirthdayCheckEnabled) {
+    private fun doBirthDayCheck() {
+        if (globalSettingsProvider.doBirthdayCheckEnabled) {
             val allClientes = clienteRepo.findAll()
             val clientesWithBirthDay = allClientes.mapNotNull {
                 if (it.birthdayDay == null || it.birthdayMonth == null) {
@@ -70,8 +71,8 @@ class NotificationsController : Controller() {
         }
     }
 
-    fun doInventoryCheck() {
-        if (GlobalSettings.isProductInventoryCheckEnabled) {
+    private fun doInventoryCheck() {
+        if (globalSettingsProvider.doProductInventoryCheckEnabled) {
             val allProducts = productoRepo.findAll()
             val productsWithLowInventory = allProducts.mapNotNull {
                 if (it.codigo != "bolsa" && it.existencias <= it.alertaExistencias) {
@@ -83,6 +84,22 @@ class NotificationsController : Controller() {
                 } else return@mapNotNull null
             }
             pushNotifications(productsWithLowInventory)
+        }
+    }
+
+    fun doInventoryCheck(producto: ProductoDB) {
+        if (producto.existencias <= producto.alertaExistencias) {
+            // notification inheritance would be great here!
+            if (notifications.any { it.message.contains("Inventario de ${producto.descripcionCorta}") })
+                return
+
+            pushNotifications(listOf(
+                Notification(
+                    uuid = UUID.randomUUID(),
+                    type = NotificationType.INVENTORY_ALERT,
+                    message = "Inventario de ${producto.descripcionCorta}: ${producto.existencias}. Alerta en: ${producto.alertaExistencias}."
+                )
+            ))
         }
     }
 }
