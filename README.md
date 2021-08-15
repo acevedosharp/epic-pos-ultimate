@@ -22,6 +22,6 @@ Run `./gradlew bootJar` in project root.
 Double click on the .jar, if that doesn't work, run `execute-epic-pos-ultimate.sh` on the same folder as the generated .jar.
 
 ## Limitations
-It has only been tested in Windows machines, it might work on other platforms (it should!).
-
-**Note:** Most store printing devices only provide Windows drivers. Plus the current implementation in hardcoded to use a 48 character per line printer.
+- It has only been tested in Windows machines though it might work on other platforms (it should!).
+- Note that most store printing devices only provide Windows drivers so other platforms might not be viable with your current hardware. 
+- The current implementation is hardcoded to use a 48 character per line printer.
