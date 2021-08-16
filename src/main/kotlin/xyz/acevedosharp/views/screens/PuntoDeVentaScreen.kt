@@ -533,7 +533,7 @@ class CreateItemVentaManuallyForm : Fragment() {
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        prefWidth = 600.0
+        prefWidth = 800.0
         label("Añadir ítem de venta") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
@@ -542,7 +542,7 @@ class CreateItemVentaManuallyForm : Fragment() {
             fieldset {
                 field("Producto") {
                     combobox<ProductoDB>(model.producto, productoController.getProductosWithUpdate()).apply {
-                        prefWidth = 400.0
+                        prefWidth = 600.0
                         makeAutocompletable(false)
                     }.validator {
                         when (it) {
@@ -562,7 +562,7 @@ class CreateItemVentaManuallyForm : Fragment() {
                         amountToStepBy = 1,
                         editable = true
                     ) {
-                        prefWidth = 400.0
+                        prefWidth = 600.0
                     }
                 }
                 rectangle(width = 0, height = 24)

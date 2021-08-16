@@ -117,7 +117,11 @@ class ReportesController : Controller() {
         val products = productoRepo.findAll()
 
         val totalNumberOfSales =
-            if (filterByCliente) ventaRepo.findAllByFechaHoraBetweenAndClienteEquals(startRangeTimestamp, endRangeTimestamp, clienteToFilterBy!!).size
+            if (filterByCliente) ventaRepo.findAllByFechaHoraBetweenAndClienteEquals(
+                startRangeTimestamp,
+                endRangeTimestamp,
+                clienteToFilterBy!!
+            ).size
             else ventaRepo.findAllByFechaHoraBetween(startRangeTimestamp, endRangeTimestamp).size
 
         products.forEach { producto ->
