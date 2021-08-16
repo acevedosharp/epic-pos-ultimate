@@ -11,6 +11,7 @@ import javax.print.attribute.HashPrintRequestAttributeSet
 import javax.print.attribute.PrintRequestAttributeSet
 import kotlin.math.max
 
+
 @Service
 class RecipePrintingService {
 
@@ -93,6 +94,7 @@ class RecipePrintingService {
         sb.append("Gracias por su compra el ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
         sb.append(lowerPadding)
 
+        openCashDrawer(impName)
         printString(impName, sb.toString())
         printBytes(impName, byteArrayOf(0x1d, 'V'.toByte(), 1))
     }
@@ -107,24 +109,42 @@ class RecipePrintingService {
             .filter { it !in listOf("Microsoft XPS Document Writer", "Microsoft Print to PDF", "Fax") }
     }
 
+    private fun openCashDrawer(printerName: String) {
+        val open = byteArrayOf(27, 112, 0, 100, 250.toByte())
+        val flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE
+        val pras: PrintRequestAttributeSet = HashPrintRequestAttributeSet()
+        val printServices = PrintServiceLookup.lookupPrintServices(
+            flavor, pras
+        )
+        val service = findPrintService(printerName, printServices)
+        val job = service!!.createPrintJob()
+
+        val doc: Doc = SimpleDoc(open, flavor, null)
+        val aset: PrintRequestAttributeSet = HashPrintRequestAttributeSet()
+        try {
+            job.print(doc, aset)
+        } catch (ex: PrintException) {
+            ex.printStackTrace()
+        }
+    }
+
     private fun printString(printerName: String, text: String) {
 
         // find the printService of name printerName
         val flavor: DocFlavor = DocFlavor.BYTE_ARRAY.AUTOSENSE
         val pras: PrintRequestAttributeSet = HashPrintRequestAttributeSet()
-        val printService = PrintServiceLookup.lookupPrintServices(
+        val printServices = PrintServiceLookup.lookupPrintServices(
             flavor, pras
         )
-        val service = findPrintService(printerName, printService)
+        val service = findPrintService(printerName, printServices)
         val job = service!!.createPrintJob()
         try {
             // use a charset that can use many characters
             val bytes: ByteArray = text.toByteArray(charset("CP437"))
             val doc: Doc = SimpleDoc(bytes, flavor, null)
-            job.print(doc, null)
+            job.print(doc, HashPrintRequestAttributeSet())
         } catch (e: Exception) {
             e.printStackTrace()
-            TODO("show printing exception dialog.")
         }
     }
 
