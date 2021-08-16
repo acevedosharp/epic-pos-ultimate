@@ -422,7 +422,6 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                                 it.any { char -> char == ',' || char == '.' } -> error("No se pueden poner precios decimales")
                                 it.any { char -> !char.isDigit() } -> error("Ingresa sólo números")
                                 it.toInt() <= 0 -> error("Precio inválido")
-                                it.toInt() % 50 != 0 -> error("El precio debe ser múltiplo de 50")
                                 else -> null
                             }
                         }
