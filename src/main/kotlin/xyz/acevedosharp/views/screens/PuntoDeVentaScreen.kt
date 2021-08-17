@@ -38,8 +38,6 @@ import xyz.acevedosharp.views.dialogs.GenericApplicationException
 import xyz.acevedosharp.views.dialogs.UnexpectedErrorDialog
 import java.text.NumberFormat
 import java.time.LocalDateTime
-import kotlin.math.ceil
-import kotlin.math.floor
 
 class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
     class CurrentUncommittedIVS {
@@ -202,7 +200,8 @@ class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
                                             productoController.findByCodigo(currentCodigo.value),
                                             1
                                         ),
-                                        currentUncommittedIVS
+                                        currentUncommittedIVS,
+                                        this@PuntoDeVentaView
                                     )
                                 )
                             } else {
@@ -509,7 +508,7 @@ class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
         scene.focusOwnerProperty().addListener(listener)
     }
 
-    private fun removeAlwaysFocusListener() {
+    fun removeAlwaysFocusListener() {
         scene.focusOwnerProperty().removeListener(listener)
     }
 }
@@ -588,7 +587,8 @@ class CreateItemVentaManuallyForm : Fragment() {
                                                 producto,
                                                 cantidad
                                             ),
-                                            currentUncommittedIVS
+                                            currentUncommittedIVS,
+                                            papi
                                         )
                                     )
                                 } else {
@@ -622,7 +622,7 @@ class  BolsasSelect : Fragment() {
     private val numeroBolsas = SimpleIntegerProperty(1)
 
     private val currentUncommittedIVS = params["cuivs"] as PuntoDeVentaView.CurrentUncommittedIVS
-    private val owner = params["owner"] as PuntoDeVentaView
+    private val papi = params["owner"] as PuntoDeVentaView
 
     override val root = vbox(spacing = 0, alignment = Pos.CENTER) {
         useMaxSize = true
@@ -654,20 +654,21 @@ class  BolsasSelect : Fragment() {
                                     producto,
                                     cantidad
                                 ),
-                                currentUncommittedIVS
+                                currentUncommittedIVS,
+                                papi
                             )
                         )
                     } else {
                         this@BolsasSelect.openInternalWindow(UnexpectedErrorDialog("Debe existir un producto con el código: 'bolsa'"))
                     }
-                    owner.addAlwaysFocusListener()
+                    papi.addAlwaysFocusListener()
                     close()
                 }
             }
             button("Cancelar") {
                 addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
                 action {
-                    owner.addAlwaysFocusListener()
+                    papi.addAlwaysFocusListener()
                     close()
                 }
             }
