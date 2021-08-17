@@ -993,7 +993,7 @@ class ModifyItemVentaQuantityDialog : Fragment() {
     }
 
     override fun onUndock() {
-        Joe.currentView.setValue(papi as UIComponent)
+        Joe.currentView.setValue(papi)
         super.onUndock()
     }
 }
