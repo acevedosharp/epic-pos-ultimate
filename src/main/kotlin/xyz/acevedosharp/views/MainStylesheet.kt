@@ -14,21 +14,22 @@ class MainStylesheet: Stylesheet() {
 
     companion object {
         // Buttons
-        val keyButton        by cssclass()
-        val expandedButton   by cssclass()
-        val coolBaseButton   by cssclass()
-        val greenButton      by cssclass()
-        val blueButton       by cssclass()
-        val redButton        by cssclass()
-        val grayButton       by cssclass()
-        val navigationButton by cssclass()
-        val selectedButton   by cssclass()
-        val unselectedButton by cssclass()
-        val addButton        by cssclass()
+        val keyButtonSmall        by cssclass()
+        val keyButton             by cssclass()
+        val expandedButton        by cssclass()
+        val coolBaseButton        by cssclass()
+        val greenButton           by cssclass()
+        val blueButton            by cssclass()
+        val redButton             by cssclass()
+        val grayButton            by cssclass()
+        val navigationButton      by cssclass()
+        val selectedButton        by cssclass()
+        val unselectedButton      by cssclass()
+        val addButton             by cssclass()
 
         // Labels
         val titleLabel  by cssclass()
-        val grayLabel  by cssclass()
+        val grayLabel   by cssclass()
         val greenLabel  by cssclass()
         val blueLabel   by cssclass()
         val redLabel    by cssclass()
@@ -88,6 +89,13 @@ class MainStylesheet: Stylesheet() {
             fontSize = 56.px
             textFill = Color.WHITE
             padding = box(4.px)
+        }
+        keyButtonSmall {
+            prefHeight = 60.px
+            prefWidth = 120.px
+            fontSize = 48.px
+            textFill = Color.WHITE
+            padding = box(3.px)
         }
         coolBaseButton {
             fontSize = 22.px

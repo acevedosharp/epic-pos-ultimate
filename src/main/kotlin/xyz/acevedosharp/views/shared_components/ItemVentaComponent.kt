@@ -10,6 +10,8 @@ import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
 import tornadofx.*
+import xyz.acevedosharp.views.screens.BolsasSelect
+import xyz.acevedosharp.views.screens.ModifyItemVentaQuantityDialog
 import xyz.acevedosharp.views.screens.PuntoDeVentaView
 
 class ItemVentaComponent(
@@ -22,8 +24,6 @@ class ItemVentaComponent(
     val cantidad = uncommittedItemVenta.cantidadProperty // Observable
 
     val cantidadProxyString: StringBinding = cantidad.asString()
-
-    val isEditingCantidad = SimpleBooleanProperty(false)
 
     lateinit var editionField: TextField
 
@@ -65,7 +65,6 @@ class ItemVentaComponent(
                 alignment = Pos.CENTER_LEFT
                 rectangle(width = 150, height = 64) { fill = c(255, 255, 255, 0.0) }
                 button(cantidadProxyString) {
-                    hiddenWhen(isEditingCantidad)
                     addClass(MainStylesheet.coolBaseButton, MainStylesheet.blueButton)
                     style {
                         prefWidth = 145.px
@@ -75,22 +74,16 @@ class ItemVentaComponent(
                     }
 
                     action {
-                        isEditingCantidad.set(true)
                         papi.removeAlwaysFocusListener()
-                        editionField.requestFocus()
-                    }
-                }
-                editionField = textfield(cantidad) {
-                    hiddenWhen(isEditingCantidad.not())
-                    style {
-                        prefWidth = 145.px
-                        fontSize = 28.px
-                        fontWeight = FontWeight.BOLD
-                        textAlignment = TextAlignment.CENTER
-                    }
-                    action {
-                        isEditingCantidad.set(false)
-                        papi.addAlwaysFocusListener()
+                        openInternalWindow<ModifyItemVentaQuantityDialog>(
+                            closeButton = false,
+                            modal = false,
+                            params = mapOf(
+                                "owner" to this@ItemVentaComponent,
+                                "targetProperty" to cantidad,
+                                "pdvView" to papi
+                            )
+                        )
                     }
                 }
             }

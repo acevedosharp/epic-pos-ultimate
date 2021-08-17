@@ -11,6 +11,7 @@ import xyz.acevedosharp.views.helpers.RecipePrintingService
 import xyz.acevedosharp.views.shared_components.ItemVentaComponent
 import xyz.acevedosharp.views.shared_components.SideNavigation
 import javafx.beans.binding.Bindings
+import javafx.beans.property.IntegerProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.value.ChangeListener
@@ -193,7 +194,9 @@ class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
                             if (currentCodigo.value in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
                                 val res = currentUncommittedIVS.ivs.find { it.producto.codigo == currentCodigo.value }!!
                                 res.cantidad.value = res.cantidad.value + 1
-                            } else if (currentCodigo.value in productoController.getProductosWithUpdate().map { it.codigo }) {
+                            } else if (currentCodigo.value in productoController.getProductosWithUpdate()
+                                    .map { it.codigo }
+                            ) {
                                 currentUncommittedIVS.ivs.add(
                                     ItemVentaComponent(
                                         UncommittedItemVenta(
@@ -580,7 +583,9 @@ class CreateItemVentaManuallyForm : Fragment() {
                                 if (producto.codigo in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
                                     val res = currentUncommittedIVS.ivs.find { it.producto.codigo == producto.codigo }!!
                                     res.cantidad.set(res.cantidad.value + cantidad)
-                                } else if (productoController.getProductosClean().find { it.codigo == producto.codigo } != null) {
+                                } else if (productoController.getProductosClean()
+                                        .find { it.codigo == producto.codigo } != null
+                                ) {
                                     currentUncommittedIVS.ivs.add(
                                         ItemVentaComponent(
                                             UncommittedItemVenta(
@@ -616,7 +621,7 @@ class CreateItemVentaManuallyForm : Fragment() {
     }
 }
 
-class  BolsasSelect : Fragment() {
+class BolsasSelect : Fragment() {
     private val productoController = find<ProductoController>()
 
     private val numeroBolsas = SimpleIntegerProperty(1)
@@ -647,7 +652,9 @@ class  BolsasSelect : Fragment() {
                     if (producto.codigo in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
                         val res = currentUncommittedIVS.ivs.find { it.producto.codigo == producto.codigo }!!
                         res.cantidad.set(res.cantidad.value + cantidad)
-                    } else if (productoController.getProductosWithUpdate().find { it.codigo == producto.codigo } != null) {
+                    } else if (productoController.getProductosWithUpdate()
+                            .find { it.codigo == producto.codigo } != null
+                    ) {
                         currentUncommittedIVS.ivs.add(
                             ItemVentaComponent(
                                 UncommittedItemVenta(
@@ -689,7 +696,8 @@ class  BolsasSelect : Fragment() {
 }
 
 class CommitVenta : Fragment() {
-    private val printingService = find<CustomApplicationContextWrapper>().context.getBean(RecipePrintingService::class.java)
+    private val printingService =
+        find<CustomApplicationContextWrapper>().context.getBean(RecipePrintingService::class.java)
 
     private val empleadoController = find<EmpleadoController>()
     private val clienteController = find<ClienteController>()
@@ -700,7 +708,8 @@ class CommitVenta : Fragment() {
     private val owner: PuntoDeVentaView = params["owner"] as PuntoDeVentaView
     private val dineroEntregado = params["dineroEntregado"] as SimpleIntegerProperty
     private val valorTotal = params["valorTotal"] as Double
-    private val impresora = if (Joe.rememberPrinter.value == false) SimpleStringProperty(printingService.getPrinters()[0]) else Joe.persistentPrinter
+    private val impresora =
+        if (Joe.rememberPrinter.value == false) SimpleStringProperty(printingService.getPrinters()[0]) else Joe.persistentPrinter
     private val impresoras = FXCollections.observableArrayList<String>()
 
     private val imprimirFactura = SimpleStringProperty("No")
@@ -854,5 +863,137 @@ class CommitVenta : Fragment() {
                 }
             }
         }
+    }
+}
+
+class ModifyItemVentaQuantityDialog : Fragment() {
+    private val papi = params["owner"] as UIComponent
+    private val targetQuantityProperty = params["targetProperty"] as IntegerProperty
+    private val pdvView = params["pdvView"] as PuntoDeVentaView
+
+    private var hasUsedAnyTouchButton = false
+
+    private lateinit var cantidadTextField: TextField
+
+    override val root = vbox(alignment = Pos.TOP_CENTER) {
+        style {
+            backgroundColor += c(0, 0, 0, 0.8)
+            padding = box(6.px)
+            prefWidth = 342.px
+        }
+        vbox(alignment = Pos.CENTER) {
+            cantidadTextField = textfield(targetQuantityProperty) {
+                alignment = Pos.CENTER
+                style {
+                    fontSize = 40.px
+                }
+                action {
+                    pdvView.addAlwaysFocusListener()
+                    close()
+                }
+            }
+
+            style {
+                backgroundColor += c("#ffffff")
+            }
+        }
+        rectangle(width = 0, height = 6)
+        hbox(alignment = Pos.TOP_CENTER) {
+            button("1") {
+                addClass(MainStylesheet.grayButton, MainStylesheet.keyButtonSmall)
+                action { pressTouchNumberWithMiddleware(1) }
+            }
+            button("2") {
+                addClass(MainStylesheet.grayButton, MainStylesheet.keyButtonSmall)
+                action { pressTouchNumberWithMiddleware(2) }
+            }
+            button("3") {
+                addClass(MainStylesheet.grayButton, MainStylesheet.keyButtonSmall)
+                action { pressTouchNumberWithMiddleware(3) }
+            }
+        }
+        hbox(alignment = Pos.TOP_CENTER) {
+            button("4") {
+                addClass(MainStylesheet.grayButton, MainStylesheet.keyButtonSmall)
+                action { pressTouchNumberWithMiddleware(4) }
+            }
+            button("5") {
+                addClass(MainStylesheet.grayButton, MainStylesheet.keyButtonSmall)
+                action { pressTouchNumberWithMiddleware(5) }
+            }
+            button("6") {
+                addClass(MainStylesheet.grayButton, MainStylesheet.keyButtonSmall)
+                action { pressTouchNumberWithMiddleware(6) }
+            }
+        }
+        hbox(alignment = Pos.TOP_CENTER) {
+            button("7") {
+                addClass(MainStylesheet.grayButton, MainStylesheet.keyButtonSmall)
+                action { pressTouchNumberWithMiddleware(7) }
+            }
+            button("8") {
+                addClass(MainStylesheet.grayButton, MainStylesheet.keyButtonSmall)
+                action { pressTouchNumberWithMiddleware(8) }
+            }
+            button("9") {
+                cantidadTextField.requestFocus()
+                addClass(MainStylesheet.grayButton, MainStylesheet.keyButtonSmall)
+                action { pressTouchNumberWithMiddleware(9) }
+            }
+        }
+        hbox(alignment = Pos.TOP_CENTER) {
+            button("←") {
+                addClass(MainStylesheet.redButton, MainStylesheet.keyButtonSmall)
+                action {
+                    val s = targetQuantityProperty.value.toString()
+                    if (s.length > 1)
+                        targetQuantityProperty.set(s.substring(0, s.length - 1).toInt())
+                    else
+                        targetQuantityProperty.set(0)
+                }
+            }
+            button("0") {
+                addClass(MainStylesheet.grayButton, MainStylesheet.keyButtonSmall)
+                action { pressTouchNumberWithMiddleware(0) }
+            }
+            button("Ok") {
+                addClass(MainStylesheet.greenButton, MainStylesheet.keyButtonSmall)
+                action {
+                    pdvView.addAlwaysFocusListener()
+                    close()
+                }
+            }
+        }
+    }
+
+    private fun pressTouchNumberWithMiddleware(n: Int) {
+        if (!hasUsedAnyTouchButton) {
+            targetQuantityProperty.set(0)
+        }
+
+        hasUsedAnyTouchButton = true
+
+        try {
+            targetQuantityProperty.set("${targetQuantityProperty.value}$n".toInt())
+        } catch (e: NumberFormatException) {
+            targetQuantityProperty.set(0)
+        }
+    }
+
+    override fun onDock() {
+        Joe.currentView.setValue(this@ModifyItemVentaQuantityDialog)
+        super.onDock()
+
+        // we want this to be fast, but it might fail with short times
+        arrayOf(100.0, 200.0, 300.0, 400.0, 500.0, 600.0).forEach {
+            runLater(Duration.millis(it)) {
+                cantidadTextField.requestFocus()
+            }
+        }
+    }
+
+    override fun onUndock() {
+        Joe.currentView.setValue(papi as UIComponent)
+        super.onUndock()
     }
 }
