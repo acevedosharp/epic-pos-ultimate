@@ -9,7 +9,7 @@ class Producto(
     codigo: String,
     descLarga: String,
     descCorta: String,
-    precioVenta: Int,
+    precioVenta: Double,
     precioCompraEfectivo: Double,
     existencias: Int,
     margen: Double,
@@ -27,8 +27,8 @@ class Producto(
     val descCortaProperty = SimpleStringProperty(this, "descCorta", descCorta)
     var descCorta: String by descCortaProperty
 
-    val precioVentaProperty = SimpleIntegerProperty(this, "precioVenta", precioVenta)
-    var precioVenta: Int by precioVentaProperty
+    val precioVentaProperty = SimpleDoubleProperty(this, "precioVenta", precioVenta)
+    var precioVenta: Double by precioVentaProperty
 
     val precioCompraEfectivoProperty = SimpleDoubleProperty(this, "precioCompraEfectivo", precioCompraEfectivo)
     var precioCompraEfectivo: Double by precioCompraEfectivoProperty

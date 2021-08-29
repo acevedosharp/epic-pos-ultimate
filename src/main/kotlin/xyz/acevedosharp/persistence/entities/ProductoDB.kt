@@ -24,7 +24,7 @@ class ProductoDB(
     var existencias: Int,
 
     @Column(name = "precio_venta")
-    var precioVenta: Int,
+    var precioVenta: Double,
 
     @Column(name = "precio_compra_efectivo")
     var precioCompraEfectivo: Double,
@@ -88,7 +88,7 @@ class ProductoDB(
         result = 31 * result + descripcionLarga.hashCode()
         result = 31 * result + descripcionCorta.hashCode()
         result = 31 * result + existencias
-        result = 31 * result + precioVenta
+        result = 31 * result + precioVenta.hashCode()
         result = 31 * result + precioCompraEfectivo.hashCode()
         result = 31 * result + margen.hashCode()
         result = 31 * result + familia.hashCode()

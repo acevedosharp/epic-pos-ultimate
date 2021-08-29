@@ -44,7 +44,8 @@ class RecipePrintingService {
 
         sb.append("*==============================================*\n")
         sb.append("||          Autoservicio Mercamás             ||\n")
-        sb.append("||    Tel: 6000607 - Dir: Calle 35 #34-168    ||\n")
+        sb.append("||    Tel: 6000607   Dir: Calle 35 #34-168    ||\n")
+        sb.append("||   NIT: 5796564-6  Regimen: Simplificado    ||\n")
         sb.append("*==============================================*\n")
         sb.append("Atendido por: ${venta.empleado.nombre}\n")
         sb.append("Cliente: ${venta.cliente.nombre} \n")
@@ -92,6 +93,9 @@ class RecipePrintingService {
         sb.append("Pago: \$${venta.pagoRecibido}\n")
         sb.append("Cambio: $${venta.pagoRecibido - venta.totalConIva}\n")
         sb.append("Gracias por su compra el ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
+        sb.append("                                                \n")
+        sb.append("Res. habilitación: 18764015886194 de 03/08/2021\n")
+        sb.append("Desde 1 hasta 5000. Factura #${venta.ventaId!!}\n")
         sb.append(lowerPadding)
 
         openCashDrawer(impName)

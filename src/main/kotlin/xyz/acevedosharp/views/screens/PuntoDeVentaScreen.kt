@@ -71,7 +71,14 @@ class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
 
         fun recalculateTotal() {
             if (ivs.size != 0) {
-                total.value = ivs.sumOf { it.producto.precioVenta * it.cantidad.value }
+                var accountTotal = 0.0
+                for (iv in ivs) {
+                    val ivTotal = iv.producto.precioVenta * iv.cantidad.value.toDouble()
+
+                    accountTotal += ivTotal
+                }
+
+                total.value = ((accountTotal - 1) + (50 - ((accountTotal - 1) % 50))).toInt()
 
                 totalDisplay.value = NumberFormat.getIntegerInstance().format(total.value)
             } else {

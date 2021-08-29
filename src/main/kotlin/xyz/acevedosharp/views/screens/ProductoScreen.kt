@@ -251,7 +251,7 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
             marginString.set("Margen: $${marginAmount.round(2)}")
             ivaString.set("Iva: $${ivaAmount.round(2)}")
 
-            model.precioVenta.set(sellPrice.toInt())
+            model.precioVenta.set(sellPrice)
         }
 
         if (formType == EDIT)
@@ -402,29 +402,9 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                     }
                 }
                 field("Precio de venta") {
-                    if (formType == CREATE) model.precioVenta.value = 50
-                    textfield(model.precioVenta as Property<Int>) {
+                    if (formType == CREATE) model.precioVenta.value = 50.0
+                    textfield(model.precioVenta.asString()) {
                         isEditable = false
-
-                        // prevent anything different to a number from being typed into the field
-                        textFormatter = TextFormatter<Int>(UnaryOperator { change ->
-                            val newText = change.controlNewText
-                            if (newText.any { !it.isDigit() })
-                                return@UnaryOperator null
-                            else
-                                return@UnaryOperator change
-                        })
-
-                        validator(trigger = ValidationTrigger.OnChange()) {
-                            when {
-                                it.isNullOrBlank() -> error("Precio de venta requerido")
-                                it[0] == '-' -> error("No se pueden poner precios negativos")
-                                it.any { char -> char == ',' || char == '.' } -> error("No se pueden poner precios decimales")
-                                it.any { char -> !char.isDigit() } -> error("Ingresa sólo números")
-                                it.toInt() <= 0 -> error("Precio inválido")
-                                else -> null
-                            }
-                        }
                     }
                 }
                 field("Familia") {
@@ -466,7 +446,7 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                                         model.codigo.value,
                                         model.descLarga.value,
                                         model.descCorta.value,
-                                        model.precioVenta.value.toInt(),
+                                        model.precioVenta.value,
                                         if (formType == CREATE) 0.0 else model.precioCompraEfectivo.value.toDouble(),
                                         model.existencias.value.toInt(),
                                         model.margen.value.toDouble(),

@@ -1,6 +1,5 @@
 package xyz.acevedosharp
 
-import kotlin.math.ceil
 import kotlin.math.round
 
 object GlobalHelper {
@@ -25,7 +24,7 @@ object GlobalHelper {
         val withIva = withMargin + ivaAmount
         val withIvaRounded: Double
         if (withIva < 50)
-            withIvaRounded = ceil(withIva)
+            withIvaRounded = withIva.round(4)
         else
             withIvaRounded = (withIva - 1) + (50 - ((withIva - 1) % 50))
         return Triple(marginAmount, ivaAmount, withIvaRounded)

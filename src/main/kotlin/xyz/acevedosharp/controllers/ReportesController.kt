@@ -149,14 +149,14 @@ class ReportesController : Controller() {
 
             if (producto.codigo != "bolsa") {
                 var sinIvaVolume = 0.0
-                var conIvaVolume = 0
+                var conIvaVolume = 0.0
                 var earnings = 0.0
                 var soldQuantity = 0
 
                 matchingSoldItems.forEach {
-                    sinIvaVolume += it.precioVentaSinIva * it.cantidad
-                    conIvaVolume += it.precioVentaConIva * it.cantidad
-                    earnings += (it.precioVentaSinIva * (it.margen / 100)) * it.cantidad
+                    sinIvaVolume += it.precioVentaSinIva * it.cantidad.toDouble()
+                    conIvaVolume += it.precioVentaConIva * it.cantidad.toDouble()
+                    earnings += (it.precioVentaSinIva * (it.margen / 100)) * it.cantidad.toDouble()
                     soldQuantity += it.cantidad
                 }
 
@@ -190,7 +190,7 @@ class ReportesController : Controller() {
             throw GenericApplicationException("No hay compras en el periodo de tiempo indicado.")
         }
 
-        var totalConIva = 0
+        var totalConIva = 0.0
         var totalSinIva = 0.0
         var totalEarnings = 0.0
 
@@ -203,7 +203,7 @@ class ReportesController : Controller() {
         data.forEach {
             it.percentageTotalEarnings = ((it.earningsAmount / totalEarnings) * 100).round(4)
             it.percentageTotalSalesSinIva = ((it.sinIvaVolume / totalSinIva) * 100).round(4)
-            it.percentageTotalSalesConIva = ((it.conIvaVolume.toDouble() / totalConIva.toDouble()) * 100).round(4)
+            it.percentageTotalSalesConIva = ((it.conIvaVolume / totalConIva) * 100).round(4)
         }
 
         return object : View() {
@@ -436,9 +436,9 @@ class ReportesController : Controller() {
     class RankingReportDisplay(
         val longDesc: String,
         val sinIva: Double,
-        val conIva: Int,
+        val conIva: Double,
         val sinIvaVolume: Double,
-        val conIvaVolume: Int,
+        val conIvaVolume: Double,
         val margin: Double,
         val soldQuantity: Int,
         val earningsAmount: Double,
