@@ -20,4 +20,22 @@ class FamiliaDB(
     )
 
     override fun toString() = nombre
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as FamiliaDB
+
+        if (familiaId != other.familiaId) return false
+        if (nombre != other.nombre) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = familiaId ?: 0
+        result = 31 * result + nombre.hashCode()
+        return result
+    }
+
 }

@@ -4,6 +4,7 @@ package xyz.acevedosharp.views.screens
 
 import javafx.beans.property.*
 import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import xyz.acevedosharp.controllers.FamiliaController
 import xyz.acevedosharp.controllers.ProductoController
 import xyz.acevedosharp.ui_models.Producto
@@ -17,7 +18,6 @@ import xyz.acevedosharp.views.helpers.FormType.EDIT
 import javafx.geometry.Pos
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
-import javafx.scene.control.TextFormatter
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.util.Duration
@@ -27,7 +27,7 @@ import xyz.acevedosharp.GlobalHelper.round
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
-import java.util.function.UnaryOperator
+import java.util.*
 
 class ProductoView : View("Epic POS - Productos") {
 
@@ -49,30 +49,31 @@ class ProductoView : View("Epic POS - Productos") {
         }
 
         searchByCodigo.onChange { searchString ->
-            if (searchString != null) {
+            searchByDescripcion.set("")
+            searchByFamilia.set(null)
+            if (!searchString.isNullOrBlank()) {
                 table.items = productoController.getProductosClean().filter {
-                    it.codigo.toLowerCase().contains(searchString.toLowerCase())
+                    it.codigo == searchString
                 }.asObservable()
-            }
-        }
-
-        searchByDescripcion.onChange { searchString ->
-            if (searchString != null) {
-                table.items = productoController.getProductosClean().filter {
-                    it.descripcionLarga.toLowerCase().contains(searchString.toLowerCase()) ||
-                            it.descripcionCorta.toLowerCase().contains(searchString.toLowerCase())
-                }.asObservable()
-            }
-        }
-
-        searchByFamilia.onChange { searchFamilia ->
-            if (searchFamilia != null) {
-                table.items = productoController.getProductosClean().filter {
-                    it.familia.familiaId == searchFamilia.familiaId
-                }.toObservable()
             } else {
                 table.items = productoController.getProductosClean()
             }
+        }
+
+        searchByDescripcion.onChange {
+            table.items = powerSearch(
+                searchList = productoController.getProductosClean(),
+                descripcionQuery = searchByDescripcion.value,
+                familiaQuery = searchByFamilia.value
+            )
+        }
+
+        searchByFamilia.onChange {
+            table.items = powerSearch(
+                searchList = productoController.getProductosClean(),
+                descripcionQuery = searchByDescripcion.value,
+                familiaQuery = searchByFamilia.value
+            )
         }
     }
 
@@ -524,30 +525,31 @@ class SelectProductoDialog : Fragment() {
         }
 
         searchByCodigo.onChange { searchString ->
-            if (searchString != null) {
+            searchByDescripcion.set("")
+            searchByFamilia.set(null)
+            if (!searchString.isNullOrBlank()) {
                 table.items = productoController.getProductosClean().filter {
-                    it.codigo.toLowerCase().contains(searchString.toLowerCase())
+                    it.codigo == searchString
                 }.asObservable()
-            }
-        }
-
-        searchByDescripcion.onChange { searchString ->
-            if (searchString != null) {
-                table.items = productoController.getProductosClean().filter {
-                    it.descripcionLarga.toLowerCase().contains(searchString.toLowerCase()) ||
-                            it.descripcionCorta.toLowerCase().contains(searchString.toLowerCase())
-                }.asObservable()
-            }
-        }
-
-        searchByFamilia.onChange { searchFamilia ->
-            if (searchFamilia != null) {
-                table.items = productoController.getProductosClean().filter {
-                    it.familia.familiaId == searchFamilia.familiaId
-                }.toObservable()
             } else {
                 table.items = productoController.getProductosClean()
             }
+        }
+
+        searchByDescripcion.onChange {
+            table.items = powerSearch(
+                searchList = productoController.getProductosClean(),
+                descripcionQuery = searchByDescripcion.value,
+                familiaQuery = searchByFamilia.value
+            )
+        }
+
+        searchByFamilia.onChange {
+            table.items = powerSearch(
+                searchList = productoController.getProductosClean(),
+                descripcionQuery = searchByDescripcion.value,
+                familiaQuery = searchByFamilia.value
+            )
         }
     }
 
@@ -808,4 +810,33 @@ class ProductoSaleHistoryModal : Fragment() {
         Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
+}
+
+private fun powerSearch(
+    searchList: List<ProductoDB>,
+    descripcionQuery: String,
+    familiaQuery: FamiliaDB?
+): ObservableList<ProductoDB> {
+    return searchList.filter { product ->
+        if (descripcionQuery.isNotBlank()) {
+            val productString = product.descripcionLarga.lowercase(Locale.getDefault())
+            val searchString = descripcionQuery.lowercase(Locale.getDefault())
+            val searchWords = searchString
+                .lowercase(Locale.getDefault())
+                .split(" ")
+
+            if (!(productString.contains(searchString) ||
+                        searchWords.all { word -> productString.contains(word) })
+            ) {
+                return@filter false
+            }
+        }
+
+        if (familiaQuery != null) {
+            if (product.familia != familiaQuery) {
+                return@filter false
+            }
+        }
+        return@filter true
+    }.toObservable()
 }
