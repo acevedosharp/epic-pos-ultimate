@@ -512,6 +512,7 @@ class SelectProductoDialog : Fragment() {
     private val searchByFamilia = SimpleObjectProperty<FamiliaDB>()
 
     private val parentProductoProperty = params["productoProperty"] as Property<ProductoDB>
+    private val disableCodigoSearch = params["disableCodigoSearch"] as Boolean?
 
     init {
         Joe.currentView.setValue(this)
@@ -596,17 +597,20 @@ class SelectProductoDialog : Fragment() {
                         }
                         rectangle(width = 10, height = 0)
                         hbox(spacing = 10, alignment = Pos.CENTER) {
-                            vbox {
-                                label("Buscar por código").apply { addClass(MainStylesheet.searchLabel) }
-                                textfield(searchByCodigo)
+                            if (disableCodigoSearch == false) {
+                                vbox {
+                                    label("Buscar por código").apply { addClass(MainStylesheet.searchLabel) }
+                                    textfield(searchByCodigo)
 
-                                prefWidth = 250.0
+                                    prefWidth = 250.0
+                                }
                             }
+
                             vbox {
                                 label("Buscar por descripción").apply { addClass(MainStylesheet.searchLabel) }
                                 textfield(searchByDescripcion)
 
-                                prefWidth = 250.0
+                                prefWidth = if (disableCodigoSearch == false) 250.0 else 500.0
                             }
 
                             vbox {
@@ -729,7 +733,7 @@ class ProductoSaleHistoryModal : Fragment() {
                         label("Tipo").style { fontSize = 28.px }
                         combobox(historyType, listOf("Diario", "Mensual")).style { fontSize = 28.px }
 
-                        hbox(spacing =10, alignment = Pos.CENTER) {
+                        hbox(spacing = 10, alignment = Pos.CENTER) {
                             hiddenWhen { historyType.isEmpty }
 
                             label("Devolverse").style { fontSize = 28.px }

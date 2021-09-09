@@ -419,7 +419,8 @@ class AddLoteView : Fragment() {
                                     modal = true,
                                     params = mapOf(
                                         "owner" to this@AddLoteView,
-                                        "productoProperty" to model.producto
+                                        "productoProperty" to model.producto,
+                                        "disableCodigoSearch" to false
                                     )
                                 )
                             }

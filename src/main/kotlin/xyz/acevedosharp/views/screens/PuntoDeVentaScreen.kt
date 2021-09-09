@@ -542,85 +542,92 @@ class CreateItemVentaManuallyForm : Fragment() {
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
-        prefWidth = 800.0
+        prefWidth = 1620.0
+        prefHeight = 820.0
         label("Añadir ítem de venta") {
             useMaxWidth = true
             addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
         }
-        form {
-            fieldset {
-                field("Producto") {
-                    combobox<ProductoDB>(model.producto, productoController.getProductosWithUpdate()).apply {
-                        prefWidth = 600.0
-                        makeAutocompletable(false)
-                    }.validator {
-                        when (it) {
-                            null -> error("Producto requerido")
-                            else -> null
-                        }
-                    }
-
-                }
-                field("Cantidad") {
-                    model.cantidad.value = 1
-                    spinner(
-                        property = model.cantidad,
-                        initialValue = 1,
-                        min = 1,
-                        max = Int.MAX_VALUE,
-                        amountToStepBy = 1,
-                        editable = true
-                    ) {
-                        prefWidth = 600.0
-                    }
-                }
-                rectangle(width = 0, height = 24)
-                hbox(spacing = 80, alignment = Pos.CENTER) {
-                    button("Aceptar") {
-                        addClass(
-                            MainStylesheet.coolBaseButton,
-                            MainStylesheet.greenButton,
-                            MainStylesheet.expandedButton
+        vbox(alignment = Pos.CENTER, spacing = 24) {
+            hgrow = Priority.ALWAYS
+            vgrow = Priority.ALWAYS
+            button {
+                text = "Selecciona un producto"
+                prefWidth = 888.0
+                addClass(MainStylesheet.coolBaseButton, MainStylesheet.grayLabel)
+                setOnMouseClicked {
+                    openInternalWindow<SelectProductoDialog>(
+                        closeButton = false,
+                        modal = true,
+                        params = mapOf(
+                            "owner" to this@CreateItemVentaManuallyForm,
+                            "productoProperty" to model.producto,
+                            "disableCodigoSearch" to true
                         )
-                        action {
-                            model.commit {
-                                val producto = model.producto.value
-                                val cantidad = model.cantidad.value
+                    )
+                }
 
-                                if (producto.codigo in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
-                                    val res = currentUncommittedIVS.ivs.find { it.producto.codigo == producto.codigo }!!
-                                    res.cantidad.set(res.cantidad.value + cantidad)
-                                } else if (productoController.getProductosClean()
-                                        .find { it.codigo == producto.codigo } != null
-                                ) {
-                                    currentUncommittedIVS.ivs.add(
-                                        ItemVentaComponent(
-                                            UncommittedItemVenta(
-                                                producto,
-                                                cantidad
-                                            ),
-                                            currentUncommittedIVS,
-                                            papi
-                                        )
+                model.producto.onChange {
+                    if (model.producto != null)
+                        text = model.producto.value.descripcionLarga
+                    else
+                        text = "Selecciona un producto"
+                }
+                style {
+                    fontSize = 36.px
+                    fontWeight = FontWeight.NORMAL
+                }
+            }
+            hbox(spacing = 80, alignment = Pos.CENTER) {
+                button("Aceptar") {
+                    addClass(
+                        MainStylesheet.coolBaseButton,
+                        MainStylesheet.greenButton,
+                        MainStylesheet.expandedButton
+                    )
+                    action {
+                        model.commit {
+                            val producto = model.producto.value
+                            val cantidad = 1
+
+                            if (producto.codigo in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
+                                val res =
+                                    currentUncommittedIVS.ivs.find { it.producto.codigo == producto.codigo }!!
+                                res.cantidad.set(res.cantidad.value + cantidad)
+                            } else if (productoController.getProductosClean()
+                                    .find { it.codigo == producto.codigo } != null
+                            ) {
+                                currentUncommittedIVS.ivs.add(
+                                    ItemVentaComponent(
+                                        UncommittedItemVenta(
+                                            producto,
+                                            cantidad
+                                        ),
+                                        currentUncommittedIVS,
+                                        papi
                                     )
-                                } else {
-                                    openInternalWindow<CodigoNotRecognizedDialog>(
-                                        params = mapOf(
-                                            "owner" to this@CreateItemVentaManuallyForm
-                                        )
+                                )
+                            } else {
+                                openInternalWindow<CodigoNotRecognizedDialog>(
+                                    params = mapOf(
+                                        "owner" to this@CreateItemVentaManuallyForm
                                     )
-                                }
-                                papi.addAlwaysFocusListener()
-                                close()
+                                )
                             }
-                        }
-                    }
-                    button("Cancelar") {
-                        addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
-                        action {
                             papi.addAlwaysFocusListener()
                             close()
                         }
+                    }
+                }
+                button("Cancelar") {
+                    addClass(
+                        MainStylesheet.coolBaseButton,
+                        MainStylesheet.redButton,
+                        MainStylesheet.expandedButton
+                    )
+                    action {
+                        papi.addAlwaysFocusListener()
+                        close()
                     }
                 }
             }
