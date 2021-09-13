@@ -9,34 +9,45 @@ import java.text.SimpleDateFormat
 import javax.print.*
 import javax.print.attribute.HashPrintRequestAttributeSet
 import javax.print.attribute.PrintRequestAttributeSet
+import kotlin.math.ceil
 import kotlin.math.max
-
 
 @Service
 class RecipePrintingService {
 
     fun printRecipe(venta: VentaDB, impName: String) {
-        fun formatItem(item: ItemVentaDB): String {
-            val (_, ivaAmount, sellPrice) = GlobalHelper.calculateSellPriceBrokenDown(
-                item.producto.precioCompra,
-                item.producto.margen,
-                item.producto.iva
+        fun formatItem(item: ItemVentaDB, sb: StringBuilder) {
+            sb.append(
+                formatStringWithMaxCols(
+                    str = item.producto.descripcionCorta,
+                    cols = 26
+                )
+            )
+            sb.append(
+                formatStringWithMaxCols(
+                    str = "$${ceil(item.precioVentaConIva).toInt()}",
+                    cols = 7
+                )
+            )
+            sb.append('x')
+            sb.append(
+                formatStringWithMaxCols(
+                    str = "${item.cantidad}",
+                    cols = 5,
+                    alignment = StringAlignment.RIGHT
+                )
+            )
+            sb.append("=$")
+            sb.append(
+                formatStringWithMaxCols(
+                    str = "${item.precioVentaConIva.toInt() * item.cantidad}",
+                    cols = 7,
+                    alignment = StringAlignment.RIGHT
+                )
             )
 
-            val res = StringBuilder()
-
-            res.append(item.producto.descripcionCorta)
-            res.append(" ".repeat(max(26 - item.producto.descripcionCorta.length, 0)))
-            val s1 = "$${(sellPrice - ivaAmount).round(2)}"
-            res.append(s1)
-            res.append(" ".repeat(max(10 - s1.length, 0)))
-            val s2 = " x${item.cantidad}"
-            res.append(s2)
-
-            return res.toString()
+            sb.append('\n')
         }
-
-        var subtotal = 0.0
 
         val lowerPadding = "\n\n\n\n\n\n\n"
 
@@ -50,19 +61,9 @@ class RecipePrintingService {
         sb.append("Atendido por: ${venta.empleado.nombre}\n")
         sb.append("Cliente: ${venta.cliente.nombre} \n")
         sb.append("------------------------------------------------\n")
-        venta.items.forEach {
-            sb.append(formatItem(it))
-            sb.append("\n")
-
-            val (_, ivaAmount, sellPrice) = GlobalHelper.calculateSellPriceBrokenDown(
-                it.producto.precioCompra,
-                it.producto.margen,
-                it.producto.iva
-            )
-
-            subtotal += (sellPrice - ivaAmount) * it.cantidad
+        venta.items.forEach { item ->
+            formatItem(item, sb)
         }
-        sb.append("Subtotal: $${subtotal.round(2)}\n")
         if (venta.items.any { it.producto.iva != 0 }) {
             sb.append("------------------------------------------------\n")
             sb.append("                   Impuestos                    \n")
@@ -87,11 +88,21 @@ class RecipePrintingService {
             }
         }
         sb.append("------------------------------------------------\n")
-        val pago = "Total (con iva): \$${venta.totalConIva}"
-        sb.append(pago)
-        sb.append(" ".repeat(max(33 - pago.length, 0)))
-        sb.append("Pago: \$${venta.pagoRecibido}\n")
-        sb.append("Cambio: $${venta.pagoRecibido - venta.totalConIva}\n")
+        sb.append(
+            formatStringWithMaxCols(
+                str = "Total con iva: $${venta.totalConIva}",
+                cols = 26
+            )
+        )
+        sb.append(
+            formatStringWithMaxCols(
+                str = "Pago: $${venta.pagoRecibido}",
+                cols = 22
+            )
+        )
+        sb.append('\n')
+        sb.append("Cambio: $${venta.pagoRecibido - venta.totalConIva}")
+        sb.append('\n')
         sb.append("Gracias por su compra el ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
         sb.append("                                                \n")
         sb.append("Res. habilitación: 18764015886194 de 03/08/2021\n")
@@ -175,5 +186,34 @@ class RecipePrintingService {
             }
         }
         return null
+    }
+
+    enum class StringAlignment {
+        LEFT, RIGHT
+    }
+
+    private fun formatStringWithMaxCols(
+        str: String,
+        cols: Int,
+        alignment: StringAlignment = StringAlignment.LEFT
+    ): String {
+        val result = CharArray(cols)
+        if (alignment == StringAlignment.LEFT) {
+            for (i in IntRange(0, cols - 1)) {
+                if (i < str.length)
+                    result[i] = str[i]
+                else
+                    result[i] = ' '
+            }
+        } else if (alignment == StringAlignment.RIGHT) {
+            val offset = cols - str.length
+            for (i in IntRange(0, cols - 1)) {
+                if (i < offset)
+                    result[i] = ' '
+                else
+                    result[i] = str[i - offset]
+            }
+        }
+        return String(result)
     }
 }
