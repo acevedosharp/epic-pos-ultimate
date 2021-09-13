@@ -24,15 +24,21 @@ class ClienteDB(
     var birthdayDay: Int?,
 
     @Column(name = "birthday_month")
-    var birthdayMonth: Int?
+    var birthdayMonth: Int?,
+
+    @Column(name = "is_generico")
+    var isGenerico: Boolean
 ) {
+    fun getGenericoDisplayText() = if (isGenerico) "Sí" else "No"
+
     fun toModel() = Cliente(
         clienteId,
         nombre,
         telefono,
         direccion,
         birthdayDay ?: 0, // close the loop of nullable Int by 0 value
-        birthdayMonth ?: 0
+        birthdayMonth ?: 0,
+        isGenerico
     )
 
     override fun toString() = nombre

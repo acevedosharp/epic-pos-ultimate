@@ -623,6 +623,7 @@ class CommitVenta : Fragment() {
 
     init {
         model.empleado.set(Joe.persistentEmployee.value) // do NOT bind these two
+        model.cliente.set(clienteController.getClientesWithUpdate().find { cliente -> cliente.isGenerico })
     }
 
     override val root = vbox(spacing = 0, alignment = Pos.CENTER) {
@@ -650,7 +651,7 @@ class CommitVenta : Fragment() {
                     }
                 }
                 field("Cliente") {
-                    combobox<ClienteDB>(model.cliente, clienteController.getClientesWithUpdate()) {
+                    combobox<ClienteDB>(model.cliente, clienteController.getClientesClean()) {
                         prefWidth = 400.0
                         makeAutocompletable(false)
                         style { fontSize = 28.px }

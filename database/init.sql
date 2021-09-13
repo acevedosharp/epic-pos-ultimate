@@ -81,11 +81,12 @@ create table if not exists epic.cliente
 (
     cliente_id     int auto_increment
         primary key,
-    nombre         varchar(50)  not null,
-    telefono       varchar(20)  null,
-    direccion      varchar(100) null,
-    birthday_day   int          null,
-    birthday_month int          null,
+    nombre         varchar(50)          not null,
+    telefono       varchar(20)          null,
+    direccion      varchar(100)         null,
+    birthday_day   int                  null,
+    birthday_month int                  null,
+    is_generico       tinyint(1) default 1 not null,
     constraint cliente_nombre_uindex
         unique (nombre),
     constraint cliente_telefono_uindex

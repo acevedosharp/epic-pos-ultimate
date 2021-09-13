@@ -1,10 +1,11 @@
 package xyz.acevedosharp.ui_models
 
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import tornadofx.*
 import javafx.beans.property.SimpleStringProperty
 
-class Cliente(val id: Int?, nombre: String, telefono: String?, direccion: String?, birthdayDay: Int, birthdayMonth: Int) {
+class Cliente(val id: Int?, nombre: String, telefono: String?, direccion: String?, birthdayDay: Int, birthdayMonth: Int, isGenerico: Boolean) {
     val nombreProperty = SimpleStringProperty(this, "nombre", nombre)
     var nombre: String by nombreProperty
 
@@ -23,6 +24,9 @@ class Cliente(val id: Int?, nombre: String, telefono: String?, direccion: String
     val birthdayMonthProperty = SimpleIntegerProperty(this, "birthdayMonth", birthdayMonth)
     var birthdayMonth: Int by birthdayMonthProperty
 
+    val isGenericoProperty = SimpleBooleanProperty(this, "isGenerico", isGenerico)
+    var isGenerico: Boolean by isGenericoProperty
+
     override fun toString(): String = nombre
 }
 
@@ -33,4 +37,5 @@ class ClienteModel: ItemViewModel<Cliente>() {
     val direccion =     bind(Cliente::direccionProperty)
     val birthdayDay =   bind(Cliente::birthdayDayProperty)
     val birthdayMonth = bind(Cliente::birthdayMonthProperty)
+    val isGenerico =    bind(Cliente::isGenericoProperty)
 }

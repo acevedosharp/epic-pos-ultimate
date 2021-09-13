@@ -34,7 +34,8 @@ class ClienteController : Controller(), UpdateSnapshot {
                 GlobalHelper.nullableStringEnforcer(cliente.telefono),
                 GlobalHelper.nullableStringEnforcer(cliente.direccion),
                 GlobalHelper.nullableIntBy0Value(cliente.birthdayDay),
-                GlobalHelper.nullableIntBy0Value(cliente.birthdayMonth)
+                GlobalHelper.nullableIntBy0Value(cliente.birthdayMonth),
+                cliente.isGenerico
             )
         )
         updateSnapshot()

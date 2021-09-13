@@ -97,6 +97,7 @@ class ClienteView : View("Epic POS - Clientes") {
                         column("Dirección", ClienteDB::direccion).remainingWidth()
                         column("Día", ClienteDB::birthdayDay)
                         column("Mes", ClienteDB::birthdayMonth)
+                        column("¿Generico?", ClienteDB::getGenericoDisplayText)
                         smartResize()
 
                         placeholder = label("No hay clientes")
@@ -136,9 +137,9 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
 
     private var firstTextField: TextField by singleAssign()
 
-    private val model: ClienteModel = if (formType == CREATE)
-        ClienteModel()
-    else
+    private val model: ClienteModel = if (formType == CREATE) {
+        ClienteModel().apply { isGenerico.set(false) }
+    } else
         ClienteModel().apply {
             val cliente = clienteController.findById(id!!)!!
 
@@ -148,6 +149,7 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
             this.direccion.value = cliente.direccion
             this.birthdayDay.value = GlobalHelper.denullifyIntBy0Value(cliente.birthdayDay)
             this.birthdayMonth.value = GlobalHelper.denullifyIntBy0Value(cliente.birthdayMonth)
+            this.isGenerico.value = cliente.isGenerico
         }
 
     init {
@@ -229,6 +231,9 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
 
                     }
                 }
+                field("¿Genérico?") {
+                    checkbox(property = model.isGenerico)
+                }
                 rectangle(width = 0, height = 24)
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
@@ -242,7 +247,8 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
                                         model.telefono.value,
                                         model.direccion.value,
                                         model.birthdayDay.value,
-                                        model.birthdayMonth.value
+                                        model.birthdayMonth.value,
+                                        model.isGenerico.value
                                     )
                                 )
                                 close()
