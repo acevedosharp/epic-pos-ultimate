@@ -705,7 +705,7 @@ class CommitVenta : Fragment() {
                         action {
                             model.commit {
                                 var totalSinIva = 0.0
-                                var totalConIva = 0
+                                var totalConIva = 0.0
 
                                 currentUncommittedIVS.ivs.forEach {
                                     val (_, ivaAmount, sellPrice) = GlobalHelper.calculateSellPriceBrokenDown(
@@ -715,7 +715,7 @@ class CommitVenta : Fragment() {
                                     )
 
                                     totalSinIva += (sellPrice - ivaAmount) * it.cantidad.value.toDouble()
-                                    totalConIva += sellPrice.toInt() * it.cantidad.value
+                                    totalConIva += sellPrice * it.cantidad.value
                                 }
 
                                 // Persistence logic
@@ -727,7 +727,7 @@ class CommitVenta : Fragment() {
                                         dineroEntregado.value,
                                         model.empleado.value,
                                         model.cliente.value,
-                                        totalConIva
+                                        ((totalConIva - 1) + (50 - ((totalConIva - 1) % 50))).toInt()
                                     ),
                                     currentUncommittedIVS.ivs.map {
                                         UncommittedItemVenta(
