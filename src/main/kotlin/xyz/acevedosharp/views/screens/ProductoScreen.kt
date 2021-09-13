@@ -26,6 +26,9 @@ import xyz.acevedosharp.GlobalHelper.round
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
+import xyz.acevedosharp.ui_models.UncommittedItemVenta
+import xyz.acevedosharp.views.dialogs.CodigoNotRecognizedDialog
+import xyz.acevedosharp.views.shared_components.ItemVentaComponent
 
 class ProductoView : View("Epic POS - Productos") {
     private val productoController = find<ProductoController>()
@@ -505,8 +508,9 @@ class SelectProductoDialog : Fragment() {
     private val searchByDescripcion = SimpleStringProperty("")
     private val searchByFamilia = SimpleObjectProperty<FamiliaDB>()
 
-    private val parentProductoProperty = params["productoProperty"] as Property<ProductoDB>
+    private val currentUncommittedIVS = params["cuivs"] as PuntoDeVentaView.CurrentUncommittedIVS
     private val disableCodigoSearch = params["disableCodigoSearch"] as Boolean?
+    private val papi: PuntoDeVentaView = params["owner"] as PuntoDeVentaView
 
     init {
         Joe.currentView.setValue(this)
@@ -655,7 +659,32 @@ class SelectProductoDialog : Fragment() {
                     addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                     action {
                         if (selectedId.value != 0) {
-                            parentProductoProperty.value = productoController.findById(selectedId.value)
+                            val producto = productoController.findById(selectedId.value)!!
+                            if (producto.codigo in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
+                                val res =
+                                    currentUncommittedIVS.ivs.find { it.producto.codigo == producto.codigo }!!
+                                res.cantidad.set(res.cantidad.value + 1)
+                            } else if (productoController.getProductosClean()
+                                    .find { it.codigo == producto.codigo } != null
+                            ) {
+                                currentUncommittedIVS.ivs.add(
+                                    ItemVentaComponent(
+                                        UncommittedItemVenta(
+                                            producto,
+                                            1
+                                        ),
+                                        currentUncommittedIVS,
+                                        papi
+                                    )
+                                )
+                            } else {
+                                openInternalWindow<CodigoNotRecognizedDialog>(
+                                    params = mapOf(
+                                        "owner" to this@SelectProductoDialog
+                                    )
+                                )
+                            }
+                            papi.addAlwaysFocusListener()
                             close()
                         }
                     }

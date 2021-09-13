@@ -34,7 +34,6 @@ import xyz.acevedosharp.Joe
 import xyz.acevedosharp.controllers.*
 import xyz.acevedosharp.persistence.entities.ClienteDB
 import xyz.acevedosharp.persistence.entities.EmpleadoDB
-import xyz.acevedosharp.persistence.entities.ProductoDB
 import xyz.acevedosharp.views.dialogs.GenericApplicationException
 import xyz.acevedosharp.views.dialogs.UnexpectedErrorDialog
 import java.text.NumberFormat
@@ -234,12 +233,13 @@ class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
                         }
                         addClass(MainStylesheet.greenButton)
                         action {
-                            openInternalWindow<CreateItemVentaManuallyForm>(
+                            openInternalWindow<SelectProductoDialog>(
                                 closeButton = false,
                                 modal = true,
                                 params = mapOf(
+                                    "owner" to this@PuntoDeVentaView,
                                     "cuivs" to currentUncommittedIVS,
-                                    "papi" to this@PuntoDeVentaView
+                                    "disableCodigoSearch" to true
                                 )
                             )
                             removeAlwaysFocusListener()
@@ -521,119 +521,6 @@ class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
 
     fun removeAlwaysFocusListener() {
         scene.focusOwnerProperty().removeListener(listener)
-    }
-}
-
-class CreateItemVentaManuallyForm : Fragment() {
-    private val productoController = find<ProductoController>()
-    private val model = UncommittedIVModel()
-
-    private val currentUncommittedIVS = params["cuivs"] as PuntoDeVentaView.CurrentUncommittedIVS
-    private val papi: PuntoDeVentaView = params["papi"] as PuntoDeVentaView
-
-    override fun onDock() {
-        Joe.currentView.setValue(this@CreateItemVentaManuallyForm)
-        super.onDock()
-    }
-
-    override fun onUndock() {
-        Joe.currentView.setValue(params["papi"] as UIComponent)
-        super.onUndock()
-    }
-
-    override val root = vbox(spacing = 0) {
-        useMaxSize = true
-        prefWidth = 1620.0
-        prefHeight = 820.0
-        label("Añadir ítem de venta") {
-            useMaxWidth = true
-            addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
-        }
-        vbox(alignment = Pos.CENTER, spacing = 24) {
-            hgrow = Priority.ALWAYS
-            vgrow = Priority.ALWAYS
-            button {
-                text = "Selecciona un producto"
-                prefWidth = 888.0
-                addClass(MainStylesheet.coolBaseButton, MainStylesheet.grayLabel)
-                setOnMouseClicked {
-                    println(LocalDateTime.now().toString())
-                    openInternalWindow<SelectProductoDialog>(
-                        closeButton = false,
-                        modal = true,
-                        params = mapOf(
-                            "owner" to this@CreateItemVentaManuallyForm,
-                            "productoProperty" to model.producto,
-                            "disableCodigoSearch" to true
-                        )
-                    )
-                }
-
-                model.producto.onChange {
-                    if (model.producto != null)
-                        text = model.producto.value.descripcionLarga
-                    else
-                        text = "Selecciona un producto"
-                }
-                style {
-                    fontSize = 36.px
-                    fontWeight = FontWeight.NORMAL
-                }
-            }
-            hbox(spacing = 80, alignment = Pos.CENTER) {
-                button("Aceptar") {
-                    addClass(
-                        MainStylesheet.coolBaseButton,
-                        MainStylesheet.greenButton,
-                        MainStylesheet.expandedButton
-                    )
-                    action {
-                        model.commit {
-                            val producto = model.producto.value
-                            val cantidad = 1
-
-                            if (producto.codigo in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
-                                val res =
-                                    currentUncommittedIVS.ivs.find { it.producto.codigo == producto.codigo }!!
-                                res.cantidad.set(res.cantidad.value + cantidad)
-                            } else if (productoController.getProductosClean()
-                                    .find { it.codigo == producto.codigo } != null
-                            ) {
-                                currentUncommittedIVS.ivs.add(
-                                    ItemVentaComponent(
-                                        UncommittedItemVenta(
-                                            producto,
-                                            cantidad
-                                        ),
-                                        currentUncommittedIVS,
-                                        papi
-                                    )
-                                )
-                            } else {
-                                openInternalWindow<CodigoNotRecognizedDialog>(
-                                    params = mapOf(
-                                        "owner" to this@CreateItemVentaManuallyForm
-                                    )
-                                )
-                            }
-                            papi.addAlwaysFocusListener()
-                            close()
-                        }
-                    }
-                }
-                button("Cancelar") {
-                    addClass(
-                        MainStylesheet.coolBaseButton,
-                        MainStylesheet.redButton,
-                        MainStylesheet.expandedButton
-                    )
-                    action {
-                        papi.addAlwaysFocusListener()
-                        close()
-                    }
-                }
-            }
-        }
     }
 }
 
