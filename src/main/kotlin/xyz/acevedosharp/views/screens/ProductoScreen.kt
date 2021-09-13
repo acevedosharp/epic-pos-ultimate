@@ -659,14 +659,13 @@ class SelectProductoDialog : Fragment() {
                     addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                     action {
                         if (selectedId.value != 0) {
+                            println("selectedId: ${selectedId.value}")
                             val producto = productoController.findById(selectedId.value)!!
+                            println("product: ${producto}")
                             if (producto.codigo in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
-                                val res =
-                                    currentUncommittedIVS.ivs.find { it.producto.codigo == producto.codigo }!!
+                                val res = currentUncommittedIVS.ivs.find { it.producto.codigo == producto.codigo }!!
                                 res.cantidad.set(res.cantidad.value + 1)
-                            } else if (productoController.getProductosClean()
-                                    .find { it.codigo == producto.codigo } != null
-                            ) {
+                            } else if (productoController.getProductosClean(codigoQuery = producto.codigo).size > 0) {
                                 currentUncommittedIVS.ivs.add(
                                     ItemVentaComponent(
                                         UncommittedItemVenta(
