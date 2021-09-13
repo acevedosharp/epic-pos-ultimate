@@ -201,9 +201,7 @@ class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
                             if (currentCodigo.value in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
                                 val res = currentUncommittedIVS.ivs.find { it.producto.codigo == currentCodigo.value }!!
                                 res.cantidad.value = res.cantidad.value + 1
-                            } else if (currentCodigo.value in productoController.getProductosWithUpdate()
-                                    .map { it.codigo }
-                            ) {
+                            } else if (productoController.getProductosWithUpdate(codigoQuery = currentCodigo.value).size > 0) {
                                 currentUncommittedIVS.ivs.add(
                                     ItemVentaComponent(
                                         UncommittedItemVenta(
@@ -555,9 +553,7 @@ class BolsasSelect : Fragment() {
                     if (producto.codigo in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
                         val res = currentUncommittedIVS.ivs.find { it.producto.codigo == producto.codigo }!!
                         res.cantidad.set(res.cantidad.value + cantidad)
-                    } else if (productoController.getProductosWithUpdate()
-                            .find { it.codigo == producto.codigo } != null
-                    ) {
+                    } else if (productoController.getProductosWithUpdate(codigoQuery = producto.codigo).size > 0) {
                         currentUncommittedIVS.ivs.add(
                             ItemVentaComponent(
                                 UncommittedItemVenta(

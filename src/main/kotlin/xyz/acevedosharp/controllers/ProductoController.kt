@@ -116,13 +116,18 @@ class ProductoController(productoRepo: ProductoRepo? = null) : Controller(), Upd
         descripcionQuery: String? = null,
         familiaQuery: FamiliaDB? = null
     ): ObservableList<ProductoDB> {
+        if (codigoQuery != null) {
+            val producto = productos.find { it.codigo == codigoQuery }
+            if (producto != null)
+                return listOf(producto).toObservable()
+            else
+                return listOf<ProductoDB>().toObservable()
+        }
+
         if (descripcionQuery == null && familiaQuery == null)
             return productos.take(100).toObservable()
         else
-            if (codigoQuery != null)
-                return listOf(productos.first { it.codigo == codigoQuery }).toObservable()
-            else
-                return powerSearch(productos, descripcionQuery!!, familiaQuery)
+            return powerSearch(productos, descripcionQuery!!, familiaQuery)
     }
 
     fun findById(id: Int) = productoRepo.findByIdOrNull(id)
