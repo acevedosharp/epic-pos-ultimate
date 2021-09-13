@@ -2,16 +2,19 @@ package xyz.acevedosharp.views.screens
 
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.geometry.Pos
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import tornadofx.*
+import xyz.acevedosharp.CustomApplicationContextWrapper
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.controllers.VentaController
 import xyz.acevedosharp.persistence.entities.ItemVentaDB
 import xyz.acevedosharp.persistence.entities.VentaDB
 import xyz.acevedosharp.views.MainStylesheet
+import xyz.acevedosharp.views.helpers.RecipePrintingService
 import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.Month
@@ -244,7 +247,7 @@ class VentaHistory : Fragment() {
 
             vgrow = Priority.ALWAYS
         }
-
+        rectangle(width = 0, height = 10)
         hbox(spacing = 10, alignment = Pos.CENTER) {
             button("Ver detalles") {
                 addClass(MainStylesheet.coolBaseButton, MainStylesheet.blueButton, MainStylesheet.expandedButton)
@@ -284,9 +287,17 @@ class VentaHistory : Fragment() {
 
 class DetalleVenta : Fragment() {
     private val venta = params["venta"] as VentaDB
+    private val recipePrintingService = find<CustomApplicationContextWrapper>().context.getBean(RecipePrintingService::class.java)
+
+    private val selectedPrinter = SimpleStringProperty("")
+    private val printers = FXCollections.observableArrayList<String>()
+
+    init {
+        printers.setAll(recipePrintingService.getPrinters())
+    }
 
     override val root = vbox(spacing = 10) {
-        prefWidth = 700.0
+        prefWidth = 900.0
 
         tableview(venta.items.toList().toObservable()) {
             readonlyColumn("Producto", ItemVentaDB::producto).pctWidth(60)
@@ -298,6 +309,21 @@ class DetalleVenta : Fragment() {
         }
 
         hbox(alignment = Pos.CENTER) {
+            label("Impresora:")
+            combobox(selectedPrinter, printers).apply {
+                prefWidth = 400.0
+                makeAutocompletable(false)
+                style { fontSize = 28.px }
+            }
+            button("Imprimir") {
+                addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
+                disableWhen {
+                    selectedPrinter.isEmpty
+                }
+                action {
+                    recipePrintingService.printRecipe(venta, selectedPrinter.value)
+                }
+            }
             button("Cerrar") {
                 addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
                 action { close() }

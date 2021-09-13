@@ -14,7 +14,6 @@ import kotlin.math.max
 
 @Service
 class RecipePrintingService {
-
     fun printRecipe(venta: VentaDB, impName: String) {
         fun formatItem(item: ItemVentaDB, sb: StringBuilder) {
             sb.append(
