@@ -151,7 +151,7 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
         }
 
     init {
-        runLater(Duration.millis(200.0)) {
+        GlobalHelper.runLaterMinimumDelay {
             firstTextField.requestFocus()
         }
     }

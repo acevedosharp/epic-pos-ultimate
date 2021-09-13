@@ -109,8 +109,7 @@ class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
             uncommittedItems.addAll(currentUncommittedIVS.ivs.map { it.root })
         }
 
-        // Let's hope the scene doesn't take longer than this to load - probably not, 650ms is a lot of time
-        runLater(Duration.millis(600.0)) {
+        GlobalHelper.runLaterMinimumDelay {
             currentCodigoTextField.requestFocus()
             scene = this.currentStage!!.scene
             listener = ChangeListener<Node> { _, _, _ ->
@@ -883,11 +882,8 @@ class ModifyItemVentaQuantityDialog : Fragment() {
         Joe.currentView.setValue(this@ModifyItemVentaQuantityDialog)
         super.onDock()
 
-        // we want this to be fast, but it might fail with short times
-        arrayOf(100.0, 200.0, 300.0, 400.0, 500.0, 600.0).forEach {
-            runLater(Duration.millis(it)) {
-                cantidadTextField.requestFocus()
-            }
+        GlobalHelper.runLaterMinimumDelay {
+            cantidadTextField.requestFocus()
         }
     }
 

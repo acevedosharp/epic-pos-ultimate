@@ -17,6 +17,7 @@ import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.util.Duration
 import tornadofx.*
+import xyz.acevedosharp.GlobalHelper
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 
@@ -143,7 +144,7 @@ class BaseFamiliaFormView(formType: FormType, id: Int?) : Fragment() {
         }
 
     init {
-        runLater(Duration.millis(200.0)) {
+        GlobalHelper.runLaterMinimumDelay {
             firstTextField.requestFocus()
         }
     }

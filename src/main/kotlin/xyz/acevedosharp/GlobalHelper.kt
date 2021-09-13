@@ -1,5 +1,7 @@
 package xyz.acevedosharp
 
+import javafx.util.Duration
+import tornadofx.runLater
 import kotlin.math.round
 
 object GlobalHelper {
@@ -34,5 +36,21 @@ object GlobalHelper {
         var multiplier = 1.0
         repeat(decimals) { multiplier *= 10 }
         return round(this * multiplier) / multiplier
+    }
+
+    // this exists in case the target computer is really slow and the item the opetarion is on hasn't loaded yet
+    fun runLaterMinimumDelay(op: () -> Unit) {
+        runLaterRecursive(op, 50.0, 1)
+    }
+
+    private fun runLaterRecursive(op: () -> Unit, delay: Double, recursionCount: Int) {
+        if (recursionCount <= 10) {
+            try {
+                runLater(Duration.millis(delay), op)
+            } catch (e: RuntimeException) {
+                runLaterRecursive(op, delay + 100.0, recursionCount+1)
+            }
+        }
+        // no RuntimeException please
     }
 }

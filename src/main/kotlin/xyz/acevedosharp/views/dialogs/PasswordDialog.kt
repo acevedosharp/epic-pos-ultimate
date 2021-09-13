@@ -2,10 +2,13 @@ package xyz.acevedosharp.views.dialogs
 
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Pos
+import javafx.scene.Node
 import javafx.scene.control.Button
 import javafx.scene.control.PasswordField
 import javafx.scene.input.KeyCode
+import javafx.util.Duration
 import tornadofx.*
+import xyz.acevedosharp.GlobalHelper
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.helpers.CurrentModule
@@ -18,6 +21,16 @@ class PasswordDialog(currentView: View, tag: CurrentModule) : Fragment() {
     private val passwordProperty = SimpleStringProperty("")
     private lateinit var passField: PasswordField
     private lateinit var aceptarButton: Button
+
+    init {
+        if (currentView is PuntoDeVentaView) {
+            currentView.removeAlwaysFocusListener()
+
+            GlobalHelper.runLaterMinimumDelay {
+                passField.requestFocus()
+            }
+        }
+    }
 
     override val root = vbox(spacing = 0) {
         useMaxSize = true
@@ -63,6 +76,9 @@ class PasswordDialog(currentView: View, tag: CurrentModule) : Fragment() {
                 addClass(MainStylesheet.redButton)
                 addClass(MainStylesheet.expandedButton)
                 action {
+                    if (currentView is PuntoDeVentaView) {
+                        currentView.addAlwaysFocusListener()
+                    }
                     close()
                 }
             }

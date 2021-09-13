@@ -234,7 +234,7 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
         }
 
     init {
-        runLater(Duration.millis(200.0)) {
+        GlobalHelper.runLaterMinimumDelay {
             firstTextField.requestFocus()
         }
 
@@ -508,6 +508,8 @@ class SelectProductoDialog : Fragment() {
     private val searchByDescripcion = SimpleStringProperty("")
     private val searchByFamilia = SimpleObjectProperty<FamiliaDB>()
 
+    private lateinit var searchByDescripcionField: TextField
+
     private val currentUncommittedIVS = params["cuivs"] as PuntoDeVentaView.CurrentUncommittedIVS
     private val disableCodigoSearch = params["disableCodigoSearch"] as Boolean?
     private val papi: PuntoDeVentaView = params["owner"] as PuntoDeVentaView
@@ -537,6 +539,10 @@ class SelectProductoDialog : Fragment() {
                 descripcionQuery = searchByDescripcion.value,
                 familiaQuery = searchByFamilia.value
             )
+        }
+
+        GlobalHelper.runLaterMinimumDelay {
+            searchByDescripcionField.requestFocus()
         }
     }
 
@@ -597,7 +603,7 @@ class SelectProductoDialog : Fragment() {
 
                             vbox {
                                 label("Buscar por descripción").apply { addClass(MainStylesheet.searchLabel) }
-                                textfield(searchByDescripcion)
+                                searchByDescripcionField = textfield(searchByDescripcion)
 
                                 prefWidth = if (disableCodigoSearch == false) 250.0 else 500.0
                             }
@@ -659,9 +665,7 @@ class SelectProductoDialog : Fragment() {
                     addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
                     action {
                         if (selectedId.value != 0) {
-                            println("selectedId: ${selectedId.value}")
                             val producto = productoController.findById(selectedId.value)!!
-                            println("product: ${producto}")
                             if (producto.codigo in currentUncommittedIVS.ivs.map { it.producto.codigo }) {
                                 val res = currentUncommittedIVS.ivs.find { it.producto.codigo == producto.codigo }!!
                                 res.cantidad.set(res.cantidad.value + 1)
@@ -691,6 +695,7 @@ class SelectProductoDialog : Fragment() {
                 button("Cancelar") {
                     addClass(MainStylesheet.coolBaseButton, MainStylesheet.redButton, MainStylesheet.expandedButton)
                     action {
+                        papi.addAlwaysFocusListener()
                         close()
                     }
                 }
