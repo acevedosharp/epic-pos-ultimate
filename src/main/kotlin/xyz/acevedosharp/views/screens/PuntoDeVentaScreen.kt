@@ -27,7 +27,6 @@ import javafx.scene.paint.LinearGradient
 import javafx.scene.paint.Stop
 import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
-import javafx.util.Duration
 import tornadofx.*
 import xyz.acevedosharp.GlobalHelper
 import xyz.acevedosharp.Joe
@@ -622,6 +621,10 @@ class CommitVenta : Fragment() {
         super.onUndock()
     }
 
+    init {
+        model.empleado.set(Joe.persistentEmployee.value) // do NOT bind these two
+    }
+
     override val root = vbox(spacing = 0, alignment = Pos.CENTER) {
         useMaxSize = true
         prefWidth = 800.0
@@ -743,6 +746,7 @@ class CommitVenta : Fragment() {
                                 if (Joe.rememberPrinter.value) {
                                     Joe.persistentPrinter.set(impresora.value)
                                 }
+                                Joe.persistentEmployee.set(model.empleado.value)
                                 close()
                             }
                         }

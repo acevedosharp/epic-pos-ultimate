@@ -10,6 +10,7 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.net.URLConnection
 import tornadofx.*
+import xyz.acevedosharp.persistence.entities.EmpleadoDB
 
 @SpringBootApplication
 class LocalSpringBootApplication
@@ -37,5 +38,7 @@ object InternetConnection {
 object Joe {
     var currentView = SimpleObjectProperty<UIComponent>(null)//.apply { onChange { uiComponent -> println("currentView has changed, now ${uiComponent!!.javaClass.name}") } }
     var rememberPrinter = SimpleBooleanProperty(false)
-    var persistentPrinter = SimpleStringProperty()
+    val persistentPrinter = SimpleStringProperty()
+
+    val persistentEmployee = SimpleObjectProperty<EmpleadoDB>(null)
 }
