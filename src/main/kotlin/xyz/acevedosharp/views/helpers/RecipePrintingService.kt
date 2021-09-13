@@ -123,7 +123,7 @@ class RecipePrintingService {
             .filter { it !in listOf("Microsoft XPS Document Writer", "Microsoft Print to PDF", "Fax") }
     }
 
-    private fun openCashDrawer(printerName: String) {
+    fun openCashDrawer(printerName: String) {
         val open = byteArrayOf(27, 112, 0, 100, 250.toByte())
         val flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE
         val pras: PrintRequestAttributeSet = HashPrintRequestAttributeSet()

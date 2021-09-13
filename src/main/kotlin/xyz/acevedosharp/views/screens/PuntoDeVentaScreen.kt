@@ -622,6 +622,8 @@ class CommitVenta : Fragment() {
     }
 
     init {
+        impresoras.setAll(printingService.getPrinters())
+
         model.empleado.set(Joe.persistentEmployee.value) // do NOT bind these two
         model.cliente.set(clienteController.getClientesWithUpdate().find { cliente -> cliente.isGenerico })
     }
@@ -680,7 +682,6 @@ class CommitVenta : Fragment() {
                     }
                 }
                 field("Impresora seleccionada") {
-                    hiddenWhen { imprimirFactura.isNotEqualTo("Sí") }
                     combobox(impresora, impresoras).apply {
                         imprimirFactura.onChange {
                             if (it == "Sí")
@@ -736,6 +737,7 @@ class CommitVenta : Fragment() {
                                     }
                                 )
 
+                                printingService.openCashDrawer(impresora.value)
                                 //Print recipe
                                 if (imprimirFactura.value == "Sí")
                                     printingService.printRecipe(res, impresora.value)
