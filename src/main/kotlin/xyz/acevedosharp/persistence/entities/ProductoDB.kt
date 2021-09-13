@@ -32,7 +32,7 @@ class ProductoDB(
     @Column(name = "margen")
     var margen: Double,
 
-    @ManyToOne @JoinColumn(name = "familia")
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "familia")
     var familia: FamiliaDB,
 
     @Column(name = "alerta_existencias")

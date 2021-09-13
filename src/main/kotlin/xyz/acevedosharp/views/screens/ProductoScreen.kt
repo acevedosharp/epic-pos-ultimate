@@ -4,7 +4,6 @@ package xyz.acevedosharp.views.screens
 
 import javafx.beans.property.*
 import javafx.collections.FXCollections
-import javafx.collections.ObservableList
 import xyz.acevedosharp.controllers.FamiliaController
 import xyz.acevedosharp.controllers.ProductoController
 import xyz.acevedosharp.ui_models.Producto
@@ -27,10 +26,8 @@ import xyz.acevedosharp.GlobalHelper.round
 import xyz.acevedosharp.Joe
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
-import java.util.*
 
 class ProductoView : View("Epic POS - Productos") {
-
     private val productoController = find<ProductoController>()
     private val familiaController = find<FamiliaController>()
 
@@ -52,25 +49,21 @@ class ProductoView : View("Epic POS - Productos") {
             searchByDescripcion.set("")
             searchByFamilia.set(null)
             if (!searchString.isNullOrBlank()) {
-                table.items = productoController.getProductosClean().filter {
-                    it.codigo == searchString
-                }.asObservable()
+                table.items = productoController.getProductosClean(codigoQuery = searchString)
             } else {
                 table.items = productoController.getProductosClean()
             }
         }
 
         searchByDescripcion.onChange {
-            table.items = powerSearch(
-                searchList = productoController.getProductosClean(),
+            table.items = productoController.getProductosClean(
                 descripcionQuery = searchByDescripcion.value,
                 familiaQuery = searchByFamilia.value
             )
         }
 
         searchByFamilia.onChange {
-            table.items = powerSearch(
-                searchList = productoController.getProductosClean(),
+            table.items = productoController.getProductosClean(
                 descripcionQuery = searchByDescripcion.value,
                 familiaQuery = searchByFamilia.value
             )
@@ -518,35 +511,25 @@ class SelectProductoDialog : Fragment() {
     init {
         Joe.currentView.setValue(this)
 
-        productoController.getProductosClean().onChange {
-            searchByCodigo.value = ""
-            searchByDescripcion.value = ""
-            searchByFamilia.value = null
-        }
-
         searchByCodigo.onChange { searchString ->
             searchByDescripcion.set("")
             searchByFamilia.set(null)
             if (!searchString.isNullOrBlank()) {
-                table.items = productoController.getProductosClean().filter {
-                    it.codigo == searchString
-                }.asObservable()
+                table.items = productoController.getProductosClean(codigoQuery = searchString)
             } else {
                 table.items = productoController.getProductosClean()
             }
         }
 
         searchByDescripcion.onChange {
-            table.items = powerSearch(
-                searchList = productoController.getProductosClean(),
+            table.items = productoController.getProductosClean(
                 descripcionQuery = searchByDescripcion.value,
                 familiaQuery = searchByFamilia.value
             )
         }
 
         searchByFamilia.onChange {
-            table.items = powerSearch(
-                searchList = productoController.getProductosClean(),
+            table.items = productoController.getProductosClean(
                 descripcionQuery = searchByDescripcion.value,
                 familiaQuery = searchByFamilia.value
             )
@@ -634,7 +617,7 @@ class SelectProductoDialog : Fragment() {
 
                 center {
                     hbox {
-                        table = tableview(productoController.getProductosWithUpdate()) {
+                        table = tableview(productoController.getProductosClean()) {
                             column("Código", ProductoDB::codigo).pctWidth(10)
                             column("Desc. Larga", ProductoDB::descripcionLarga).remainingWidth()
                             column("Desc. Corta", ProductoDB::descripcionCorta).pctWidth(20)
@@ -810,33 +793,4 @@ class ProductoSaleHistoryModal : Fragment() {
         Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
     }
-}
-
-private fun powerSearch(
-    searchList: List<ProductoDB>,
-    descripcionQuery: String,
-    familiaQuery: FamiliaDB?
-): ObservableList<ProductoDB> {
-    return searchList.filter { product ->
-        if (descripcionQuery.isNotBlank()) {
-            val productString = product.descripcionLarga.lowercase(Locale.getDefault())
-            val searchString = descripcionQuery.lowercase(Locale.getDefault())
-            val searchWords = searchString
-                .lowercase(Locale.getDefault())
-                .split(" ")
-
-            if (!(productString.contains(searchString) ||
-                        searchWords.all { word -> productString.contains(word) })
-            ) {
-                return@filter false
-            }
-        }
-
-        if (familiaQuery != null) {
-            if (product.familia != familiaQuery) {
-                return@filter false
-            }
-        }
-        return@filter true
-    }.toObservable()
 }

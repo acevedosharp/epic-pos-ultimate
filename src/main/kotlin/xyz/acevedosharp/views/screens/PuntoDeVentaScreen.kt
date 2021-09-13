@@ -102,6 +102,7 @@ class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
     private lateinit var currentCodigoTextField: TextField
 
     init {
+        productoController.updateSnapshot()
         currentUncommittedIVS.flush()
 
         currentUncommittedIVS.ivs.onChange {
@@ -556,6 +557,7 @@ class CreateItemVentaManuallyForm : Fragment() {
                 prefWidth = 888.0
                 addClass(MainStylesheet.coolBaseButton, MainStylesheet.grayLabel)
                 setOnMouseClicked {
+                    println(LocalDateTime.now().toString())
                     openInternalWindow<SelectProductoDialog>(
                         closeButton = false,
                         modal = true,

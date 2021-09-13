@@ -1,11 +1,12 @@
 package xyz.acevedosharp.controllers
 
 import xyz.acevedosharp.CustomApplicationContextWrapper
-import javafx.collections.FXCollections
 import xyz.acevedosharp.ui_models.Producto
 import javafx.collections.ObservableList
 import tornadofx.Controller
 import org.springframework.data.repository.findByIdOrNull
+import tornadofx.toObservable
+import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.entities.ItemVentaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
 import xyz.acevedosharp.persistence.repositories.ItemVentaRepo
@@ -15,6 +16,7 @@ import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ProductoController(productoRepo: ProductoRepo? = null) : Controller(), UpdateSnapshot {
 
@@ -23,7 +25,7 @@ class ProductoController(productoRepo: ProductoRepo? = null) : Controller(), Upd
 
     private val itemVentaRepo = find<CustomApplicationContextWrapper>().context.getBean(ItemVentaRepo::class.java)
 
-    private val productos: ObservableList<ProductoDB> = FXCollections.observableArrayList()
+    private val productos: MutableList<ProductoDB> = mutableListOf()
 
     fun getHistory(producto: ProductoDB, type: String, goBackNUnits: Int): List<ProductoSaleHistoryModal.HistoryPoint> {
         class TimeGrouping(
@@ -49,7 +51,10 @@ class ProductoController(productoRepo: ProductoRepo? = null) : Controller(), Upd
 
         IntRange(1, goBackNUnits).forEach { _ ->
             if (type == "Mensual") {
-                startRangeCalendar.set(Calendar.DAY_OF_MONTH, startRangeCalendar.getActualMinimum(Calendar.DAY_OF_MONTH))
+                startRangeCalendar.set(
+                    Calendar.DAY_OF_MONTH,
+                    startRangeCalendar.getActualMinimum(Calendar.DAY_OF_MONTH)
+                )
                 endRangeCalendar.set(Calendar.DAY_OF_MONTH, endRangeCalendar.getActualMaximum(Calendar.DAY_OF_MONTH))
             }
 
@@ -97,13 +102,27 @@ class ProductoController(productoRepo: ProductoRepo? = null) : Controller(), Upd
         }
     }
 
-    fun getProductosWithUpdate(): ObservableList<ProductoDB> {
+    fun getProductosWithUpdate(
+        codigoQuery: String? = null,
+        descripcionQuery: String? = null,
+        familiaQuery: FamiliaDB? = null
+    ): ObservableList<ProductoDB> {
         updateSnapshot()
-        return productos
+        return getProductosClean(codigoQuery, descripcionQuery, familiaQuery)
     }
 
-    fun getProductosClean(): ObservableList<ProductoDB> {
-        return productos
+    fun getProductosClean(
+        codigoQuery: String? = null,
+        descripcionQuery: String? = null,
+        familiaQuery: FamiliaDB? = null
+    ): ObservableList<ProductoDB> {
+        if (descripcionQuery == null && familiaQuery == null)
+            return productos.take(100).toObservable()
+        else
+            if (codigoQuery != null)
+                return listOf(productos.first { it.codigo == codigoQuery }).toObservable()
+            else
+                return powerSearch(productos, descripcionQuery!!, familiaQuery)
     }
 
     fun findById(id: Int) = productoRepo.findByIdOrNull(id)
@@ -160,6 +179,36 @@ class ProductoController(productoRepo: ProductoRepo? = null) : Controller(), Upd
     }
 
     override fun updateSnapshot() {
-        productos.setAll(productoRepo.findAll())
+        productos.clear()
+        productos.addAll(productoRepo.findAll())
+    }
+
+    private fun powerSearch(
+        searchList: List<ProductoDB>,
+        descripcionQuery: String,
+        familiaQuery: FamiliaDB?
+    ): ObservableList<ProductoDB> {
+        return searchList.filter { product ->
+            if (descripcionQuery.isNotBlank()) {
+                val productString = product.descripcionLarga.lowercase(Locale.getDefault())
+                val searchString = descripcionQuery.lowercase(Locale.getDefault())
+                val searchWords = searchString
+                    .lowercase(Locale.getDefault())
+                    .split(" ")
+
+                if (!(productString.contains(searchString) ||
+                            searchWords.all { word -> productString.contains(word) })
+                ) {
+                    return@filter false
+                }
+            }
+
+            if (familiaQuery != null) {
+                if (product.familia != familiaQuery) {
+                    return@filter false
+                }
+            }
+            return@filter true
+        }.toObservable()
     }
 }
