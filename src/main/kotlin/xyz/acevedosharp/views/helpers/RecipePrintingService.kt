@@ -39,7 +39,7 @@ class RecipePrintingService {
             sb.append("=$")
             sb.append(
                 formatStringWithMaxCols(
-                    str = formatDecimal(item.precioVentaConIva * item.cantidad.toDouble()),
+                    str = formatDecimal(item.precioVentaConIva * item.cantidad.toDouble(), noDecimals = true),
                     cols = 7,
                     alignment = StringAlignment.RIGHT
                 )
@@ -216,9 +216,12 @@ class RecipePrintingService {
         return String(result)
     }
 
-    private fun formatDecimal(n: Double): String {
+    private fun formatDecimal(n: Double, noDecimals: Boolean = false): String {
         if (n % 1.0 != 0.0) {
-            return n.round(2).toString()
+            if (noDecimals)
+                return ceil(n).toString()
+            else
+                return n.round(2).toString()
         } else {
             return n.toInt().toString()
         }
