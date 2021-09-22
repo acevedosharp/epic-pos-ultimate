@@ -219,7 +219,7 @@ class RecipePrintingService {
     private fun formatDecimal(n: Double, noDecimals: Boolean = false): String {
         if (n % 1.0 != 0.0) {
             if (noDecimals)
-                return ceil(n).toString()
+                return ceil(n).toInt().toString()
             else
                 return n.round(2).toString()
         } else {
