@@ -151,9 +151,9 @@ class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
                     rectangle(height = 0.0, width = 8.0)
                     stackpane {
                         alignment = Pos.CENTER_LEFT
-                        rectangle(width = 720, height = 70) { fill = c(255, 255, 255, 0.0) }
+                        rectangle(width = 590, height = 70) { fill = c(255, 255, 255, 0.0) }
                         label("Producto").style {
-                            prefWidth = 715.px
+                            prefWidth = 590.px
                             fontSize = 28.px
                             fontWeight = FontWeight.BOLD
                             textAlignment = TextAlignment.LEFT
@@ -165,9 +165,9 @@ class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
                     }
                     stackpane {
                         alignment = Pos.CENTER_LEFT
-                        rectangle(width = 150, height = 70) { fill = c(255, 255, 255, 0.0) }
+                        rectangle(width = 120, height = 70) { fill = c(255, 255, 255, 0.0) }
                         label("Cantidad").style {
-                            prefWidth = 145.px
+                            prefWidth = 120.px
                             fontSize = 28.px
                             fontWeight = FontWeight.BOLD
                             textAlignment = TextAlignment.CENTER
@@ -179,8 +179,22 @@ class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
                     }
                     stackpane {
                         alignment = Pos.CENTER_LEFT
-                        rectangle(width = 170, height = 70) { fill = c(255, 255, 255, 0.0) }
+                        rectangle(width = 165, height = 70) { fill = c(255, 255, 255, 0.0) }
                         label("P. Unidad").style {
+                            prefWidth = 135.px
+                            fontSize = 28.px
+                            fontWeight = FontWeight.BOLD
+                            textAlignment = TextAlignment.CENTER
+                            textFill = Color.WHITE
+                        }
+                    }
+                    line(0, 0, 0, 60).style {
+                        stroke = c(255, 255, 255, 0.25)
+                    }
+                    stackpane {
+                        alignment = Pos.CENTER_LEFT
+                        rectangle(width = 165, height = 70) { fill = c(255, 255, 255, 0.0) }
+                        label("P. Ítems").style {
                             prefWidth = 165.px
                             fontSize = 28.px
                             fontWeight = FontWeight.BOLD
@@ -258,6 +272,7 @@ class PuntoDeVentaView : View("Epic POS - Punto de Venta") {
                         isPannable = true
                         paddingAll = 8.0
                         style {
+                            fontSize = 20.px
                             borderRadius += box(10.px)
                             borderWidth += box(0.px)
                             borderColor += box(c(0, 0, 0, 0.125))

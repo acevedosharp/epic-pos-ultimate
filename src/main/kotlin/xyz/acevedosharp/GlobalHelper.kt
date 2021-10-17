@@ -2,6 +2,8 @@ package xyz.acevedosharp
 
 import javafx.util.Duration
 import tornadofx.runLater
+import java.text.NumberFormat
+import kotlin.math.ceil
 import kotlin.math.round
 
 object GlobalHelper {
@@ -41,6 +43,13 @@ object GlobalHelper {
     // this exists in case the target computer is really slow and the item the opetarion is on hasn't loaded yet
     fun runLaterMinimumDelay(op: () -> Unit) {
         runLaterRecursive(op, 50.0, 1)
+    }
+
+    fun Double.formatCurrency(): String {
+        if (this < 50.0)
+            return "$${this}"
+        else
+            return "$${NumberFormat.getIntegerInstance().format(ceil(this).toInt())}"
     }
 
     private fun runLaterRecursive(op: () -> Unit, delay: Double, recursionCount: Int) {
