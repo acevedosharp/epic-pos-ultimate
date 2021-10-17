@@ -13,7 +13,6 @@ import javafx.geometry.Pos
 import javafx.scene.control.*
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
-import javafx.util.Duration
 import tornadofx.*
 import xyz.acevedosharp.GlobalHelper
 import xyz.acevedosharp.Joe
@@ -237,7 +236,11 @@ class BaseClienteFormView(formType: FormType, id: Int?) : Fragment() {
                 rectangle(width = 0, height = 24)
                 hbox(spacing = 80, alignment = Pos.CENTER) {
                     button("Aceptar") {
-                        addClass(MainStylesheet.coolBaseButton, MainStylesheet.greenButton, MainStylesheet.expandedButton)
+                        addClass(
+                            MainStylesheet.coolBaseButton,
+                            MainStylesheet.greenButton,
+                            MainStylesheet.expandedButton
+                        )
                         action {
                             model.commit {
                                 clienteController.save(
