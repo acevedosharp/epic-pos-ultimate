@@ -20,11 +20,16 @@ object GlobalHelper {
         return n ?: 0
     }
 
+    // m = 1 - ( bp / sp )
+    fun calculateMargin(buyPrice: Double, sellPrice: Double): Double {
+        return (1 - (buyPrice / sellPrice)) * 100
+    }
+
     fun calculateSellPriceBrokenDown(basePrice: Double, margin: Double, iva: Int): Triple<Double, Double, Double> {
         val withMargin = basePrice / (1 - (margin / 100))
         val marginAmount = withMargin - basePrice
 
-        val ivaAmount = withMargin*(iva.toDouble()/100)
+        val ivaAmount = withMargin * (iva.toDouble() / 100)
         val withIva = withMargin + ivaAmount
         val withIvaRounded: Double
         if (withIva < 50)
@@ -40,7 +45,7 @@ object GlobalHelper {
         return round(this * multiplier) / multiplier
     }
 
-    // this exists in case the target computer is really slow and the item the opetarion is on hasn't loaded yet
+    // this exists in case the target computer is really slow and the item the operation is on hasn't loaded yet
     fun runLaterMinimumDelay(op: () -> Unit) {
         runLaterRecursive(op, 50.0, 1)
     }
@@ -57,7 +62,7 @@ object GlobalHelper {
             try {
                 runLater(Duration.millis(delay), op)
             } catch (e: RuntimeException) {
-                runLaterRecursive(op, delay + 100.0, recursionCount+1)
+                runLaterRecursive(op, delay + 100.0, recursionCount + 1)
             }
         }
         // no RuntimeException please

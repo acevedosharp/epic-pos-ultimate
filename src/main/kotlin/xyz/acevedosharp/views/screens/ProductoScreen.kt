@@ -19,7 +19,6 @@ import javafx.scene.control.TableView
 import javafx.scene.control.TextField
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
-import javafx.util.Duration
 import tornadofx.*
 import xyz.acevedosharp.GlobalHelper
 import xyz.acevedosharp.GlobalHelper.round
@@ -398,10 +397,26 @@ class BaseProductoFormView(formType: FormType, id: Int?) : Fragment() {
                         }
                     }
                 }
-                field("Precio de venta") {
-                    if (formType == CREATE) model.precioVenta.value = 50.0
-                    textfield(model.precioVenta.asString()) {
-                        isEditable = false
+                hbox(10, Pos.CENTER_LEFT) {
+                    field("Precio de venta") {
+                        if (formType == CREATE) model.precioVenta.value = 50.0
+                        textfield(model.precioVenta.asString()) {
+                            isEditable = false
+                        }
+                    }
+                    button("Auto Margen") {
+                        addClass(MainStylesheet.addButton, MainStylesheet.greenButton)
+                        action {
+                            openInternalWindow<AutoMarginProductPricingView>(
+                                closeButton = false,
+                                modal = true,
+                                params = mapOf(
+                                    "owner" to this@BaseProductoFormView,
+                                    "margin" to model.margen,
+                                    "buyPrice" to model.precioCompra
+                                )
+                            )
+                        }
                     }
                 }
                 field("Familia") {
@@ -825,5 +840,75 @@ class ProductoSaleHistoryModal : Fragment() {
     override fun onUndock() {
         Joe.currentView.setValue(params["owner"] as UIComponent)
         super.onUndock()
+    }
+}
+
+class AutoMarginProductPricingView : Fragment() {
+    private val marginRef: Property<Double> = params["margin"] as Property<Double>
+    private val buyPriceRef: Property<Double> = params["buyPrice"] as Property<Double>
+    private val buyPrice = SimpleDoubleProperty()
+    private val sellPrice = SimpleDoubleProperty()
+    private val nUnits = SimpleIntegerProperty(1)
+
+    init {
+        fun updateMargin() {
+            val resultingMargin: Double = GlobalHelper.calculateMargin(
+                buyPrice.get(),
+                sellPrice.get()
+            )
+            val newBuyPrice = buyPrice.get() / nUnits.get()
+            buyPriceRef.setValue(newBuyPrice)
+            marginRef.setValue(resultingMargin)
+        }
+
+        buyPrice.onChange { updateMargin() }
+        sellPrice.onChange { updateMargin() }
+    }
+
+    override fun onDock() {
+        Joe.currentView.setValue(this@AutoMarginProductPricingView)
+        super.onDock()
+    }
+
+    override fun onUndock() {
+        Joe.currentView.setValue(params["owner"] as UIComponent)
+        super.onUndock()
+    }
+
+    override val root = vbox(spacing = 0) {
+        useMaxSize = true
+        prefWidth = 500.0
+        prefHeight = 400.0
+        label("Auto Margen") {
+            useMaxWidth = true
+            addClass(MainStylesheet.titleLabel, MainStylesheet.greenLabel)
+        }
+        form {
+            rectangle(width = 0, height = 24)
+            fieldset {
+                field("Unidades") {
+                    combobox(nUnits, values = listOf(1, 500, 1000))
+                }
+
+                field("Precio de Compra") {
+                    textfield(buyPrice)
+                }
+
+                field("Precio de Venta") {
+                    textfield(sellPrice)
+                }
+            }
+            button("Aceptar") {
+                prefWidth = 500.0
+                addClass(
+                    MainStylesheet.coolBaseButton,
+                    MainStylesheet.greenButton,
+                    MainStylesheet.expandedButton
+                )
+                action {
+                    close()
+                }
+            }
+        }
     }
 }
