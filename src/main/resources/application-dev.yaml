@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/epic?serverTimezone=America/Bogota
+    url: jdbc:mysql://localhost:2710/epic?serverTimezone=America/Bogota
     username: root
     password: password
 

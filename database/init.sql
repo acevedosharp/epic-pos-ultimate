@@ -175,7 +175,12 @@ create table if not exists epic.item_venta
 );
 
 # ------------------------ add bolsa ------------------------
-insert into epic.familia(nombre) VALUE ('Bolsas');
+insert into epic.familia(nombre) value ('Bolsas');
 insert into epic.producto(codigo, desc_larga, desc_corta, precio_venta, precio_compra_efectivo, margen, existencias,
                           activo, familia, alerta_existencias, iva, precio_compra)
     value ('bolsa', 'Bolsa', 'Bolsa', 50, 0, 0.1, 0, 1, 1, 0, iva, 50);
+
+insert into epic.empleado(empleado_id, nombre, telefono) value (0, 'Jose', '0123456789');
+
+insert into epic.cliente(cliente_id, nombre, telefono, direccion, birthday_day, birthday_month, is_generico)
+    value (0, 'Genérico', '0123456789', null, null, null, 1);

@@ -7,7 +7,7 @@ services:
     volumes:
       - ./database/init.sql:/init.sql
     ports:
-      - "3306:3306"
+      - "2710:3306"
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password
