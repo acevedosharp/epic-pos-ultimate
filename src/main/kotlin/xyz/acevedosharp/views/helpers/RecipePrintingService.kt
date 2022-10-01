@@ -1,5 +1,6 @@
 package xyz.acevedosharp.views.helpers
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import xyz.acevedosharp.GlobalHelper
 import xyz.acevedosharp.GlobalHelper.round
@@ -13,7 +14,8 @@ import kotlin.math.ceil
 import kotlin.math.max
 
 @Service
-class RecipePrintingService {
+class RecipePrintingService(@Value("\${debugRecipePrinting}") val debugRecipePrinting: Boolean) {
+
     fun printRecipe(venta: VentaDB, impName: String) {
         fun formatItem(item: ItemVentaDB, sb: StringBuilder) {
             sb.append(
@@ -104,8 +106,8 @@ class RecipePrintingService {
         sb.append('\n')
         sb.append("Gracias por su compra el ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
         sb.append("                                                \n")
-        sb.append("Res. habilitación: 18764015886194 de 03/08/2021\n")
-        sb.append("Desde 1 hasta 5000. Factura #${venta.ventaId!!}\n")
+        sb.append("Res. habilitación: 18764037160028 de 30/09/2021\n")
+        sb.append("Desde 5001 hasta 200000. Factura #${venta.ventaId!!}\n")
         sb.append(lowerPadding)
 
         openCashDrawer(impName)
@@ -124,6 +126,11 @@ class RecipePrintingService {
     }
 
     fun openCashDrawer(printerName: String) {
+        if (debugRecipePrinting) {
+            println("======== CASH DRAWER OPENED ========")
+            return
+        }
+
         val open = byteArrayOf(27, 112, 0, 100, 250.toByte())
         val flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE
         val pras: PrintRequestAttributeSet = HashPrintRequestAttributeSet()
@@ -143,6 +150,12 @@ class RecipePrintingService {
     }
 
     private fun printString(printerName: String, text: String) {
+        if (debugRecipePrinting) {
+            println("======== START PRINT ========")
+            println(text)
+            println("======== END PRINT ========")
+            return
+        }
 
         // find the printService of name printerName
         val flavor: DocFlavor = DocFlavor.BYTE_ARRAY.AUTOSENSE

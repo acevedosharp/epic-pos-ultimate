@@ -4,5 +4,6 @@ spring:
     username: root
     password: password
 
+debugRecipePrinting: true
 doBirthdayCheck: false
 doProductInventoryCheck: false

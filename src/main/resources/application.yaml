@@ -28,5 +28,6 @@ logging:
           descriptor:
             sql: off
 
+debugRecipePrinting: false
 doBirthdayCheck: ${DO_BIRTHDAY_CHECK}
 doProductInventoryCheck: ${DO_PRODUCT_INVENTORY_CHECK}
