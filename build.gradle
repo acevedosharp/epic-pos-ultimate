@@ -18,18 +18,11 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.21'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.3'
     implementation "no.tornado:tornadofx:1.7.20"
-    compile group: 'no.tornado', name: 'tornadofx-controls', version: '1.0.6'
-    compile 'mysql:mysql-connector-java:8.0.25'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.3'
-    testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.0-M1'
+    implementation "no.tornado:tornadofx-controls:1.0.6"
+    implementation "mysql:mysql-connector-java:8.0.30"
 }
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
     kotlinOptions.useIR = true
-}
-
-test {
-    useJUnitPlatform()
 }

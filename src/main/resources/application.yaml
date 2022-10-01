@@ -1,0 +1,32 @@
+spring:
+  main:
+    web-application-type: none
+
+  jpa:
+    generate-ddl: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        ddl-auto: none
+        enable_lazy_load_no_trans: true
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 5000
+
+logging:
+  level:
+    org:
+      hibernate:
+        sql: off
+        type:
+          descriptor:
+            sql: off
+
+doBirthdayCheck: ${DO_BIRTHDAY_CHECK}
+doProductInventoryCheck: ${DO_PRODUCT_INVENTORY_CHECK}
