@@ -8,7 +8,7 @@ plugins {
 }
 
 group 'xyz.acevedosharp'
-version '2.7.1'
+version '1.0.1'
 
 repositories {
     mavenCentral()

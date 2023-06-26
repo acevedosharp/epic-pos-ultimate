@@ -8,9 +8,7 @@ import javafx.scene.paint.Color
 import tornadofx.*
 import tornadofx.control.DateTimePicker
 import xyz.acevedosharp.controllers.ClienteController
-import xyz.acevedosharp.controllers.ProductoController
 import xyz.acevedosharp.controllers.ReportesController
-import xyz.acevedosharp.persistence.entities.ClienteDB
 import xyz.acevedosharp.views.MainStylesheet
 import xyz.acevedosharp.views.helpers.CurrentModule.REPORTES
 import xyz.acevedosharp.views.shared_components.SideNavigation
@@ -18,14 +16,11 @@ import java.time.LocalDateTime
 
 class ReporteScreen : View("Epic POS - Reportes") {
     private val reportesController = find<ReportesController>()
-    private val productoController = find<ProductoController>()
-    private val clienteController = find<ClienteController>()
 
     private var contentContainer: HBox by singleAssign()
     private var dayOrRangeSelectorInjector: HBox by singleAssign()
 
-    private val filterByCliente = SimpleStringProperty("No")
-    private val clienteToFilterBy = SimpleObjectProperty<ClienteDB>()
+    private val reportType = SimpleStringProperty("Productos")
 
     private val reportRange = SimpleStringProperty("")
 
@@ -111,26 +106,12 @@ class ReporteScreen : View("Epic POS - Reportes") {
                     useMaxWidth = true
 
                     vbox {
-                        label("¿Filtrar por cliente específico?").apply { addClass(MainStylesheet.searchLabel) }
+                        label("Tipo de Reporte").apply { addClass(MainStylesheet.searchLabel) }
                         combobox(
-                            property = filterByCliente,
-                            values = FXCollections.observableArrayList("Sí", "No")
+                            property = reportType,
+                            values = FXCollections.observableArrayList("Productos", "Ventas por Empleado")
                         ) {
-                            prefWidth = 250.0
-                        }
-                    }
-
-                    vbox {
-                        label("Seleccionar cliente").apply { addClass(MainStylesheet.searchLabel) }
-                        combobox(
-                            property = clienteToFilterBy,
-                            values = clienteController.getClientesWithUpdate()
-                        ) {
-                            prefWidth = 250.0
-                            makeAutocompletable()
-                        }
-                        hiddenWhen {
-                            filterByCliente.isNotEqualTo("Sí")
+                            prefWidth = 350.0
                         }
                     }
 
@@ -158,16 +139,25 @@ class ReporteScreen : View("Epic POS - Reportes") {
                         }
                         action {
                             contentContainer.children.clear()
-                            contentContainer.children.setAll(
-                                reportesController.generateReport(
-                                    reportRange.value,
-                                    filterByCliente.value == "Sí",
-                                    clienteToFilterBy.value,
-                                    startDate.value,
-                                    endDate.value,
-                                    selectedDay.value
+                            if ("Productos" == reportType.value) {
+                                contentContainer.children.setAll(
+                                    reportesController.generateProductReport(
+                                        reportRange.value,
+                                        startDate.value,
+                                        endDate.value,
+                                        selectedDay.value
+                                    )
                                 )
-                            )
+                            } else {
+                                contentContainer.children.setAll(
+                                    reportesController.generateEmployeeSalesReport(
+                                        reportRange.value,
+                                        startDate.value,
+                                        endDate.value,
+                                        selectedDay.value
+                                    )
+                                )
+                            }
                         }
                     }
                 }

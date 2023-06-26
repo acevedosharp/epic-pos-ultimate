@@ -16,9 +16,9 @@ import tornadofx.*
 import xyz.acevedosharp.CustomApplicationContextWrapper
 import xyz.acevedosharp.GlobalHelper
 import xyz.acevedosharp.GlobalHelper.round
-import xyz.acevedosharp.persistence.entities.ClienteDB
 import xyz.acevedosharp.persistence.entities.FamiliaDB
 import xyz.acevedosharp.persistence.entities.ProductoDB
+import xyz.acevedosharp.persistence.repositories.EmpleadoRepo
 import xyz.acevedosharp.persistence.repositories.ItemVentaRepo
 import xyz.acevedosharp.persistence.repositories.ProductoRepo
 import xyz.acevedosharp.persistence.repositories.VentaRepo
@@ -54,16 +54,10 @@ class ReportesController : Controller() {
     private val productoRepo = find<CustomApplicationContextWrapper>().context.getBean(ProductoRepo::class.java)
     private val ventaRepo = find<CustomApplicationContextWrapper>().context.getBean(VentaRepo::class.java)
     private val itemVentaRepo = find<CustomApplicationContextWrapper>().context.getBean(ItemVentaRepo::class.java)
+    private val empleadoRepo = find<CustomApplicationContextWrapper>().context.getBean(EmpleadoRepo::class.java)
     private val familiaController = find<FamiliaController>()
 
-    fun generateReport(
-        reportRange: String, // Diario, Mensual
-        filterByCliente: Boolean,
-        clienteToFilterBy: ClienteDB?,
-        startDate: String,
-        endDate: String,
-        day: LocalDateTime?
-    ): VBox {
+    fun getTimestampBounds(reportRange: String, startDate: String, endDate: String, day: LocalDateTime?): Pair<Timestamp, Timestamp> {
         val startRangeTimestamp: Timestamp
         val endRangeTimestamp: Timestamp
         if (reportRange == "Mensual") {
@@ -109,6 +103,82 @@ class ReportesController : Controller() {
             startRangeTimestamp = Timestamp(startCalendar.timeInMillis)
             endRangeTimestamp = Timestamp(endCalendar.timeInMillis)
         }
+        return startRangeTimestamp to endRangeTimestamp
+    }
+
+    fun generateEmployeeSalesReport(
+        reportRange: String, // Diario, Mensual
+        startDate: String,
+        endDate: String,
+        day: LocalDateTime?
+    ): VBox {
+        val (startRangeTimestamp, endRangeTimestamp) = getTimestampBounds(reportRange, startDate, endDate, day)
+
+        val salesPerEmployee = ventaRepo.aggregateSalesPerEmployee(startRangeTimestamp, endRangeTimestamp)
+        val employeesById = empleadoRepo.findAll().associateBy { it.empleadoId }
+
+        val data = salesPerEmployee.map {
+            val employee = employeesById[it.getEmployee()]!!
+            return@map EmployeeSalesDisplay(employee.nombre, it.getTotalSales(), it.getNumSales())
+        }
+
+        return object : View() {
+            private var table: TableView<EmployeeSalesDisplay> by singleAssign()
+
+            override val root = vbox {
+                hgrow = Priority.ALWAYS
+                paddingAll = 6
+                style {
+                    backgroundColor += Color.WHITE
+                }
+
+                hbox(alignment = Pos.CENTER) {
+                    if (reportRange == "Mensual") {
+                        label("Reporte de: ").style { fontSize = 36.px }
+                        label(startDate).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
+                        label(" hasta ").style { fontSize = 36.px }
+                        label(endDate).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
+                    } else {
+                        label("Reporte de: ").style { fontSize = 36.px }
+                        label(day!!.format(DateTimeFormatter.ISO_LOCAL_DATE)).style {
+                            fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD
+                        }
+                    }
+
+                    hgrow = Priority.ALWAYS
+                    style {
+                        backgroundColor += c("#A7C8DB")
+                    }
+                }
+
+                val moneyCF = Callback<TableColumn<EmployeeSalesDisplay, Double>, TableCell<EmployeeSalesDisplay, Double>> {
+                    object : TableCell<EmployeeSalesDisplay, Double>() {
+                        override fun updateItem(item: Double?, empty: Boolean) {
+                            super.updateItem(item, empty)
+                            text = if (empty) null else String.format("$%,.0f", item!!)
+                        }
+                    }
+                }
+
+                table = tableview(data.toObservable()) {
+                    readonlyColumn("Empleado", EmployeeSalesDisplay::name)
+                    readonlyColumn("Ventas Totales", EmployeeSalesDisplay::totalSales).apply { cellFactory = moneyCF }
+                    readonlyColumn("Número de Ventas", EmployeeSalesDisplay::quantity)
+                    smartResize()
+                    hgrow = Priority.ALWAYS
+                    vgrow = Priority.ALWAYS
+                }
+            }
+        }.root
+    }
+
+    fun generateProductReport(
+        reportRange: String, // Diario, Mensual
+        startDate: String,
+        endDate: String,
+        day: LocalDateTime?
+    ): VBox {
+        val (startRangeTimestamp, endRangeTimestamp) = getTimestampBounds(reportRange, startDate, endDate, day)
 
         val data = arrayListOf<RankingReportDisplay>()
         var bagQuantity = 0
@@ -196,10 +266,6 @@ class ReportesController : Controller() {
                         label(day!!.format(DateTimeFormatter.ISO_LOCAL_DATE)).style {
                             fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD
                         }
-                    }
-                    if (filterByCliente) {
-                        label(" - Cliente: ").style { fontSize = 36.px }
-                        label(clienteToFilterBy!!.nombre).style { fontSize = 36.px; fontWeight = FontWeight.EXTRA_BOLD }
                     }
 
                     hgrow = Priority.ALWAYS
@@ -418,6 +484,11 @@ class ReportesController : Controller() {
         return Calendar.getInstance().apply { set(split[0].toInt(), monthToNumber[split[1]]!!, 1) }
     }
 
+    class EmployeeSalesDisplay(
+        val name: String,
+        val totalSales: Double,
+        val quantity: Int
+    )
 
     class RankingReportDisplay(
         val longDesc: String,
