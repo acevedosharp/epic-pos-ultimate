@@ -3,6 +3,9 @@ spring:
     web-application-type: none
 
   jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     generate-ddl: false
     show-sql: false
     properties:

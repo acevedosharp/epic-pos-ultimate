@@ -5,9 +5,9 @@ import xyz.acevedosharp.views.helpers.CurrentModule.*
 object SecuritySettings {
     val securedModules: HashMap<CurrentModule, Boolean> = hashMapOf(
         PUNTO_DE_VENTA to false,
-        PRODUCTOS to true,
+        PRODUCTOS to false,
         PEDIDOS to false,
-        REPORTES to true,
+        REPORTES to false,
         FAMILIAS to false,
         PROVEEDORES to false,
         EMPLEADOS to false,

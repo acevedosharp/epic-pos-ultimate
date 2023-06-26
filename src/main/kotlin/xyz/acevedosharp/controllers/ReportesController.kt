@@ -4,11 +4,14 @@ package xyz.acevedosharp.controllers
 
 import javafx.beans.property.SimpleObjectProperty
 import javafx.geometry.Pos
+import javafx.scene.control.TableCell
+import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
+import javafx.util.Callback
 import tornadofx.*
 import xyz.acevedosharp.CustomApplicationContextWrapper
 import xyz.acevedosharp.GlobalHelper
@@ -19,8 +22,8 @@ import xyz.acevedosharp.persistence.entities.ProductoDB
 import xyz.acevedosharp.persistence.repositories.ItemVentaRepo
 import xyz.acevedosharp.persistence.repositories.ProductoRepo
 import xyz.acevedosharp.persistence.repositories.VentaRepo
-import xyz.acevedosharp.views.dialogs.GenericApplicationException
 import xyz.acevedosharp.views.MainStylesheet
+import xyz.acevedosharp.views.dialogs.GenericApplicationException
 import java.sql.Timestamp
 import java.text.NumberFormat
 import java.time.LocalDateTime
@@ -64,20 +67,16 @@ class ReportesController : Controller() {
         val startRangeTimestamp: Timestamp
         val endRangeTimestamp: Timestamp
         if (reportRange == "Mensual") {
-            val startDateMonthYear = decodeMonthAndYearRaw(startDate)
-            val startCalendar = Calendar.getInstance()
-            startCalendar.set(Calendar.MONTH, startDateMonthYear.first - 1)
-            startCalendar.set(Calendar.YEAR, startDateMonthYear.second)
+            val startCalendar = decodeMonthAndYearRaw(startDate)
             startCalendar.set(Calendar.DATE, 1)
+            startCalendar.set(Calendar.MONTH, startCalendar.get(Calendar.MONTH) - 1)
             startCalendar.set(Calendar.HOUR_OF_DAY, 0)
             startCalendar.set(Calendar.MINUTE, 0)
             startCalendar.set(Calendar.SECOND, 0)
             startCalendar.set(Calendar.MILLISECOND, 0)
 
-            val endDateMonthYear = decodeMonthAndYearRaw(endDate)
-            val endCalendar = Calendar.getInstance()
-            endCalendar.set(Calendar.YEAR, endDateMonthYear.second)
-            endCalendar.set(Calendar.MONTH, endDateMonthYear.first - 1) // gregorian calendar months are 0-11
+            val endCalendar = decodeMonthAndYearRaw(endDate)
+            endCalendar.set(Calendar.MONTH, endCalendar.get(Calendar.MONTH) - 1)
             endCalendar.set(Calendar.DATE, endCalendar.getActualMaximum(Calendar.DATE))
             endCalendar.set(Calendar.HOUR_OF_DAY, 23)
             endCalendar.set(Calendar.MINUTE, 59)
@@ -116,78 +115,48 @@ class ReportesController : Controller() {
 
         val products = productoRepo.findAll()
 
-        val totalNumberOfSales =
-            if (filterByCliente) ventaRepo.findAllByFechaHoraBetweenAndClienteEquals(
-                startRangeTimestamp,
-                endRangeTimestamp,
-                clienteToFilterBy!!
-            ).size
-            else ventaRepo.findAllByFechaHoraBetween(startRangeTimestamp, endRangeTimestamp).size
+        val totalNumberOfSales = ventaRepo.countAllByFechaHoraBetween(startRangeTimestamp, endRangeTimestamp)
 
-        products.forEach { producto ->
-            val matchingSoldItems = if (filterByCliente) {
-                itemVentaRepo.findAllByProductoEqualsAndFechaHoraBetweenAndClienteEquals(
-                    producto,
-                    startRangeTimestamp,
-                    endRangeTimestamp,
-                    clienteToFilterBy!!
-                )
-            } else { // don't filter by cliente
-                itemVentaRepo.findAllByProductoEqualsAndFechaHoraBetween(
-                    producto,
-                    startRangeTimestamp,
-                    endRangeTimestamp
-                )
+        val aggregatedSaleItems =
+            itemVentaRepo.findAllAggregatedByProductoAndFechaHoraBetween(startRangeTimestamp, endRangeTimestamp)
+                .associateBy { it.getProduct() }
+
+        products.forEach { p ->
+            val aggregatedSaleItem: ItemVentaRepo.IAggregatedSaleItem = aggregatedSaleItems[p.productoId] ?: object : ItemVentaRepo.IAggregatedSaleItem {
+                override fun getProduct() = p.productoId!!
+                override fun getQuantity() = 0
+                override fun getSalePriceWithoutTax() = 0.0
+                override fun getSalePriceWithTax() = 0.0
+            }
+
+            if (p.codigo == "bolsa") {
+                bagQuantity += aggregatedSaleItem.getQuantity()
+                return@forEach
             }
 
             val (_, ivaAmount, sellPrice) = GlobalHelper.calculateSellPriceBrokenDown(
-                producto.precioCompra,
-                producto.margen,
-                producto.iva
+                p.precioCompra,
+                p.margen,
+                p.iva
             )
 
-
-            if (producto.codigo != "bolsa") {
-                var sinIvaVolume = 0.0
-                var conIvaVolume = 0.0
-                var earnings = 0.0
-                var soldQuantity = 0
-
-                matchingSoldItems.forEach {
-                    sinIvaVolume += it.precioVentaSinIva * it.cantidad.toDouble()
-                    conIvaVolume += it.precioVentaConIva * it.cantidad.toDouble()
-                    earnings += (it.precioVentaSinIva * (it.margen / 100)) * it.cantidad.toDouble()
-                    soldQuantity += it.cantidad
-                }
-
-                data.add(
-                    RankingReportDisplay(
-                        longDesc = producto.descripcionLarga,
-                        sinIva = (sellPrice - ivaAmount).round(2),
-                        conIva = producto.precioVenta,
-                        sinIvaVolume = sinIvaVolume.round(2),
-                        conIvaVolume = conIvaVolume,
-                        margin = producto.margen,
-                        soldQuantity = soldQuantity,
-                        earningsAmount = earnings.round(2),
-                        taxAmount = (conIvaVolume - sinIvaVolume).round(2),
-                        percentageTotalEarnings = 0.0,
-                        percentageTotalSalesSinIva = 0.0,
-                        percentageTotalSalesConIva = 0.0,
-                        producto = producto
-                    )
+            data.add(
+                RankingReportDisplay(
+                    longDesc = p.descripcionLarga,
+                    sinIva = (sellPrice - ivaAmount).round(2),
+                    conIva = p.precioVenta.round(2),
+                    sinIvaVolume = aggregatedSaleItem.getSalePriceWithoutTax().round(2),
+                    conIvaVolume = aggregatedSaleItem.getSalePriceWithTax().round(2),
+                    margin = p.margen,
+                    soldQuantity = aggregatedSaleItem.getQuantity(),
+                    earningsAmount = (aggregatedSaleItem.getSalePriceWithoutTax() * (p.margen / 100)).round(2),
+                    taxAmount = (aggregatedSaleItem.getSalePriceWithTax() - aggregatedSaleItem.getSalePriceWithoutTax()).round(2),
+                    percentageTotalEarnings = 0.0,
+                    percentageTotalSalesSinIva = 0.0,
+                    percentageTotalSalesConIva = 0.0,
+                    producto = p
                 )
-            } else {
-                matchingSoldItems.forEach {
-                    bagQuantity += it.cantidad
-                }
-            }
-        }
-
-        // This case can only be produced when a registered client hasn't bought anything, if there are no sales in general
-        // (only once in the POS' lifetime) the tab wouldn't even open
-        if (totalNumberOfSales == 0) {
-            throw GenericApplicationException("No hay compras en el periodo de tiempo indicado.")
+            )
         }
 
         var totalConIva = 0.0
@@ -239,20 +208,37 @@ class ReportesController : Controller() {
                     }
                 }
 
+                val moneyCF = Callback<TableColumn<RankingReportDisplay, Double>, TableCell<RankingReportDisplay, Double>> {
+                    object : TableCell<RankingReportDisplay, Double>() {
+                        override fun updateItem(item: Double?, empty: Boolean) {
+                            super.updateItem(item, empty)
+                            text = if (empty) null else String.format("$%,.0f", item!!)
+                        }
+                    }
+                }
+
+                val percentageCF = Callback<TableColumn<RankingReportDisplay, Double>, TableCell<RankingReportDisplay, Double>> {
+                    object : TableCell<RankingReportDisplay, Double>() {
+                        override fun updateItem(item: Double?, empty: Boolean) {
+                            super.updateItem(item, empty)
+                            text = if (empty) null else String.format("%.2f%%", item!!)
+                        }
+                    }
+                }
+
                 table = tableview(data.toObservable()) {
                     readonlyColumn("Descripción Larga", RankingReportDisplay::longDesc)
-                    readonlyColumn("Marg", RankingReportDisplay::margenFmt)
-                    readonlyColumn("Iva", RankingReportDisplay::ivaFmt)
-                    readonlyColumn("Sin Iva", RankingReportDisplay::sinIvaFmt)
-                    readonlyColumn("Con Iva", RankingReportDisplay::conIvaFmt)
-                    readonlyColumn("Vol. sin Iva", RankingReportDisplay::sinIvaVolumeFmt)
-                    readonlyColumn("Vol. con Iva", RankingReportDisplay::conIvaVolumeFmt)
-                    readonlyColumn("Unds", RankingReportDisplay::soldQuantityFmt)
-                    readonlyColumn("Ganancias", RankingReportDisplay::earningsAmountFmt)
-                    readonlyColumn("Impuestos", RankingReportDisplay::taxAmountFmt)
-                    readonlyColumn("% ganancias", RankingReportDisplay::percentageTotalEarningsFmt)
-                    readonlyColumn("% ventas sin Iva", RankingReportDisplay::percentageTotalSalesSinIvaFmt)
-                    readonlyColumn("% ventas con Iva", RankingReportDisplay::percentageTotalSalesConIvaFmt)
+                    readonlyColumn("Marg", RankingReportDisplay::margin).apply { cellFactory = percentageCF }
+                    readonlyColumn("Sin Iva", RankingReportDisplay::sinIva).apply { cellFactory = moneyCF }
+                    readonlyColumn("Con Iva", RankingReportDisplay::conIva).apply { cellFactory = moneyCF }
+                    readonlyColumn("Vol. sin Iva", RankingReportDisplay::sinIvaVolume).apply { cellFactory = moneyCF }
+                    readonlyColumn("Vol. con Iva", RankingReportDisplay::conIvaVolume).apply { cellFactory = moneyCF }
+                    readonlyColumn("Unds", RankingReportDisplay::soldQuantity)
+                    readonlyColumn("Ganancias", RankingReportDisplay::earningsAmount).apply { cellFactory = moneyCF }
+                    readonlyColumn("Impuestos", RankingReportDisplay::taxAmount).apply { cellFactory = moneyCF }
+                    readonlyColumn("% ganancias", RankingReportDisplay::percentageTotalEarnings).apply { cellFactory = percentageCF }
+                    readonlyColumn("% ventas sin Iva", RankingReportDisplay::percentageTotalSalesSinIva).apply { cellFactory = percentageCF }
+                    readonlyColumn("% ventas con Iva", RankingReportDisplay::percentageTotalSalesConIva).apply { cellFactory = percentageCF }
                     smartResize()
                     hgrow = Priority.ALWAYS
                     vgrow = Priority.ALWAYS
@@ -418,7 +404,7 @@ class ReportesController : Controller() {
         return getMonthlyStartDates().filter {
             val endMonthYear = decodeMonthAndYearRaw(it)
 
-            return@filter endMonthYear.second >= startMonthYear.second && endMonthYear.first >= startMonthYear.first
+            return@filter endMonthYear.after(startMonthYear)
         }
     }
 
@@ -426,10 +412,10 @@ class ReportesController : Controller() {
         return "${year + 1900}${monthYearSeparator}${numberToMonth[month + 1]}"
     }
 
-    private fun decodeMonthAndYearRaw(str: String): Pair<Int, Int> {
+    private fun decodeMonthAndYearRaw(str: String): Calendar {
         val split = str.split(monthYearSeparator)
 
-        return monthToNumber[split[1]]!! to split[0].toInt()
+        return Calendar.getInstance().apply { set(split[0].toInt(), monthToNumber[split[1]]!!, 1) }
     }
 
 
@@ -447,30 +433,5 @@ class ReportesController : Controller() {
         var percentageTotalSalesSinIva: Double,
         var percentageTotalSalesConIva: Double,
         val producto: ProductoDB
-    ) {
-        val sinIvaFmt
-            get() = "$$sinIva"
-        val conIvaFmt
-            get() = "$$conIva"
-        val sinIvaVolumeFmt
-            get() = "$${sinIvaVolume}"
-        val conIvaVolumeFmt
-            get() = "$$conIvaVolume"
-        val soldQuantityFmt
-            get() = "$soldQuantity U"
-        val earningsAmountFmt
-            get() = "$$earningsAmount"
-        val taxAmountFmt
-            get() = "$$taxAmount"
-        val percentageTotalEarningsFmt
-            get() = "${percentageTotalEarnings}%"
-        val percentageTotalSalesSinIvaFmt
-            get() = "${percentageTotalSalesSinIva}%"
-        val percentageTotalSalesConIvaFmt
-            get() = "${percentageTotalSalesConIva}%"
-        val ivaFmt
-            get() = "${producto.iva}%"
-        val margenFmt
-            get() = "${margin}%"
-    }
+    )
 }

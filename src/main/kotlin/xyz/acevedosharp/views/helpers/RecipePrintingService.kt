@@ -55,9 +55,9 @@ class RecipePrintingService(@Value("\${debugRecipePrinting}") val debugRecipePri
         val sb = StringBuilder()
 
         sb.append("*==============================================*\n")
-        sb.append("||          Autoservicio Mercamás             ||\n")
-        sb.append("||    Tel: 6000607   Dir: Calle 35 #34-168    ||\n")
-        sb.append("||   NIT: 5796564-6  Regimen: Simplificado    ||\n")
+        sb.append("||              Mercamas Market               ||\n")
+        sb.append("||           Dir: Calle 35 #34-168            ||\n")
+        sb.append("||   C.C. 91.441.422 - Hober Torres Arrieta   ||\n")
         sb.append("*==============================================*\n")
         sb.append("Atendido por: ${venta.empleado.nombre}\n")
         sb.append("Cliente: ${venta.cliente.nombre} \n")
@@ -105,9 +105,6 @@ class RecipePrintingService(@Value("\${debugRecipePrinting}") val debugRecipePri
         sb.append("Cambio: $${venta.pagoRecibido - venta.totalConIva}")
         sb.append('\n')
         sb.append("Gracias por su compra el ${SimpleDateFormat("dd/MM/yy HH:mm:ss").format(venta.fechaHora)}.")
-        sb.append("                                                \n")
-        sb.append("Res. habilitación: 18764037160028 de 30/09/2021\n")
-        sb.append("Desde 5001 hasta 200000. Factura #${venta.ventaId!!}\n")
         sb.append(lowerPadding)
 
         openCashDrawer(impName)
